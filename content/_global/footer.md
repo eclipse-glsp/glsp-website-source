@@ -1,21 +1,16 @@
 +++
 fragment = "footer"
-#disabled = true
-date = "2016-09-07"
 weight = 1200
-#background = ""
 
-menu_title = "Link Title"
+menu_title = "EclipseSource Projects"
 
 [asset]
-  title = "Logo Title"
-  image = "logo.svg"
-  text = "Logo Subtext"
+  title = "GLSP"
+  image = "logo.png"
+  text = "GLSPasas"
   url = "#"
 +++
 
-#### Description Title
+#### Graphical Language Server Platform
 
-Project description such as:
-Open source theme for your next project
-Provided by Okkur Labs
+GLSP is a project of the Eclipse Foundation, lead by [Philip Langer](https://projects.eclipse.org/projects/ecd.glsp/who), organized within the [Eclipse Cloud Development](https://projects.eclipse.org/projects/ecd) project.

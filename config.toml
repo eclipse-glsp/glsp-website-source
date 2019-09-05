@@ -1,4 +1,144 @@
 baseURL = "http://example.org/"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Eclipse Client Platform"
 theme = "syna"
+
+# Google Analytics tracking
+googleAnalytics = ""
+
+[outputs]
+  home = ["HTML", "JSON"]
+
+[frontmatter]
+date = ["date", "lastmod"]
+lastmod = ["lastmod", ":git", "date"]
+
+[params]
+  name = "EclipseSource"
+  description = "Eclipse Client Platform"
+
+  [params.style]
+    #background = "secondary"
+
+  # Theme customizations
+  # Assets relative to 'static/'
+  [params.custom]
+    favicon = "favicon.ico"
+    favicon_ico_sizes = "16x16 32x32"
+    favicon_png = "favicon.png"
+    #favicon_svg = "favicon.svg"
+
+  # Piwik tracking
+  [params.analytics.piwik]
+    #url = ""
+    #id = ""
+    #domain = "" # Track subdomains via "*.example.com"
+    # Optional hash for integrity check
+    #hash = "sha512-RfeD0pacGTqy9m7U6PgehQfS4cc7SIt+e+P+H5e848kEvB/RW84CUGO3O4O3LNbxjevym6KPUZ8muPsMrI8WIw=="
+
+  # Optional, global disable switch for fontawesome related files
+  # For custom fontawesome js files use the custom.js method
+  [params.fontawesome]
+    disabled = false
+    pro = false
+
+  [params.colors]
+    primary = "#00838F"
+    secondary = "#868e96"
+    success = "#008f54"
+    info = "#00c9dc"
+    warning = "#fdf314"
+    danger = "#dc1200"
+    light = "#f8f9fa"
+    dark = "#343a40"
+
+# main/prepend/postpend menus are displayed in nav fragment.
+# Keep an eye out for updates. These will be moved out to make navbar more
+# configurable.
+[[menu.main]]
+  url = "/"
+  name = "Home"
+  weight = 10
+
+[[menu.main]]
+  url = "/gettingstarted"
+  name = "Getting Started"
+  weight = 20
+
+[[menu.main]]
+  url = "/download"
+  name = "Download"
+  weight = 30
+
+[[menu.main]]
+  url = "/documentation"
+  name = "Documentation"
+  weight = 40
+
+[[menu.main]]
+  url = "/support"
+  name = "Support"
+  weight = 50
+
+[[menu.main]]
+  url = "/gettinginvolved"
+  name = "Getting Involved"
+  weight = 60
+
+[[menu.main]]
+  url = "/contact"
+  name = "Contact"
+  weight = 70
+
+[[menu.footer]]
+  url = "https://www.eclipse.org/ecp"
+  name = "EMF Client Platform"
+  weight = 10
+
+[[menu.footer]]
+  url = "https://www.eclipse.org/ecp/emfforms/"
+  name = "EMF Forms"
+  weight = 30
+
+[[menu.footer]]
+  url = "https://jsonforms.io/"
+  name = "JSON Forms"
+  weight = 50
+
+[[menu.copyright_footer]]
+  url = "https://www.eclipse.org/legal/privacy.php"
+  name = "Privacy Policy"
+  weight = 10
+
+[[menu.copyright_footer]]
+  url = "https://www.eclipse.org/legal/termsofuse.php"
+  name = "Terms of Use"
+  weight = 20
+
+[[menu.copyright_footer]]
+  url = "https://www.eclipse.org/legal/copyright.php"
+  name = "Copyright"
+  weight = 30
+
+[[menu.copyright_footer]]
+  url = "https://www.eclipse.org/legal/"
+  name = "Legal"
+  weight = 40
+
+[[menu.footer_social]]
+  weight = 10
+  name = "facebook"
+  pre = "fab fa-facebook"
+  url = "https://www.facebook.com/eclipsesource"
+
+[[menu.footer_social]]
+  weight = 20
+  name = "twitter"
+  pre = "fab fa-twitter"
+  url = "https://twitter.com/eclipsesource"
+
+[[menu.footer_social]]
+  weight = 30
+  name = "linkedin"
+  pre = "fab fa-linkedin"
+  url = "https://www.linkedin.com/company/eclipsesource"
