@@ -1,6 +1,6 @@
 baseURL = "http://example.org/"
-languageCode = "en-us"
-title = "Eclipse Client Platform"
+DefaultContentLanguage = "en"
+title = "Eclipse Grapical Language Server Platform"
 theme = "syna"
 
 # Google Analytics tracking
@@ -14,8 +14,8 @@ date = ["date", "lastmod"]
 lastmod = ["lastmod", ":git", "date"]
 
 [params]
-  name = "EclipseSource"
-  description = "Eclipse Client Platform"
+  name = "Eclipse GLSP"
+  description = "Eclipse Grapical Language Server Platform"
 
   [params.style]
     #background = "secondary"
