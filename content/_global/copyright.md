@@ -1,6 +1,6 @@
 +++
 fragment = "copyright"
-weight = 1250
+weight = 3000
 copyright = "" #default
-background = 212121
+background = "secondary"
 +++

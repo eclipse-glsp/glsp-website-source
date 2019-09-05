@@ -90,6 +90,11 @@ lastmod = ["lastmod", ":git", "date"]
   name = "Contact"
   weight = 70
 
+[[menu.main]]
+  url = "/team"
+  name = "Team"
+  weight = 80
+
 [[menu.footer]]
   url = "https://www.eclipse.org/ecp"
   name = "EMF Client Platform"

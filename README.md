@@ -33,4 +33,16 @@ Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The S
   1. Either copy & paste an existing one, or execute `hugo new --kind page-bundle <NAME>`
   2. To add an entry to the menu, add a link to the page in `config.toml`
 
+ ## Fancy elements
+
+  Check the [Syna Fragments](https://about.okkur.org/syna/fragments/) documentation for all provided fragments and how to use them.
+
+ ## Sorting elements
+
+  To sort items you can use weight, a lower value typically means it is more to the top or left. However note that `weight = 0` is the same as undefined, so use at least `weight = 1`.
+
+ ## Best practices
+
+  Check the example site provided with Syna in `themes/syna/exampleSite`
+
 

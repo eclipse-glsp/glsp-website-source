@@ -1,6 +1,6 @@
 +++
 fragment = "footer"
-weight = 1200
+weight = 2000
 
 menu_title = "EclipseSource Projects"
 
