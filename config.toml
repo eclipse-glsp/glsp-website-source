@@ -1,6 +1,6 @@
 baseURL = "http://example.org/"
 DefaultContentLanguage = "en"
-title = "Eclipse Grapical Language Server Platform"
+title = "Eclipse Graphical Language Server Platform"
 theme = "syna"
 
 # Google Analytics tracking
@@ -14,8 +14,8 @@ date = ["date", "lastmod"]
 lastmod = ["lastmod", ":git", "date"]
 
 [params]
-  name = "Eclipse GLSP"
-  description = "Eclipse Grapical Language Server Platform"
+  name = "Eclipse Foundation"
+  description = "Eclipse Grapical Language Server Protocol"
 
   [params.style]
     #background = "secondary"
@@ -61,54 +61,49 @@ lastmod = ["lastmod", ":git", "date"]
   weight = 10
 
 [[menu.main]]
-  url = "/gettingstarted"
-  name = "Getting Started"
+  url = "/support"
+  name = "Support"
   weight = 20
-
-[[menu.main]]
-  url = "/download"
-  name = "Download"
-  weight = 30
 
 [[menu.main]]
   url = "/documentation"
   name = "Documentation"
-  weight = 40
-
-[[menu.main]]
-  url = "/support"
-  name = "Support"
-  weight = 50
-
-[[menu.main]]
-  url = "/gettinginvolved"
-  name = "Getting Involved"
-  weight = 60
+  weight = 30
 
 [[menu.main]]
   url = "/contact"
   name = "Contact"
-  weight = 70
+  weight = 60
 
 [[menu.main]]
-  url = "/team"
-  name = "Team"
-  weight = 80
+  url = "https://github.com/eclipse/glsp-examples"
+  name = "GitHub"
+  weight = 60
 
 [[menu.footer]]
-  url = "https://www.eclipse.org/ecp"
-  name = "EMF Client Platform"
+  url = "https://projects.eclipse.org/projects/ecd.sprotty"
+  name = "Sprotty"
   weight = 10
 
 [[menu.footer]]
-  url = "https://www.eclipse.org/ecp/emfforms/"
-  name = "EMF Forms"
+  url = "https://projects.eclipse.org/projects/ecd.emfcloud"
+  name = "EMF.cloud"
+  weight = 20
+
+[[menu.footer]]
+  url = "https://eclipsesource.com/technology/eclipse-theia"
+  name = "Eclipse Theia IDE"
   weight = 30
 
 [[menu.footer]]
-  url = "https://jsonforms.io/"
-  name = "JSON Forms"
+  url = "https://eclipse.org/che"
+  name = "Eclipse Che"
   weight = 50
+
+[[menu.copyright_footer]]
+  url = "https://projects.eclipse.org/projects/ecd.glsp"
+  name = "About"
+  weight = 5
 
 [[menu.copyright_footer]]
   url = "https://www.eclipse.org/legal/privacy.php"
@@ -130,20 +125,16 @@ lastmod = ["lastmod", ":git", "date"]
   name = "Legal"
   weight = 40
 
-[[menu.footer_social]]
-  weight = 10
-  name = "facebook"
-  pre = "fab fa-facebook"
-  url = "https://www.facebook.com/eclipsesource"
 
 [[menu.footer_social]]
   weight = 20
   name = "twitter"
   pre = "fab fa-twitter"
-  url = "https://twitter.com/eclipsesource"
+  url = "https://twitter.com/eclipseglsp"
 
-[[menu.footer_social]]
+  [[menu.footer_social]]
   weight = 30
-  name = "linkedin"
-  pre = "fab fa-linkedin"
-  url = "https://www.linkedin.com/company/eclipsesource"
+  name = "github"
+  pre = "fab fa-github"
+  url = "https://twitter.com/eclipseglsp"
+

@@ -2,7 +2,7 @@
 fragment = "footer"
 weight = 2000
 
-menu_title = "EclipseSource Projects"
+menu_title = "Related Projects"
 
 [asset]
   title = "GLSP"
@@ -13,4 +13,4 @@ menu_title = "EclipseSource Projects"
 
 #### Graphical Language Server Platform
 
-GLSP is a project of the Eclipse Foundation, lead by [Philip Langer](https://projects.eclipse.org/projects/ecd.glsp/who), organized within the [Eclipse Cloud Development](https://projects.eclipse.org/projects/ecd) project.
+GLSP is a project hosted at the Eclipse Foundation, lead by [Philip Langer](https://projects.eclipse.org/projects/ecd.glsp/who), organized within the [Eclipse Cloud Development](https://projects.eclipse.org/projects/ecd) project.

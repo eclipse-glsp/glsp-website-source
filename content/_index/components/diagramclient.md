@@ -1,0 +1,10 @@
++++
+title = "Diagram client"
+weight = 10
+
+[asset]
+  icon = "fab fa-html5"
+  url = "#"
++++
+
+GLSP provides a ready-to-use diagram client, which is responsible for rendering domain-specific diagrams. It is implemented using HTML5, Typescript, Sprotty and SVG. The generic GSLP diagram client can be connected to any domain-specific GSLP server via the defined protocol to support a specific diagram type. Furthermore, the diagram client is easily customizable and extensible by domain-specifc features.
