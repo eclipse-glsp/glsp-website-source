@@ -4,7 +4,7 @@ weight = 20
 
 [asset]
   icon = "far fa-thumbs-up"
-  url = "https://github.com/eclipsesource/ecore-glsp"
+  url = ""
 +++
 
 **Guaranteed response time
@@ -17,6 +17,6 @@ Code examples</br>
 Advanced topics covered</br>
 Private channel available (NDA)</br>
 Feature prioritization</br>**
-Starts from 1.695 €: **[Contact us for details](munich@eclipsesource.com)**</br>
+Starts from 1.695 €: **[Contact us for details](mailto:munich@eclipsesource.com)**</br>
 10h professional support</br>
 additionally 5h project sponsorship</br>

@@ -76,7 +76,7 @@ lastmod = ["lastmod", ":git", "date"]
   weight = 60
 
 [[menu.main]]
-  url = "https://github.com/eclipse/glsp-examples"
+  url = "https://github.com/eclipsesource/glsp"
   name = "GitHub"
   weight = 60
 
@@ -136,5 +136,10 @@ lastmod = ["lastmod", ":git", "date"]
   weight = 30
   name = "github"
   pre = "fab fa-github"
-  url = "https://twitter.com/eclipseglsp"
+  url = "https://github.com/eclipsesource/glsp"
 
+[[menu.footer_social]]
+  weight = 30
+  name = "spektrum"
+  pre = "far fa-comments"
+  url = "https://spectrum.chat/glsp/"

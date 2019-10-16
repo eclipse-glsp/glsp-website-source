@@ -4,7 +4,7 @@ weight = 10
 
 [asset]
   icon = "far fa-hand-point-right"
-  url = "https://github.com/eclipsesource/coffee-editor"
+  url = "https://https//spectrum.chat/glsp/"
 +++
 
 [Public channel](https://https//spectrum.chat/glsp/)</br>
