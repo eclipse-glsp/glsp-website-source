@@ -10,14 +10,14 @@ Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The S
 
   * Get submodules `git submodule init && git submodule update`
   * Install Hugo. You can skip step 1 & 2 when you already have brew installed
-    1. `sudo apt install linux-brew-wrapper`
+    1. `sudo apt install linuxbrew-wrapper`
     2. `brew` (This will execute the first time setup)
     3. `brew install hugo`
 
 ### Development
 
   * Start Hugo server via `hugo server` for development
-  * Build the website via `hugo build` for deployment
+  * Build the website via `hugo` for deployment (the public folder ist deployed then)
 
 ## Overview
 
