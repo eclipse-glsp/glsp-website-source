@@ -2,17 +2,18 @@
 
 We use the [Syna](https://github.com/okkur/syna) thema for [Hugo](https://gohugo.io/)
 
-Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The Syna theme heavily works with fragments, therefore the development differs a bit from a "normal" Hugo website. 
+Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The Syna theme heavily works with fragments, therefore the development differs a bit from a "normal" Hugo website.
 
 ## Quick start
 
 ### Prerequisites
 
   * Get submodules `git submodule init && git submodule update`
-  * Install Hugo. You can skip step 1 & 2 when you already have brew installed
+  * Install Hugo. You can skip step 1, 2 & 3 when you already have brew installed properly
     1. `sudo apt install linuxbrew-wrapper`
     2. `brew` (This will execute the first time setup)
-    3. `brew install hugo`
+    3. [Add brew to your PATH](https://github.com/Homebrew/brew/blob/master/docs/Homebrew-on-Linux.md#install)
+    4. `brew install hugo`
 
 ### Development
 
@@ -44,5 +45,3 @@ Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The S
  ## Best practices
 
   Check the example site provided with Syna in `themes/syna/exampleSite`
-
-

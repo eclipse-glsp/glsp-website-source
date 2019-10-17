@@ -6,11 +6,11 @@ weight = 100
 background = "dark" # can influence the text color
 particles = true
 
-title = "Grahpical Language Server Platform/Protocol (GLSP)"
+title = "Grahpical Language Server Platform (GLSP)"
 subtitle = "Diagram editors in the web/cloud with GLSP!"
 
 [header]
-  
+
 
 [asset]
   image = "diagramanimated.gif"
