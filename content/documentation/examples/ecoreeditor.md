@@ -7,4 +7,4 @@ weight = 20
   url = "https://github.com/eclipsesource/ecore-glsp"
 +++
 
-[The GSLP-based Ecore editor](https://github.com/eclipsesource/ecore-glsp) provides a web-based version of the famous Ecore tools.
+[The GLSP-based Ecore editor](https://github.com/eclipsesource/ecore-glsp) provides a web-based version of the famous Ecore tools.

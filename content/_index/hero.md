@@ -6,7 +6,7 @@ weight = 100
 background = "dark" # can influence the text color
 particles = true
 
-title = "Grahpical Language Server Platform/Protocol (GSLP)"
+title = "Grahpical Language Server Platform/Protocol (GLSP)"
 subtitle = "Diagram editors in the web/cloud with GLSP!"
 
 [header]
