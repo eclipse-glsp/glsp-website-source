@@ -7,7 +7,7 @@ menu_title = "Related Projects"
 [asset]
   title = "GLSP"
   image = "logo.png"
-  text = "GLSPasas"
+  text = "GLSP"
   url = "#"
 +++
 
