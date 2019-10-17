@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://www.eclipse.org/glsp/"
 DefaultContentLanguage = "en"
 title = "Eclipse Graphical Language Server Platform"
 theme = "syna"
