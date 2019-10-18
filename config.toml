@@ -1,4 +1,4 @@
-baseURL = "https://www.eclipse.org/glsp/"
+baseURL = "https://www.eclipse.org/glsp"
 DefaultContentLanguage = "en"
 title = "Eclipse Graphical Language Server Platform"
 theme = "syna"
@@ -15,7 +15,7 @@ lastmod = ["lastmod", ":git", "date"]
 
 [params]
   name = "Eclipse Foundation"
-  description = "Eclipse Grapical Language Server Protocol"
+  description = "Eclipse Grapical Language Server Platform"
 
   [params.style]
     #background = "secondary"
@@ -56,22 +56,22 @@ lastmod = ["lastmod", ":git", "date"]
 # Keep an eye out for updates. These will be moved out to make navbar more
 # configurable.
 [[menu.main]]
-  url = "/"
+  url = ""
   name = "Home"
   weight = 10
 
 [[menu.main]]
-  url = "/support"
+  url = "support"
   name = "Support"
   weight = 20
 
 [[menu.main]]
-  url = "/documentation"
+  url = "documentation"
   name = "Documentation"
   weight = 30
 
 [[menu.main]]
-  url = "/contact"
+  url = "contact"
   name = "Contact"
   weight = 60
 
