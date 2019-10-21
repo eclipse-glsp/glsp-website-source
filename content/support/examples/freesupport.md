@@ -7,6 +7,6 @@ weight = 10
   url = "https://spectrum.chat/glsp/"
 +++
 
-[Public channel](https://spectrum.chat/glsp/)</br>
-Basic topics only</br>
-Longer response time</br>
+[Public channel](https://spectrum.chat/glsp/)\
+Basic topics only\
+Longer response time

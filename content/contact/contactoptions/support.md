@@ -7,4 +7,4 @@ weight = 40
   url = "support"
 +++
 
-See <a href="/support">here for the available support options</a>
+See [here for the available support options]({{< relref "/support" >}})

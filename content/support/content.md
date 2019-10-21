@@ -6,8 +6,8 @@ background = "white"
 
 +++
 
-<p align="center">
+<p style="text-align: center;">
 Support for GLSP and for projects adopting GLSP is provided by
-</br>
-<img src="../images/eslogo.png" alt="GLSP Support" width="600"/>
 </p>
+
+<img src="../images/eslogo.png" alt="EclipseSource Logo" width="600" style="display: block; margin: auto;" />

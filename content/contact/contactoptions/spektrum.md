@@ -7,4 +7,4 @@ weight = 10
   url = "https://spectrum.chat/glsp/"
 +++
 
-Get in contact with the team, ask questions and browse the support archive using our [Spektrum Chat](https://spectrum.chat/glsp/)
+Get in contact with the team, ask questions and browse the support archive using our [Spectrum Chat](https://spectrum.chat/glsp/)
