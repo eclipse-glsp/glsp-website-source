@@ -7,16 +7,14 @@ weight = 20
   url = ""
 +++
 
-**Guaranteed response time
-</br>
-In-depth answers
-</br>
-Implementation of custom diagrams
-</br>
-Code examples</br>
-Advanced topics covered</br>
-Private channel available (NDA)</br>
-Feature prioritization</br>**
-Starts from 1.695 €: **[Contact us for details](mailto:munich@eclipsesource.com)**</br>
-10h professional support</br>
-additionally 5h project sponsorship</br>
+**Guaranteed response time**\
+**In-depth answers**\
+**Implementation of custom diagrams**\
+**Code examples**\
+**Advanced topics covered**\
+**Private channel available (NDA)**\
+**Feature prioritization**\
+
+Starts from 1.695 €: **[Contact us for details](mailto:munich@eclipsesource.com)**\
+10h professional support\
+additionally 5h project sponsorship
