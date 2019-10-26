@@ -7,4 +7,4 @@ weight = 10
   url = "#"
 +++
 
-GLSP provides a ready-to-use diagram client, which is responsible for rendering domain-specific diagrams. It is implemented using HTML5, Typescript, Sprotty and SVG. The generic GLSP diagram client can be connected to any domain-specific GLSP server via the defined protocol to support a specific diagram type. Furthermore, the diagram client is easily customizable and extensible by domain-specifc features.
+GLSP provides a ready-to-use diagram client, which is responsible for rendering domain-specific diagrams. It is implemented using HTML5, Typescript, Sprotty and SVG. The generic GLSP diagram client can be connected to any domain-specific GLSP server via the defined protocol to support a specific diagram type. Furthermore, the diagram client is easily customizable and extensible by domain-specific features.
