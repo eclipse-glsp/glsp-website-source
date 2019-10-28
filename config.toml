@@ -146,6 +146,6 @@ lastmod = ["lastmod", ":git", "date"]
 
 [[menu.footer_social]]
   weight = 30
-  name = "spektrum"
+  name = "spectrum"
   pre = "far fa-comments"
   url = "https://spectrum.chat/glsp/"
