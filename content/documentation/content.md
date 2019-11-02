@@ -5,7 +5,7 @@ weight = 100
 +++
 
 <span style='display:block; text-align: center;'>
-We are continously improving our documentation, in case you miss something, please [contact us]({{< relref  "/contact" >}})
+We are continuously improving our documentation, in case you miss something, please [contact us]({{< relref  "/contact" >}})
 </span>
 
 <span style='display:block; text-align: center;'>

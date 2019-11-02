@@ -15,6 +15,6 @@ weight = 20
 **Private channel available (NDA)**\
 **Feature prioritization**\
 
-Starts from 1.695 €: **[Contact us for details](mailto:munich@eclipsesource.com)**\
+Starts from 1,695.00 €: **[Contact us for details](mailto:munich@eclipsesource.com)**\
 10h professional support\
-additionally 5h project sponsorship
+additionally 5h project sponsorship 

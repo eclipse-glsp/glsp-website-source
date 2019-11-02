@@ -7,4 +7,4 @@ weight = 20
   url = ""
 +++
 
-If you are interested in support or have general questions, please [write us a mail](mailto:munich@eclipsesource.com)!
+If you are interested in support or have any general questions, please [write us a mail](mailto:munich@eclipsesource.com)!
