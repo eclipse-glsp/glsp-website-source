@@ -9,7 +9,7 @@ We are continuously improving our documentation, in case you miss something, ple
 </span>
 
 <span style='display:block; text-align: center;'>
-Technical documentation can be found on the [GLSP GitHub](https://github.com/eclipsesource/glsp)
+Technical documentation can be found on the [GLSP GitHub](https://github.com/eclipse-glsp/glsp)
 </span>
 
 <span style='display:block; text-align: center;'>

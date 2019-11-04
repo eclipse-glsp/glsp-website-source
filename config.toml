@@ -76,18 +76,18 @@ lastmod = ["lastmod", ":git", "date"]
   weight = 60
 
 [[menu.main]]
-  url = "https://github.com/eclipsesource/glsp"
+  url = "https://github.com/eclipse-glsp/glsp"
   name = "GitHub"
   weight = 60
 
 [[menu.footer]]
   url = "https://projects.eclipse.org/projects/ecd.sprotty"
-  name = "Sprotty"
+  name = "Eclipse Sprotty"
   weight = 10
 
 [[menu.footer]]
   url = "https://projects.eclipse.org/projects/ecd.emfcloud"
-  name = "EMF.cloud"
+  name = "Eclipse EMF.cloud"
   weight = 20
 
 [[menu.footer]]
@@ -136,7 +136,7 @@ lastmod = ["lastmod", ":git", "date"]
   weight = 30
   name = "github"
   pre = "fab fa-github"
-  url = "https://github.com/eclipsesource/glsp"
+  url = "https://github.com/eclipse-glsp/glsp"
 
 [[menu.footer_social]]
   weight = 30
