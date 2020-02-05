@@ -15,6 +15,9 @@ googleAnalytics = "UA-155083212-2"
 [outputs]
   home = ["HTML", "JSON"]
 
+[markup.goldmark.renderer]
+  unsafe= true
+
 [frontmatter]
 date = ["date", "lastmod"]
 lastmod = ["lastmod", ":git", "date"]
