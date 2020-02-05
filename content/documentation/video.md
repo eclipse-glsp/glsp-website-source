@@ -1,8 +1,8 @@
 +++
-fragment = "embed"
-date = "2018-11-19"
-weight = 110
+fragment = "content"
 title = "Videos"
-media_source = "https://www.youtube-nocookie.com/embed/snb1UTSH3Zw"
-ratio = "16by9"
+weight = 110
 +++
+<span style='display:block; text-align: center;'>
+EclipseCon Europe 2018: <a target="_blank" href="https://www.youtube.com/watch?v=snb1UTSH3Zw">Towards a Graphical Language Server Protocol for Diagrams?</a>
+</span>
