@@ -14,8 +14,7 @@ subtitle = "Diagram editors in the web/cloud with GLSP!"
 
 [asset]
   image = "diagramanimated.gif"
-  width = "500px" # optional - will default to image width
-  height = "150px" # optional - will default to image height
+  width = "600px" # optional - will default to image width
 
 [[buttons]]
   text = "Features"
