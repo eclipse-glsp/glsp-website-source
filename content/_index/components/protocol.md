@@ -4,7 +4,7 @@ weight = 20
 
 [asset]
   icon = "fas fa-broadcast-tower"
-  url = "#"
+  url = "https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md"
 +++
 
 Following the successful pattern provided by the language server protocol (LSP) for textual languages, GLSP provides a defined protocol for the communication between the GLSP client and the server. In this modular architecture, server and client are well encapsulated and can be developed in an independant way. This allows mixing in the ideal technologies on both sides and reusing existing clients and server. 
