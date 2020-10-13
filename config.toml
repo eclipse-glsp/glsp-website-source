@@ -3,15 +3,6 @@ DefaultContentLanguage = "en"
 title = "Eclipse Graphical Language Server Platform"
 theme = "syna"
 
-# Google Analytics tracking
-googleAnalytics = "UA-155083212-2"
-[privacy]
-  [privacy.googleAnalytics]
-    anonymizeIP = true
-    disable = false
-    respectDoNotTrack = true
-    useSessionStorage = true
-
 [outputs]
   home = ["HTML", "JSON"]
 
