@@ -1,0 +1,11 @@
++++
+title = "Workflow Example VSCode Client"
+weight = 30
+
+[asset]
+  icon = "fas fa-code"
+  url = "https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example"
++++
+
+The GLSP VS Code integration allows to use GLSP-based diagrams within VS Code. See the GLSP wiki for a feature comparison of the different integrations (e.g. Theia compared to VS Code).
+The example GSLP VS Code client is hosted in the [GLSP Theia integration repository](https://github.com/eclipsesource/glsp-vscode-integration). You will find [detailed information on how to launch it and how to get the sources in the wiki](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example).
