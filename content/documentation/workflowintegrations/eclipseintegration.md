@@ -4,7 +4,7 @@ weight = 40
 
 [asset]
   icon = "fas fa-database"
-  url = "https://github.com/eclipsesource/glsp-eclipse-integration#workflow-diagram-example"
+  url = "https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example"
 +++
 
 The GLSP Eclipse IDE allows to use GLSP-based diagrams within the Eclipse Desktop IDE. This is accomplished by integrating a Chrome-based browser seemlessly as a regular Eclipse editor part.
