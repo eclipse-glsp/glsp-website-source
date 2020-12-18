@@ -8,4 +8,4 @@ weight = 40
 +++
 
 The GLSP Eclipse IDE allows to use GLSP-based diagrams within the Eclipse Desktop IDE. This is accomplished by integrating a Chrome-based browser seemlessly as a regular Eclipse editor part.
-The example GSLP Eclipse IDE client is hosted in the [GLSP Eclipse integration repository](https://github.com/eclipsesource/glsp-eclipse-integration). You will find [detailed information on how to launch it and how to get the sources in the wiki](https://github.com/eclipsesource/glsp-eclipse-integration#workflow-diagram-example).
+The example GLSP Eclipse IDE client is hosted in the [GLSP Eclipse integration repository](https://github.com/eclipse-glsp/glsp-eclipse-integration). You will find [detailed information on how to launch it and how to get the sources in the wiki](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example).
