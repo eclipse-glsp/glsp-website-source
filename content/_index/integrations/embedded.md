@@ -7,4 +7,4 @@ weight = 15
   url = "https://github.com/eclipse-glsp/glsp-client"
 +++
 
-The GLSP diagram editor client is based on stndard web technologies (SVG, HTML and CSS) and can therefore be seemlessly embedded on any website.
+The GLSP diagram editor client is based on standard web technologies (SVG, HTML and CSS) and can therefore be seamlessly embedded on any website.
