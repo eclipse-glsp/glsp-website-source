@@ -31,4 +31,10 @@ subtitle = "Diagram editors in the web/cloud with GLSP!"
   url = "/support"
   color = "primary"
 
+[[buttons]]
+  text = "Examples"
+  url = "/documentation/#examples"
+  color = "primary"
+
+
 +++
