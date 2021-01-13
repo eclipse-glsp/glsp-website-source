@@ -3,7 +3,7 @@ title = "Workflow Example Eclipse IDE Client"
 weight = 40
 
 [asset]
-  icon = "fas fa-database"
+  icon = "fas fa-desktop"
   url = "https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example"
 +++
 

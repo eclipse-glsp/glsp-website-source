@@ -3,7 +3,7 @@ title = "Eclipse Desktop IDE Client"
 weight = 50
 
 [asset]
-  icon = "fas fa-database"
+  icon = "fas fa-desktop"
   url = "https://github.com/eclipse-glsp/glsp-eclipse-integration"
 +++
 

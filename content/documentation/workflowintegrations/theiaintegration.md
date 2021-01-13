@@ -3,7 +3,7 @@ title = "Workflow Example Theia Client"
 weight = 20
 
 [asset]
-  icon = "fas fa-database"
+  icon = "fas fa-meteor"
   url = "https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example"
 +++
 
