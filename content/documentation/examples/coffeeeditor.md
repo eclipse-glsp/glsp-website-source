@@ -1,6 +1,6 @@
 +++
 title = "Coffee Editor"
-weight = 10
+weight = 25
 
 [asset]
   icon = "fa fa-coffee"
