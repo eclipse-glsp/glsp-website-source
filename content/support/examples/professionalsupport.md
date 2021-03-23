@@ -13,7 +13,7 @@ weight = 20
 **Code examples**\
 **Advanced topics covered**\
 **Private channel available (NDA)**\
-**Feature prioritization**\
+**Feature prioritization**
 
 Starts from 1,695.00 €: **[Contact us for details](mailto:munich@eclipsesource.com)**\
 10h professional support\
