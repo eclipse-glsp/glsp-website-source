@@ -4,9 +4,9 @@ weight = 10
 
 [asset]
   icon = "far fa-hand-point-right"
-  url = "https://spectrum.chat/glsp/"
+  url = "https://github.com/eclipse-glsp/glsp/discussions"
 +++
 
-[Public channel](https://spectrum.chat/glsp/)\
+[Public channel](https://github.com/eclipse-glsp/glsp/discussions)\
 Basic topics only\
 Longer response time
