@@ -125,6 +125,10 @@ lastmod = ["lastmod", ":git", "date"]
   name = "Legal"
   weight = 40
 
+[[menu.copyright_footer]]
+  url = "https://www.eclipse.org"
+  name = "Eclipse Foundation"
+  weight = 50
 
 [[menu.footer_social]]
   weight = 20
