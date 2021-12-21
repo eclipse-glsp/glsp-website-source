@@ -4,7 +4,7 @@ weight = 60
 
 [asset]
   icon = "fas fa-user-check"
-  url = "documentation/#workflowoverview"
+  url = "resources/#workflowoverview"
 +++
 
-Eclipse GLSP provides a consistent example for all available integrations, see [here](documentation/#workflowoverview) .
+Eclipse GLSP provides a consistent example for all available integrations, see [here](resources/#workflowoverview) .

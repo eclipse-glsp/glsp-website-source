@@ -33,7 +33,7 @@ subtitle = "Diagram editors in the web/cloud with GLSP!"
 
 [[buttons]]
   text = "Examples"
-  url = "/documentation/#examples"
+  url = "/resources/#examples"
   color = "primary"
 
 
