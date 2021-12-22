@@ -15,7 +15,7 @@ In turn, the client is responsible for the micro layout, that is the positioning
 The client side (i.e. micro) layout can be configured in the graphical model, but will be applied on the client during the rendering phase.
 </br>
 
-## Layout Container
+### Layout Container
 
 Graphical elements that support client-side layouting of contained elements offer a `layout` property which defines the type of layouter that should be used. 
 In addition, the behavior of the layouter can be configured with `layout options`.
@@ -84,7 +84,7 @@ const myDiagramMdoule = new ContainerModule((bind, unbind, isBound, rebind) => {
 </details>
 </br>
 
-## Edge Layout
+### Edge Layout
 
 Graphical elements that are typically rendered in combination with an edge such as labels have an `edgeLayout` property.
 This can be used to describe how the element should be aligned with the edge.

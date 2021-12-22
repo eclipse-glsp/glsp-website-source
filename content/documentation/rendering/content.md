@@ -8,7 +8,7 @@ title = "Model Rendering & Styling"
   sticky = true
 +++
 
-## Model Rendering
+### Model Rendering
 
 The input of the diagram rendering on the client is the GModel that has been generated on the server from the model source (see [Graphical Model Generation]({{< ref "modelGeneration" >}})) and sent to the client via a [SetModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#242-setmodelaction) or [UpdateModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#243-updatemodelaction).
 The client is then responsible for rendering the graphical model.
@@ -82,7 +82,7 @@ Note that the `SLabelView` also checks whether the given element is visible and 
 This check is optional but it’s highly recommended to implement it in your custom views as it heavily improves the rendering performance.
 </br></br>
 
-## Styling
+### Styling
 
 The style of the rendered SVG elements is controlled with plain CSS.
 CSS classes can be declared directly in the corresponding view.

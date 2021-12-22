@@ -8,7 +8,7 @@ title = "Overview & Architecture"
   sticky = true
 +++
 
-## Overview
+### Overview
 The *Graphical Language Server Platform* (GLSP) is a client-server framework for building web-based diagram editors.
 It follows an architectural pattern similar to the hugely popular [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors.
 With that, GLSP enables the development of modern, web-based diagram editors, whereas the heavy lifting, such as loading, interpreting, and editing diagrams according to the rules of the graphical diagram language, is encapsulated in the server.
@@ -46,7 +46,7 @@ Therefore, the protocol between client and server provides dedicated action mess
 Once an editing tool is applied in the client, the client sends a notification to the server, which then will perform the operation on the original model source, regenerates the graphical model and updates the client with the new version of the graphical model, which in turn will then update the rendered diagram based on the new graphical model.
 </br></br>
 
-## Action Protocol
+### Action Protocol
 
 The GLSP action protocol defines the message types that are exchanged between client and server.
 The protocol is structured into so-called features.
@@ -59,7 +59,7 @@ A detailed description of the protocol is available in the [GLSP repository](htt
 The action protocol is customizable and can even be extended with additional custom actions using the dependency injection approach (see <link to di>)
 </br></br>
 
-## Action Dispatching & Handling
+### Action Dispatching & Handling
 
 <p align="center">
 <img src="action-handler.png" alt="capabilities"  />
@@ -79,7 +79,7 @@ Request actions are issued by the *GLSP client* and can be used to block client-
 For more details on how to implement action handlers see #Ref Configuration of action handlers.
 </br></br>
 
-## Dependency Injection
+### Dependency Injection
 
 As diagram editors are by nature very specific to the respective diagram language, GLSP is designed with a strong focus on customization and extensibility.
 To this end, both the client and the server are using an inversion of control pattern based on dependency injection (DI).
@@ -123,7 +123,7 @@ Adopters can extend this module and customize it by overriding dedicated binding
 The node-based GLSP server uses [inversify.js](https://inversify.io/) as dependency injection framework and is structured similarly to the GLSP client.
 </br></br>
 
-## Graphical Model
+### Graphical Model
 
 The graphical model is a serializable description of the diagram to be visualized on the client.
 It is the central communication artifact between client and server.
@@ -170,7 +170,7 @@ Using GSON, the GModel is then serialized and deserialized to JSON before it is 
 The node-based GLSP server uses the same representation of the GModel as the client, since both are based on ES6.
 </br></br>
 
-## Platform Integrations
+### Platform Integrations
 
 GLSP-based editors can be integrated into any web application frame.
 To ease the platform integration for adopters, however, dedicated glue code frameworks are provided for

@@ -24,7 +24,7 @@ To do that the following steps have to be performed
 2. Create a new action handler for the newly created action type by providing a implementation of the `ActionHandler` interface
 3. Configure the new action type and handler in the DI module.
 
-## Action specification
+### Action specification
 
 Adopters can declare new custom actions by providing an implementation for the `Action` interface (resp. base class).
 
@@ -165,7 +165,7 @@ this.actionDispatcher.dispatch(new MyCustomRequestAction(“info”));
 Response actions don’t necessarily have to be part of a response-request action pair and can also be dispatched without a preceding request action.
 </br>
 
-## Implementing an Action Handler (GLSP Server)
+### Implementing an Action Handler (GLSP Server)
 
 To create a new action handler, a class that implements the `ActionHandler` interface has to be created.
 In general, an action handler can handle one or more action kinds.
@@ -275,7 +275,7 @@ No special handling is required.
 The action dispatcher tracks all incoming request actions and automatically intercepts the corresponding response action to set the correct response id.
 </br>
 
-## Implementing an Action Handler (GLSP Client)
+### Implementing an Action Handler (GLSP Client)
 
 On the client, GLSP reuses the `IActionHandler` API of [Sprotty](https://github.com/eclipse/sprotty).
 Therefore, to create a new action handler, a class that implements the `IActionHandler` interface has to be created.
@@ -308,4 +308,3 @@ It registers the action handler for the given action kind, so that it can be ret
 
 Note that we don’t have to explicitly declare which actions are handled by the GLSP Server. 
 The GLSP server sends this information during the initialization process and the GLSP client automatically sets up the necessary action (handler) registrations.
-

@@ -12,7 +12,8 @@ GLSP provides a set of default graphical model element classes that can be used 
 For advanced use cases the existing base model elements can be customized or additional elements can be introduced.
 As an example, let’s have a look at the custom WeightedEdge element introduced by the [GLSP Workflow example](https://github.com/eclipse-glsp/glsp-examples).
 
-## GLSP Client
+### GLSP Client
+
 A WeightedEdge is a special edge that has an optional “probability” property.
 We can define such an element by simply subclassing the `SEdge` class:
 
@@ -34,7 +35,7 @@ const workflowDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
 
 </br>
 
-## Node GLSP Server
+### Node GLSP Server
 
 For the node _GLSP server_ the new `WeightedEdge` type can be declared similar to the _GLSP client_ by subclassing the `GEdge` class.
 
@@ -57,7 +58,7 @@ export class WeightedEdgeBuilder<E extends WeightedEdge = WeightedEdge> extends 
 
 </br>
 
-## Java GLSP Server
+### Java GLSP Server
 
 When using the _Java GLSP server_, a new Ecore model that extends the default "graph.ecore" model has to be created to declare new model elements.
 For more details, please have a look at the "workflow-graph.ecore" model in the [GLSP Workflow example](https://github.com/eclipse-glsp/glsp-examples). 
@@ -89,7 +90,7 @@ protected Class<? extends GraphExtension> bindGraphExtension() {
 To use the builder API for `WeightedEdge` creation we also have to implement a `WeightedEdgeBuilder` that extends the default `AbstractGEdgeBuilder`.
 </br></br>
 
-## Generic Args
+### Generic Args
 
 Every graphical model element type has a generic “args” property, which can be used to store additional properties as key-value pairs.
 These arguments can be used as a more lightweight alternative to extending the graphical model classes, especially if only simple extensions are needed.
