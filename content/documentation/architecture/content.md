@@ -52,11 +52,11 @@ The GLSP action protocol defines the message types that are exchanged between cl
 The protocol is structured into so-called features.
 A feature describes a specific diagram capability, e.g. element creation, diagram validation, etc.
 Each feature is composed of a set of actions and/or operations.
-An operation is a special subtype of an action and is used to describe actions that modify the underlying model source on the GLSP Server.
+An operation is a special subtype of an action and is used to describe actions that modify the underlying model source on the *GLSP server*.
 Every action that modifies the model in any way has to be implemented as an operation.
 
 A detailed description of the protocol is available in the [GLSP repository](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
-The action protocol is customizable and can even be extended with additional custom actions using the dependency injection approach (see <link to di>)
+The action protocol is customizable and can even be extended with additional custom actions using the dependency injection approach (see [Dependency Injection]({{< ref "#dependency-injection" >}}))
 </br></br>
 
 ### Action Dispatching & Handling
@@ -65,6 +65,7 @@ The action protocol is customizable and can even be extended with additional cus
 <img src="action-handler.png" alt="capabilities"  />
 </br></br>
 </p>
+
 Action messages are used for client-server communication.
 In addition, they are also used for the internal event flow in both the *GLSP server* and the *GLSP client*.
 The action dispatcher is the central component that manages all sent or received actions.
@@ -76,7 +77,7 @@ The dispatcher distinguishes between notifications and request-response action p
 Notification actions are one-way actions transferred between client and server.
 This means when the action dispatcher dispatches a notification it does not wait for a response and directly continues with dispatching the next incoming action.
 Request actions are issued by the *GLSP client* and can be used to block client-side action dispatching until the server has sent a corresponding response action.
-For more details on how to implement action handlers see #Ref Configuration of action handlers.
+For more details on how to implement action handlers see [Action & Action Handler]({{< ref "actionhandler" >}}).
 </br></br>
 
 ### Dependency Injection
@@ -135,7 +136,7 @@ The graphical model is composed of nodes and edges.
 Each element, whether it is a node or an edge, has a unique ID and a type.
 The graphical model elements are organized in a tree, as defined by the parent-child relationship between elements.
 
-The graphical model is typically composed of the following elements. However, these base classes can be extended by adopters, e.g. to be augmented with new custom element types and properties (see #REF Extending the Graphical Model).
+The graphical model is typically composed of the following elements. However, these base classes can be extended by adopters, e.g. to be augmented with new custom element types and properties (see [Extending the Graphical Model]({{< ref "modelExtension" >}})).
 
 - **GModelRoot**: Each graphical model must have exactly one root
   - **GShapeElement**: A graphical element is represented by a shape with visual bounds (position and size).
