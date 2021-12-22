@@ -26,9 +26,9 @@ For an example let’s have a look at the following `GNode`:
 
 ```java
 new GNodeBuilder()
-   .layout(“vbox”)
+   .layout("vbox")
    .layoutOptions(new GLayoutOptions()
-      .hAlign(“center”))
+      .hAlign("center"))
    .add(new GLabelBuilder()
       .text("label1")
       .build())
@@ -96,7 +96,7 @@ For example let's have a look at the following `GLabel`:
 ```java
 new GLabelBuilder() //
    .edgePlacement(new GEdgePlacementBuilder()//
-      .side(“top”)//
+      .side("top")//
       .position(0.5)//
       .build())//
    .add(new GLabelBuilder().text("MyLabel").build())
