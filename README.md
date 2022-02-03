@@ -6,19 +6,21 @@ Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The S
 
 ## Quick start
 
-### Prerequisites
+### Open in VSCode dev container
 
-  * Get submodules `git submodule init && git submodule update`
-  * Install Hugo. You can skip step 1, 2 & 3 when you already have brew installed properly
-    1. `sudo apt install linuxbrew-wrapper`
-    2. `brew` (This will execute the first time setup)
-    3. [Add brew to your PATH](https://github.com/Homebrew/brew/blob/master/docs/Homebrew-on-Linux.md#install)
-    4. `brew install hugo`
+To avoid the need to install hugo on development machines, a VSCode dev container is provided that runs hugo in a docker container.
+
+* Get submodules `git submodule init && git submodule update`
+* Open the repository folder in VSCode
+* If not installed, install Microsoft's "Remote - Containers" extension with id `ms-vscode-remote.remote-containers`.
+* Open this repository in VSCode as a [Dev Container](https://code.visualstudio.com/docs/remote/containers#_quick-start-open-an-existing-folder-in-a-container):
+  * Open command palette (`F1` or `Ctrl+Shift+P`)
+  * Run `Remote-Containers: Reopen in Container`
 
 ### Development
 
-  * Start Hugo server via `hugo server` for development
-  * Build the website via `hugo` for deployment (the public folder ist deployed then)
+* Start Hugo server via `hugo server` for development or run task `Serve Drafts`
+* Build the website via `hugo` for deployment (the public folder ist deployed then) or run task `Build`
 
 ## Overview
 

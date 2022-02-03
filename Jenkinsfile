@@ -15,7 +15,7 @@ spec:
       - mountPath: /home/jenkins/.ssh
         name: volume-known-hosts
     - name: hugo
-      image: eclipsecbi/hugo_extended:0.78.1
+      image: eclipsecbi/hugo_extended:0.81.0
       imagePullPolicy: Always
       command:
       - cat
