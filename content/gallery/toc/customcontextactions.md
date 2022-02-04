@@ -1,9 +1,9 @@
 +++
 title = "Custom Context Actions"
-weight = 110
+weight = 13
+item_url = "gallery/#customcontextactions"
 
 [asset]
   image = "customcontextactions.gif"
-  url = "gallery/#customcontextactions"
 +++
 

@@ -1,9 +1,9 @@
 +++
 title = "Ports and Routing"
-weight = 50
+weight = 9
+item_url = "gallery/#portsandrouting"
 
 [asset]
   image = "portsandrouting.gif"
-  url = "gallery/#portsandrouting"
 +++
 

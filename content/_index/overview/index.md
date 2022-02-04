@@ -1,13 +1,17 @@
 +++
 fragment = "content"
 weight = 150    
-background = "white"
+background = "dark"
 
-title = "The Eclipse Graphical Language Server Platform"
+title = "Eclipse Graphical Language Server Platform (GLSP)"
 #subtitle= "Column based items with icons"
 #title_align = "center" # Default is center, can be left, right or center
 +++
-<p style='text-align: center;'>
-GLSP is an extensible open source framework to build custom diagram editors in the web/cloud. These editors can be deployed stand-alone or integrated into a web-based IDE such as Eclipse Theia or VS Code. GLSP defines a language server protocol (LSP) for diagrams and integrates well with your existing tool chain and business logic.
+
+---
+<img align="right" src="images/glspoverview.png" alt="GLSP Overview" style="padding: 0px 5px 0px 20px;">
+<p style="padding-top: 20px; text-align: justify">
+The Graphical Language Server Platform (GLSP) is an extensible open-source framework for building custom diagram editors based on web technologies.
+Alongside an extensible client and server framework (node or Java), GLSP provides a language server protocol (LSP) for diagrams.
+With that, GLSP enables the development of modern, web-based diagram editors, whereas the heavy lifting, such as loading, interpreting, and editing according to the rules of the modeling language, is encapsulated in the server.
 </p>
-<img src="images/glspoverview.png" alt="GLSP Overview" style="display: block; margin: auto;"/>

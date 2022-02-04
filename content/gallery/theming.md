@@ -1,10 +1,10 @@
 +++
 fragment = "item"
-weight = 118
+weight = 11
 background = "secondary"
 align = "center"
 
-title = "UML Activity Diagram"
+title = "Theming and Styling"
 #subtitle= ""
 
 # Subtitle pre and post item
@@ -12,7 +12,7 @@ title = "UML Activity Diagram"
 #post = ""
 
 [asset]
-  image = "activitydiagram.gif"
+  image = "theming.gif"
 +++
 
-An example for a UML activity diagram.
+Support for VSCode and Eclipse Theia themes and flexible styling.

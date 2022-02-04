@@ -1,9 +1,9 @@
 +++
 title = "Navigation (to source code)"
-weight = 100
+weight = 14
+item_url = "gallery/#navigation"
 
 [asset]
   image = "navigation.gif"
-  url = "gallery/#navigation"
 +++
 

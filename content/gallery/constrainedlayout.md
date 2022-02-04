@@ -1,10 +1,10 @@
 +++
 fragment = "item"
-weight = 114
+weight = 14
 background = "secondary"
 align = "center"
 
-title = "Navigation (to source code)"
+title = "Constrained layouts"
 #subtitle= ""
 
 # Subtitle pre and post item
@@ -12,7 +12,7 @@ title = "Navigation (to source code)"
 post = "©  logi.cals GmbH"
 
 [asset]
-  image = "navigation.gif"
+  image = "constrained-layout.gif"
 +++
 
-A custom editor showing the navigation bewteen a diagram and source code.
+An example for an editor with constrained layouts.

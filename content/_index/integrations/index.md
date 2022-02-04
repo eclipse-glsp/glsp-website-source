@@ -1,7 +1,7 @@
 +++
 fragment = "items"
 weight = 300
-background = "white"
+background = "dark"
 
 title = "Diagram Editor Integrations"
 #subtitle= "Column based items with icons"
