@@ -1,6 +1,6 @@
 +++
 title = "Ecore Editor"
-weight = 20
+weight = 120
 
 [asset]
   icon = "fas fa-project-diagram"

@@ -1,5 +1,5 @@
 +++
-title = "Extending the Graphical Model"
+title = "GModel Extensions"
 weight = 50
 +++
 

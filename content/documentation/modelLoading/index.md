@@ -1,4 +1,4 @@
 +++
-title = "Model Source Loading & Model State"
+title = "Model Source & State"
 weight = 25
 +++
