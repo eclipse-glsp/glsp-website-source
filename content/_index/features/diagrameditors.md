@@ -4,7 +4,6 @@ weight = 10
 
 [asset]
   icon = "fas fa-project-diagram	"
-  url = "#"
 +++
 
 <p style="margin-left: 5px; margin-right: 5px; text-align: justify">

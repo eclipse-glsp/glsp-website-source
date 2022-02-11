@@ -1,7 +1,7 @@
 +++
 fragment = "items"
 weight = 250
-background = "dark"
+background = "light"
 
 title = "Components"
 #subtitle= "Column based items with icons"

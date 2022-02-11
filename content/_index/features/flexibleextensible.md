@@ -4,7 +4,6 @@ weight = 20
 
 [asset]
   icon = "fas fa-cogs"
-  url = "#"
 +++
 
 <p style="margin-left: 5px; margin-right: 5px; text-align: justify">
