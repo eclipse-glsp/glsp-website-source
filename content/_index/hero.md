@@ -6,7 +6,7 @@ weight = 100
 background = "dark" # can influence the text color
 particles = true
 
-title = "Grahpical Language Server Platform (GLSP)"
+title = "Graphical Language Server Platform (GLSP)"
 subtitle = "Modern diagram editors for Theia, VS Code, Web and more"
 
 [header]
