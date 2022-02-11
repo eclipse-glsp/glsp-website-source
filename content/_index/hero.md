@@ -37,7 +37,7 @@ subtitle = "Modern diagram editors for Theia, VS Code, Web and more"
 
 [[buttons]]
   text = "Gallery"
-  url = "/documentation"
+  url = "/gallery"
   color = "primary"
 
 +++
