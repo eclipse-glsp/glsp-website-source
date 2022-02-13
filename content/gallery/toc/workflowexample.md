@@ -1,9 +1,9 @@
 +++
 title = "Workflow Example"
-weight = 10
+weight = 3
+item_url = "gallery/#workflowexample"
 
 [asset]
   image = "diagramanimated.gif"
-  url = "gallery/#workflowexample"
 +++
 

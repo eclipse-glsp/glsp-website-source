@@ -1,9 +1,9 @@
 +++
 title = "Ecore Editor"
-weight = 15
+weight = 6
+item_url = "gallery/#ecoreeditor"
 
 [asset]
   image = "ecoreeditor.gif"
-  url = "gallery/#ecoreeditor"
 +++
 

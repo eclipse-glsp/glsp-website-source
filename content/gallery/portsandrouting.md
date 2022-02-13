@@ -1,6 +1,6 @@
 +++
 fragment = "item"
-weight = 50
+weight = 19
 background = "secondary"
 align = "center"
 

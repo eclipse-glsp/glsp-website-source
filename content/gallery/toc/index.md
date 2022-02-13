@@ -1,8 +1,9 @@
 +++
-fragment = "items"
+fragment = "portfolio"
 #disabled = false
 weight = 5
-background = "white"
+height = "150px"
+background = "dark"
 
 title = "Eclipse GLSP Gallery"
 subtitle= "Click an example to see a larger picture"

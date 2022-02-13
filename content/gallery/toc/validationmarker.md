@@ -1,9 +1,9 @@
 +++
 title = "Validation Marker"
-weight = 80
+weight = 15
+item_url = "gallery/#validationmarker"
 
 [asset]
   image = "validationmarker.gif"
-  url = "gallery/#validationmarker"
 +++
 

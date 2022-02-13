@@ -11,6 +11,6 @@ menu_title = "Related Projects"
   url = "#"
 +++
 
-#### Graphical Language Server Platform
+#### Eclipse GLSP
 
-GLSP is a project hosted at the [Eclipse Foundation](https://www.eclipse.org), led by [Philip Langer](https://projects.eclipse.org/projects/ecd.glsp/who), organized within the [Eclipse Cloud Development](https://projects.eclipse.org/projects/ecd) project.
+The Eclipse Graphical Language Server Platform is a project hosted at the [Eclipse Foundation](https://www.eclipse.org), led by [Philip Langer & Tobias Ortmayr](https://projects.eclipse.org/projects/ecd.glsp/who), organized within the [Eclipse Cloud Development](https://projects.eclipse.org/projects/ecd) project.

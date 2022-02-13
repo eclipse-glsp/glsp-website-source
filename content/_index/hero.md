@@ -6,24 +6,23 @@ weight = 100
 background = "dark" # can influence the text color
 particles = true
 
-title = "Grahpical Language Server Platform (GLSP)"
-subtitle = "Diagram editors in the web/cloud with GLSP!"
+title = "Graphical Language Server Platform (GLSP)"
+subtitle = "Eclipse Graphical Language Server Platform (GLSP)"
 
 [header]
 
 
 [asset]
   image = "diagramanimated.gif"
-  width = "600px" # optional - will default to image width
 
 [[buttons]]
-  text = "Features"
-  url = "#features"
+  text = "Overview"
+  url = "#overview"
   color = "primary"
 
 [[buttons]]
-  text = "Contact"
-  url = "/contact"
+  text = "Documentation"
+  url = "/documentation"
   color = "primary"
 
 [[buttons]]
@@ -36,5 +35,9 @@ subtitle = "Diagram editors in the web/cloud with GLSP!"
   url = "/examples#examples"
   color = "primary"
 
+[[buttons]]
+  text = "Gallery"
+  url = "/gallery"
+  color = "primary"
 
 +++

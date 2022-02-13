@@ -1,9 +1,9 @@
 +++
 title = "UML Use Case Diagram"
-weight = 7
+weight = 17
+item_url = "gallery/#usecasediagram"
 
 [asset]
   image = "usecasediagram.gif"
-  url = "gallery/#usecasediagram"
 +++
 

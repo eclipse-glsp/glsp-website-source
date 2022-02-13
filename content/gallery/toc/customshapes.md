@@ -1,9 +1,9 @@
 +++
 title = "Custom Shapes"
-weight = 20
+weight = 2
+item_url = "gallery/#customshapes"
 
 [asset]
   image = "customshapes.gif"
-  url = "gallery/#customshapes"
 +++
 
