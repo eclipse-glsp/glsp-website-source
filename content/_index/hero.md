@@ -13,7 +13,7 @@ subtitle = "Eclipse Graphical Language Server Platform (GLSP)"
 
 
 [asset]
-  image = "diagramanimated.gif"
+  image = "diagramanimated_compact.gif"
 
 [[buttons]]
   text = "Overview"
