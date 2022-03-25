@@ -15,13 +15,13 @@ Based on these arguments, the GLSP server determines which source model it needs
 Therefore, a request model action is handled as follows by the the _GLSP server_ (see also `RequestModelActionHandler`):
 
 1. Invoke the configured `SourceModelStorage` to load the source model from an arbitrary resource into the model state.
-2. Invoke the configured `GModelFactory` to transform the model state into the graphical model (GModel; see [GModelFactory]({{< ref "modelGeneration" >}})) that describes the diagram to be rendered.
+2. Invoke the configured `GModelFactory` to transform the model state into the graphical model, or GModel for short, that describes the diagram to be rendered (see also [GModelFactory]({{< ref "modelGeneration" >}})).
 3. Invoke the model submission to send the graphical model to the client.
 
 In this section, we’ll look at the interfaces involved step 1: the `SourceModelStorage` and the `GModelState`.
 
-Every GLSP server needs to provide an implementation of the `SourceModelStorage`.
-Implementations of the `SourceModelStorage` interface are reponsible for loading source models from a specific resource, such as an EMF model, a JSON file, or a database, into the GLSP server's model state.
+Every GLSP server needs to provide an implementation of the interface `SourceModelStorage`.
+Implementations of this interface are reponsible for loading source models from a specific resource, such as an EMF model, a JSON file, or a database, into the GLSP server's model state.
 
 The `ModelState` is the central stateful object within a client session that represents the information about the current state of the original source model.
 All other services and handlers may access the model state to obtain the required information about the model in order to perform their diagram editing tasks.
@@ -54,7 +54,7 @@ isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
 </br>
 
 Now as we have registered our model state implementation, we can look at the source model loading.
-First, we need to make the GLSP server aware of your `SourceModelStorage` implementation, so you have to bind your implementation of the `ModelSourceLoader` interface in the server’s DI module:
+First, we need to make the GLSP server aware of your `SourceModelStorage` implementation, so you have to bind your implementation of the `SourceModelStorage` interface in the server’s DI module:
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -84,7 +84,7 @@ The registered implementation of the source model storage needs to provide two f
 
 1. Loading source models, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction), and adding them into the session’s model state.
 The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, a database, etc.).
-2. Saving the current version the source model of the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction) (see also `SaveModelActionHandler`).
+2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction) (see also `SaveModelActionHandler`).
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -159,6 +159,6 @@ export class MySourceModelStorage implements SourceModelStorage {
 </br>
 
 In the GLSP Workflow example there is also an example, in which the source model is a JSON file that contains the GModel directly.
-In such a scenario, you can use the plain GModelState and the JsonFileGModelLoader.
+In such a scenario, you can use the plain GModelState and the JsonFileGModelStorage.
 
-Once the source model has been loaded into the model state, the GLSP server invokes the configured `GModelFactory` to derive the graphical model from the source model and issues model update for the client. (see [Graphical Model Generation]({{< ref "modelGeneration" >}}))
+Once the source model has been loaded into the model state, the GLSP server invokes the configured `GModelFactory` to derive the graphical model from the source model and issues model update for the client (see [Graphical Model Generation]({{< ref "modelGeneration" >}})).
