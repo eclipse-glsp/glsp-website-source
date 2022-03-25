@@ -8,7 +8,7 @@ title = "How to update a Model Element"
   sticky = true
 +++
 
-If you want to change values for some element properties on the client side, you can send an action event to the model server to apply the new values to your model. For this purpose you need to implement a corresponding GLSP Server Action so that your client can send an update. On the Server side you need to generate than another Action to update the model state of your GModel.
+If you want to change values for some element properties on the client side, you can send an action event to the model server to apply the new values to your model. For this purpose you need to implement a corresponding GLSP Server Action so that your client can send an update. On the Server side you need to handle the action and update your GModel.
 
 For the following example let's assume that you have a model element named 'Event' with the properties 'name' and 'documentation'. And you have some part on your client that adds new information to the property 'documentation'. Let's see how this will work from the server side:
 
@@ -61,7 +61,7 @@ Or you can also describe your changes into some kind of XML or other format.
 
 ### The Apply Operation Handler
 
-Next we need to implement a OperationHandler for our new Apply Action. This class handles the incomming action:
+Next we need to implement a OperationHandler for our new Apply Action. This class handles the incomming action and injects a GModelState to update the corresponding Model element:
 
 ````java
 public class ApplyEventUpdateOperation extends AbstractOperationHandler<ApplyEventUpdateOperation> {
@@ -74,14 +74,18 @@ public class ApplyEventUpdateOperation extends AbstractOperationHandler<ApplyEve
 
     @Override
     protected void executeOperation(final ApplyEventUpdateOperation operation) {
+        // fetch the corresponding model element
+        Optional<EventNode> element = modelState.getIndex().findElementByClass(operation.getId(), EventNode.class);
+        if (element.isEmpty()) {
+            throw new RuntimeException("Cannot find element with id '" + operation.getId() + "'");
+        }
         String expression = operation.getExpression();
         // extract the property and the value
         ....
         // is it an update of the property 'documentation' ?
         if (expression.startsWith("documentation:")) {
-	        // dispatch a new EventEditOperation
-	        ....
-	        actionDispatcher.dispatch(new EventEditOperation(operation.getId(), "documentation", value));
+	        // Update the model element
+	        element.get().setDocumentation(value);
         }
     }
 
@@ -90,67 +94,7 @@ public class ApplyEventUpdateOperation extends AbstractOperationHandler<ApplyEve
 
 The OperationHandler extracts the property name and the value from the expression. If you send more complex data like XML you have to parse the data here. 
 
-The Operation Handler now need to create a new Event to update the concrete model object. For that reason we define a EditEventOperation.
-
-### The Edit Operation 
-
-This class again is a simple POJO:
-
-````java
-public class EditEventOperation extends Operation {
-
-    private String id;
-    private String feature;
-    private String value;
-
-    public EditEventOperation() {
-        super("editEvent");
-    }
-
-    public EditEventOperation(final String id, final String feature, final String value) {
-        this();
-        System.out.println("...create new EventEditOperation - ID=" + id + " feature=" + feature + " value=" + value);
-        this.id = id;
-        this.feature = feature;
-        this.value = value;
-    }
-	
-	// getter and setters ....
-}
-````
-
-And also we need again an Operation Handler for this event.
-
-### The Edit Operation Handler
-
-The Edit Operation Handler is now updating our real GModel. For that reason the class injects the current modelState and fetches the corresponding Element from the Server model. If the concrete model element can be found by its ID we update the corresponding properties (features). 
-
-````java
-public class EditEventOperationHandler extends AbstractOperationHandler<EditEventOperation> {
-    @Inject
-    protected GModelState modelState;
-
-    @Override
-    protected void executeOperation(final EditEventOperation operation) {
-        Optional<EventNode> element = modelState.getIndex().findElementByClass(operation.getId(), EventNode.class);
-        if (element.isEmpty()) {
-            throw new RuntimeException("Cannot find element with id '" + operation.getId() + "'");
-        }
-        switch (operation.getFeature()) {
-        case "name":
-            element.get().setName(operation.getValue());
-            break;
-        case "documentation":
-            element.get().setDocumentation(operation.getValue());
-            break;
-        default:
-            throw new GLSPServerException("Cannot edit element at feature '" + operation.getFeature() + "'");
-        }
-    }
-}
-````
-
-
+The Operation Handler also fetches the corresponding model element and updates the property. This will automatically inform the client about a new model state.
 
 ### Binding the Operation Handlers
 
@@ -167,8 +111,6 @@ public class BPMNDiagramModule extends GModelJsonDiagramModule {
 
         // bind Apply Operation Hander (send from the client)
         binding.add(ApplyEventUpdateOperationHandler.class);
-        // bind Edit Operation Handler (send by the server)
-        binding.add(EditEventOperationHandler.class);
     }
 }
 ````
@@ -205,8 +147,3 @@ export class ApplyEventUpdateOperation implements Action {
 That's it. The changes send by your GLSP Client will be processed by the server which is updating the GModel directly and finally sends the updated GModel back to the client.
 
 
-
-
-## Notification Loop
-
-See: https://github.com/eclipse-emfcloud/emfcloud/discussions/124
