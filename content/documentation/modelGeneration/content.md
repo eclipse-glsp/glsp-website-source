@@ -11,16 +11,14 @@ title = "Graphical Model Generation"
 
 After the initial loading of the source model – and also after each change of the original source model – the GLSP server generates a graphical model from the source model in order to define what is to be rendered on the client.
 
-
-The generation of the graphical model from the original model source is the responsibility of the `GModelFactory`.
+The generation of the graphical model from the original source model is the responsibility of the `GModelFactory`.
 Therefore, the `GModelFactory` obtains the source model from the model state and generates a new graphical model from it.
 Implementations of the `GModelFactory` are by nature very specific to the source model and the diagram type.
 Thus, in almost every GLSP editor project, a custom `GModelFactory` implementation is provided.
 
-
-The only exception are GLSP editors that directly operate on GModels; that is, the GModel is persisted and loaded directly by the model source loader.
-In such cases, no transformation from the model source and the GModel needs to be provided as the model source already is the GModel.
-Thus, the so-called NullImpl of the `GModelFactory` can be used.
+The only exception are GLSP editors that directly operate on GModels; that is, the GModel is persisted and loaded directly by the registered implementation of the source model storage.
+In such cases, no transformation from the source model to the GModel needs to be provided as the source model already is the GModel.
+Thus, the so-called `NullImpl` of the `GModelFactory` can be used.
 An example for such a use case is provided in the GLSP Workflow example.
 
 For all other use cases, an implementation of the `GModelFactory` needs to be provided and registered in the server DI module as follows.
@@ -49,7 +47,7 @@ For all other use cases, an implementation of the `GModelFactory` needs to be pr
 </details>
 </br>
 
-For the sake of an example, let’s assume that the model source is a simple list of named entities.
+For the sake of an example, let’s assume that the source model is a simple list of named entities.
 Each entity should be visualized as a node with a label, which indicates its name.
  Then the corresponding `ModelFactory` could look as follows.
 
@@ -119,7 +117,7 @@ export class MyModelFactory implements GModelFactory {
 </details>
 </br>
 
-In the `createGModel()` method the entities are retrieved from the model state, as they have been added there by the model source loader (see  [Model Source Loader]({{< ref "modelLoading" >}})).
+In the `createGModel()` method the entities are retrieved from the model state, as they have been added there by the source model storage (see [Source Model Storage]({{< ref "modelLoading" >}})).
 Then a new GNode is created for each entity.
 Finally all new nodes are added as children of a newly created GGraph and the graphical root element in the model state is updated.
 

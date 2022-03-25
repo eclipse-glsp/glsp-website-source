@@ -10,7 +10,7 @@ title = "Model Rendering & Styling"
 
 ### Model Rendering
 
-The input of the diagram rendering on the client is the GModel that has been generated on the server from the model source (see [Graphical Model Generation]({{< ref "modelGeneration" >}})) and sent to the client via a [SetModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#242-setmodelaction) or [UpdateModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#243-updatemodelaction).
+The input of the diagram rendering on the client is the GModel that has been generated on the server from the source model (see [Graphical Model Generation]({{< ref "modelGeneration" >}})) and sent to the client via a [SetModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#242-setmodelaction) or [UpdateModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#243-updatemodelaction).
 The client is then responsible for rendering the graphical model.
 
 In order to render the received graphical model, each graphical element type needs to be associated with a view on the client.
