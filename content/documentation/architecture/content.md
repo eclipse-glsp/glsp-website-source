@@ -9,6 +9,7 @@ title = "Overview & Architecture"
 +++
 
 ### Overview
+
 The *Graphical Language Server Platform* (GLSP) is a client-server framework for building web-based diagram editors.
 It follows an architectural pattern similar to the hugely popular [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors.
 With that, GLSP enables the development of modern, web-based diagram editors, whereas the heavy lifting, such as loading, interpreting, and editing diagrams according to the rules of the graphical diagram language, is encapsulated in the server.
@@ -24,11 +25,11 @@ Both the *GLSP server* and *GLSP client* have dedicated action handlers that can
 Each running diagram widget is considered to be a single *GLSP client*.
 Each client is handled by exactly one *GLSP server*. A *GLSP server* can handle multiple *GLSP client*s, each within a dedicated client session.
 
-The server is responsible for loading the model source, e.g. a file, EMF model, or database, into the model state and defines how to transform it into the graphical model.
+The server is responsible for loading the source model, e.g. a file, EMF model, or database, into the model state and defines how to transform it into the graphical model.
 The graphical model is a serializable description of the diagram that should be visualized.
 It is the central communication artifact that is transferred to the client.
 
-The *GLSP client* itself doesn’t need to know how the diagram has been generated from a model source or how to manipulate it.
+The *GLSP client* itself doesn’t need to know how the diagram has been generated from a source model or how to manipulate it.
 Its main responsibility is to visualize the graphical model and to provide user interface elements for user interaction, such as editing tools.
 Thus, the client interprets the graphical model received from the server and renders a diagram from it.
 In addition, the *GLSP client* handles user interaction and provides editing tools to invoke manipulations of the diagram.
@@ -43,7 +44,7 @@ Certain knowledge about the rules of the graphical language is required within c
 For instance, the client-side tools need to know whether the user is allowed to connect certain nodes with each other, whether those nodes can be resized or moved between container nodes, etc.
 Therefore, the protocol between client and server provides dedicated action messages that allows to transfer this required context- and diagram-specific information between the server and the client.
 
-Once an editing tool is applied in the client, the client sends a notification to the server, which then will perform the operation on the original model source, regenerates the graphical model and updates the client with the new version of the graphical model, which in turn will then update the rendered diagram based on the new graphical model.
+Once an editing tool is applied in the client, the client sends a notification to the server, which then will perform the operation on the original source model, regenerates the graphical model and updates the client with the new version of the graphical model, which in turn will then update the rendered diagram based on the new graphical model.
 </br></br>
 
 ### Action Protocol
@@ -52,7 +53,7 @@ The GLSP action protocol defines the message types that are exchanged between cl
 The protocol is structured into so-called features.
 A feature describes a specific diagram capability, e.g. element creation, diagram validation, etc.
 Each feature is composed of a set of actions and/or operations.
-An operation is a special subtype of an action and is used to describe actions that modify the underlying model source on the *GLSP server*.
+An operation is a special subtype of an action and is used to describe actions that modify the underlying source model on the *GLSP server*.
 Every action that modifies the model in any way has to be implemented as an operation.
 
 A detailed description of the protocol is available in the [GLSP repository](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
@@ -100,7 +101,6 @@ Adopters can load new modules into the DI container.
 </p>
 </br></br>
 
-
 #### GLSP Server
 
 Similar to the GLSP client, also the server is configured via DI, including its service implementations, handlers, etc.
@@ -128,7 +128,7 @@ The node-based GLSP server uses [inversify.js](https://inversify.io/) as depende
 
 The graphical model is a serializable description of the diagram to be visualized on the client.
 It is the central communication artifact between client and server.
-The server creates the graphical model from an arbitrary model source and sends it to the client.
+The server creates the graphical model from an arbitrary source model and sends the graphical model to the client.
 Thus, the client doesn’t need to know where it came from and how to manipulate it.
 However, the client interprets the graphical model in order to render a visualization of the diagram described in the graphical model.
 

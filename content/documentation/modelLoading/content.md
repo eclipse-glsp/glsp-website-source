@@ -2,7 +2,7 @@
 fragment = "content"
 weight = 100
 
-title = "Model Source Loading & Model State"
+title = "Source Model & Model State"
 
 [sidebar]
   sticky = true
@@ -13,16 +13,16 @@ The model loading process is initiated with a [RequestModelAction](https://githu
 Typically this is the first action that the GLSP client sends after initializing the diagram widget.
 
 With the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction), the client can provide a set of custom arguments (client options).
-At the bare minimum these client options have to provide the required information so that the _GLSP server_ can identify and load the correct model source.
-In most cases this will be, for instance, a URI of the model to be loaded.
+At the bare minimum these client options have to provide the required information so that the _GLSP server_ can identify and load the correct source model.
+In most cases this information will be a URI of the model to be loaded.
 
 To handle such a request model action, the _GLSP server_ will perform the following steps:
 
-1. Invoke the configured `ModelSourceLoader` to load the model from an arbitrary model source into the model state.
+1. Invoke the configured `SourceModelStorage` to load the source model from an arbitrary resource into the model state.
 2. Invoke the configured `GModelFactory` to transform the model state into the graphical model (GModel; see [GModelFactory]({{< ref "modelGeneration" >}})) that describes the diagram to be rendered.
 3. Invoke the model submission to send the graphical model to the client.
 
-In this section, we’ll look at step 1, in which the configured `ModelSourceLoader` implementation is invoked to load the source model from the arbitrary model source into the model state.
+In this section, we’ll look at step 1, in which the configured `SourceModelStorage` implementation is invoked to load the source model from an arbitrary resource into the model state.
 
 The `ModelState` is the central stateful object within a client session that represents the information about the current state of the original source model.
 All other services and handlers may access the model state to obtain the required information about the model in order to perform their respective tasks.
@@ -54,15 +54,15 @@ isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
 </details>
 </br>
 
-Now as we have registered our model state implementation, we can look at the model source loading.
-First, we need to make the GLSP server aware of your model source loader, you have to register your implementation of the `ModelSourceLoader` interface in the server’s DI module:
+Now as we have registered our model state implementation, we can look at the source model loading.
+First, we need to make the GLSP server aware of your source model loader, you have to register your implementation of the `ModelSourceLoader` interface in the server’s DI module:
 
 <details open><summary>Java GLSP Server</summary>
 
 ```java
   @Override
-  protected Class<? extends ModelSourceLoader> bindSourceModelLoader() {
-    return MyModelLoader.class;
+  protected Class<? extends SourceModelStorage> bindSourceModelStorage() {
+    return MySourceModelStorage.class;
   }
 ```
 
@@ -74,20 +74,20 @@ First, we need to make the GLSP server aware of your model source loader, you ha
   protected configure(bind: interfaces.Bind, unbind: interfaces.Unbind,
    isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
       super.configure(bind, unbind, isBound, rebind);
-      bind(ModelSourceLoader).to(MyModelLoader);
+      bind(SourceModelStorage).to(MySourceModelStorage);
   }
 ```
 
 </details>
 </br>
 
-The registered implementation of the model loader needs to load the source model and add it to the session’s model state, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction).
-Consequently, the implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, database, etc.).
+The registered implementation of the source model storage needs to load the source model and add it to the session’s model state, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction).
+The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, database, etc.).
 
 <details open><summary>Java GLSP Server</summary>
 
 ```java
-public class MyModelLoader implements ModelSourceLoader {
+public class MySourceModelStorage implements SourceModelStorage {
 
    @Inject
    protected MyModelState modelState;
@@ -101,6 +101,21 @@ public class MyModelLoader implements ModelSourceLoader {
       modelState.setModel(model);
    }
 
+   @Override
+   public void saveSourceModel(final SaveModelAction action) {
+      // get the current version of your model
+      final YourModel model = modelState.getModel();
+      // get the information to know where to store your model
+      final String uri = action.getFileUri().get();
+      
+      try {
+         // store your model
+      } catch (IOException e) {
+         LOG.error(e);
+         throw new GLSPServerException("An error occured while saving the model.", e);
+      }
+   }
+
 }
 ```
 
@@ -110,7 +125,7 @@ public class MyModelLoader implements ModelSourceLoader {
 
 ```ts
 @injectable()
-export class MyModelLoader implements ModelSourceLoader {
+export class MySourceModelStorage implements SourceModelStorage {
 
     @inject(MyModelState)
     protected modelState: MyModelState;
@@ -122,6 +137,19 @@ export class MyModelLoader implements ModelSourceLoader {
       // add information needed about your model into the model state
       this.modelState.model=model;
     }
+
+   saveSourceModel(action: SaveModelAction): MaybePromise<void> {
+      // get the current version of your model
+      const model = this.modelState.model;
+      // get the information to know where to store your model
+      const uri = this.modelState.sourceUri;
+      
+      try {
+         // store your model
+      } catch (error) {
+         throw new GLSPServerError(`Could not load model from file: ${this.modelState.sourceUri}`, error);
+      }
+   }
 }
 ```
 
