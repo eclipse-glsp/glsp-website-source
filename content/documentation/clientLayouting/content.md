@@ -2,7 +2,7 @@
 fragment = "content"
 weight = 100
 
-title = "Client-side layouting"
+title = "Client-side Layouting"
 
 [sidebar]
   sticky = true

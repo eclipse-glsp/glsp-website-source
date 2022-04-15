@@ -8,20 +8,48 @@ title = "Source Model & Model State"
   sticky = true
 +++
 
-In order to render a diagram, the GLSP client first requests the graphical model from the server by sending a [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction).
-With such a request model action, the client can provide a set of custom arguments in the client options, such as a URI or an ID of a diagram, to specify the diagram requested by the user.
-Based on these arguments, the GLSP server determines which source model it needs to load, transform into a graphical model and send back to the client.
+### Source Model
 
-Therefore, a request model action is handled as follows by the the _GLSP server_ (see also `RequestModelActionHandler`):
+The source model represents the actual data that is represented in the diagram and that is modified when the user applies changes in the diagram.
+Typical source model formats are [EMF](https://www.eclipse.org/modeling/emf) models, JSON files, and databases, etc.
+However, GLSP and the GLSP server frameworks don't put any restrictions on what the format of this source model is.
+This is achieved by putting developers of GLSP diagram servers in charge of defining how to load a source model, how to transform it into a [graphical model]({{< ref "gmodel" >}}), which is the description of the diagram to be rendered, and how to manipulate the source model, if a user edits a diagram.
 
-1. Invoke the configured `SourceModelStorage` to load the source model from an arbitrary resource into the model state.
-2. Invoke the configured `GModelFactory` to transform the model state into the graphical model, or GModel for short, that describes the diagram to be rendered (see also [GModelFactory]({{< ref "modelGeneration" >}})).
-3. Invoke the model submission to send the graphical model to the client.
+Therefore, a GLSP server needs to provide the following implementations:
 
-In this section, we’ll look at the interfaces involved step 1: the `SourceModelStorage` and the `GModelState`.
+1. [Source model storage](#source-model-storage-and-model-state-and), which defines how to load and store source models.
+2. [Graphical model factory]({{< ref "gmodel" >}}), which defines how the source model is transformed into a graphical model.
+3. [Edit operation handlers]({{< ref "modelOperations" >}}) that manipulate the source model, based on user actions performed in the diagram.
+
+#### Loading Source Models and Showing a Diagram
+
+To load a source model and show a diagram, the following steps are performed:
+
+1. The client sends a [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction) with a URI or other arguments for identifying a diagram to the server
+2. The server invokes the [source model storage](#source-model-storage-and-model-state-and) to load the source model identified by the arguments sent by the client
+3. The server invokes the [graphical model factory]({{< ref "gmodel" >}}) to translate the source model into the graphical model
+4. The server sends the created graphical model to the client
+5. The client renders graphical model
+
+#### Processing Edit Operations
+
+When a user performs an edit operation in the diagram:
+
+1. The client sends an operation request to the server
+2. The server invokes the registered [edit operation handlers]({{< ref "modelOperations" >}}), which modifies the underlying source model directly
+3. The server applies the [graphical model factory]({{< ref "gmodel" >}}) to the modified source model to create a new graphical model
+4. The server sends the created graphical model to the client
+5. The client re-renders the diagram according to the new version of the graphical model
+
+As can be seen in the steps above for loading and editing source models, both processes share many steps and are based on the same three custom implementations for particular source models.
+Thus, by providing these three implementations, any source model format can be supported with GLSP.
+
+Please note that GLSP provides generic base implementations for typical [source model types]({{< ref "integrations" >}}).
+
+### Source Model Storage and Model State
 
 Every GLSP server needs to provide an implementation of the interface `SourceModelStorage`.
-Implementations of this interface are reponsible for loading source models from a specific resource, such as an EMF model, a JSON file, or a database, into the GLSP server's model state.
+Implementations of this interface are responsible for loading source models from a specific resource, such as an EMF model, a JSON file, or a database, into the GLSP server's model state.
 
 The `ModelState` is the central stateful object within a client session that represents the information about the current state of the original source model.
 All other services and handlers may access the model state to obtain the required information about the model in order to perform their diagram editing tasks.
@@ -161,4 +189,8 @@ export class MySourceModelStorage implements SourceModelStorage {
 In the GLSP Workflow example there is also an example, in which the source model is a JSON file that contains the GModel directly.
 In such a scenario, you can use the plain GModelState and the JsonFileGModelStorage.
 
-Once the source model has been loaded into the model state, the GLSP server invokes the configured `GModelFactory` to derive the graphical model from the source model and issues model update for the client (see [Graphical Model Generation]({{< ref "modelGeneration" >}})).
+Once the source model has been loaded into the model state, the GLSP server invokes the configured `GModelFactory` to derive the graphical model from the source model and issues model update for the client.
+
+---
+
+➡️ Let's look at how the source model is translated into a [graphical model]({{< ref "gmodel" >}}) next!

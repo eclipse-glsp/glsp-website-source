@@ -8,15 +8,28 @@ title = "Actions & Action Handler"
   sticky = true
 +++
 
-Action messages are used for client-server communication.
-In addition, they are also used for the internal event flow in both the GLSP server and the GLSP client.
-Actions must be handled by at least one or more action handlers.
-Any service, mouse or keyboard tool, etc. can issue actions by invoking the action dispatcher, either on the client or the server.
-The action dispatcher – there is one on the client and one on the server – is the central component responsible for dispatching received actions to their 
-designated action handlers (see also [Action Dispatching & Handling]({{< ref "architecture#action-dispatching--handling" >}})).
+### Overview
 
-Adopters can contribute new action handlers or customize existing handlers for any action types of the [action protocol]({{< ref "architecture#action-protocol" >}}).
-In addition, the base action protocol can be extended with new action kinds and designated handlers.
+The client and the server communicate bidirectionally by sending actions via JSON-RPC.
+In addition, they are also used for the internal event flow in both the *GLSP server* and the *GLSP client*.
+Any service, mouse tool, etc. can issue actions by invoking the action dispatcher, either on the client or the server.
+
+The action dispatcher – there is one on the client and one on the server – is the central component responsible for dispatching actions to their designated action handlers.
+
+<p align="center">
+<img src="action-handler.png" alt="Action Dispatching & Handlers"  />
+</p>
+
+When the dispatcher receives a new action for dispatching, it determines whether it should be dispatched to the internal action handlers only or submitted to the opposite component via JSON-RCP (server or client), based on the registered handlers on the server or the client.
+
+The dispatcher distinguishes between notifications and request-response action pairs.
+Notification actions are one-way actions transferred between client and server.
+This means when the action dispatcher dispatches a notification it does not wait for a response and directly continues with dispatching the next incoming action.
+Request actions are typically issued by the *GLSP client* and can be used to block client-side action dispatching until the server has sent a corresponding response action.
+
+GLSP defines the standard action types of the [graphical language server protocol](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
+However, adopters can add new custom action types.
+Besides, adopters can replace and extend existing, or add additional action handlers for standard or custom action types.
 
 To do that the following steps have to be performed
 
