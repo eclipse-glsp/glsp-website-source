@@ -112,7 +112,7 @@ The registered implementation of the source model storage needs to provide two f
 
 1. Loading source models, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction), and adding them into the session’s model state.
 The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, a database, etc.).
-2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction) (see also `SaveModelActionHandler`).
+2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction).
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -186,7 +186,7 @@ export class MySourceModelStorage implements SourceModelStorage {
 </details>
 </br>
 
-In the GLSP Workflow example there is also an example, in which the source model is a JSON file that contains the GModel directly.
+The GLSP Workflow example is an example, in which in which the source model is a JSON file that contains the GModel directly.
 In such a scenario, you can use the plain GModelState and the JsonFileGModelStorage.
 
 Once the source model has been loaded into the model state, the GLSP server invokes the configured `GModelFactory` to derive the graphical model from the source model and issues model update for the client.

@@ -19,7 +19,8 @@ Consequently, diagram editors can easily be integrated with multiple tool platfo
 
 A *GLSP Server* is a separate backend process and provides the language-specific smarts and editing capabilities.
 It communicates with a *GLSP Client* over JSON-RPC with an [extensible action protocol](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
-Each diagram editor is considered to be a single *GLSP client*.
+Each application has one GLSP client.
+A GLSP client can have multiple sessions, whereas each session represents a single diagram editor instance.
 Each client is handled by exactly one *GLSP server*.
 A server can handle multiple clients, each within a dedicated client session.
 
@@ -33,7 +34,9 @@ The *GLSP client* receives the graphical model as input and [renders it]({{< rel
 Additionally, the client requests information on editing operations that can be applied in the context of the graphical model.
 Based on this information, the client can provide the editing tools for making changes to the diagram, such as moving elements, adding nodes or edges, changing labels, etc.
 
-Once a user performs a change in the diagram, the client sends a notification to the server, which then applies the operation back to the source model, regenerates the graphical model and updates the client with the new version of the graphical model, which in turn will then update the rendered diagram based on the new graphical model.
+Once a user performs a change in the diagram, the client sends a notification to the server.
+The server then applies the operation back to the source model, regenerates the graphical model and updates the client with the new version of the graphical model.
+The client will then update the rendered diagram based on the new graphical model it received.
 
 ### Customization and Extension
 

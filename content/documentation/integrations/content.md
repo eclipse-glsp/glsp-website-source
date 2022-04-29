@@ -41,7 +41,7 @@ However, there also are objective considerations.
 * If you aim at providing a VS Code extension or Theia plugin, shipping a node-based GLSP server is easier, because you don't need to worry whether your users have a JVM installed. They'll have a node runtime already, otherwise they couldn't run VS Code or Theia. If you have more control over your users runtime, e.g. because the editor will run in a container in the cloud anyway, this is less of a concern.
 * Using one language (Typescript) for your GLSP server and client leads to a more homogeneous developer experience than having to work with two languages (Java and Typescript).
 * If you already have an editor implementation in Java, e.g. based on GMF, etc., or an EMF metamodel, building a Java-based server opens lots of opportunities for reusing your existing business logic in the GLSP server.
-* If you want to work with EMF source models directly from your GLSP server, e.g. because you want to benefit from its command stack implementation, change notification support, etc. and don't want or need a separate emf.cloud model server for model management, using Java on the GLSP server is clearly better.
+* If you want to work with EMF source models directly from your GLSP server, e.g. because you want to benefit from its command stack implementation, change notification support, etc., using Java on the GLSP server is clearly better.
 
 #### 🗂️ Source Model
 

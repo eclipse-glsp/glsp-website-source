@@ -31,7 +31,7 @@ GLSP defines the standard action types of the [graphical language server protoco
 However, adopters can add new custom action types.
 Besides, adopters can replace and extend existing, or add additional action handlers for standard or custom action types.
 
-To do that the following steps have to be performed
+To do that the following steps have to be performed:
 
 1. Create a new action specification by providing a corresponding `Action` implementation
 2. Create a new action handler for the newly created action type by providing a implementation of the `ActionHandler` interface
