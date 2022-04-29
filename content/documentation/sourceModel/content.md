@@ -25,7 +25,7 @@ Therefore, a GLSP server needs to provide the following implementations:
 
 To load a source model and show a diagram, the following steps are performed:
 
-1. The client sends a [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction) with a URI or other arguments for identifying a diagram to the server
+1. The client sends a [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction) with a URI or other arguments for identifying a source model to the server
 2. The server invokes the [source model storage](#source-model-storage-and-model-state-and) to load the source model identified by the arguments sent by the client
 3. The server invokes the [graphical model factory]({{< ref "gmodel" >}}) to translate the source model into the graphical model
 4. The server sends the created graphical model to the client
@@ -36,7 +36,7 @@ To load a source model and show a diagram, the following steps are performed:
 When a user performs an edit operation in the diagram:
 
 1. The client sends an operation request to the server
-2. The server invokes the registered [edit operation handlers]({{< ref "modelOperations" >}}), which modifies the underlying source model directly
+2. The server invokes the registered [edit operation handler]({{< ref "modelOperations" >}}), which modifies the underlying source model directly
 3. The server applies the [graphical model factory]({{< ref "gmodel" >}}) to the modified source model to create a new graphical model
 4. The server sends the created graphical model to the client
 5. The client re-renders the diagram according to the new version of the graphical model
@@ -44,7 +44,7 @@ When a user performs an edit operation in the diagram:
 As can be seen in the steps above for loading and editing source models, both processes share many steps and are based on the same three custom implementations for particular source models.
 Thus, by providing these three implementations, any source model format can be supported with GLSP.
 
-Please note that GLSP provides generic base implementations for typical [source model types]({{< ref "integrations" >}}).
+Please note that GLSP provides [generic base implementations]({{< ref "integrations" >}}) for typical source model types.
 
 ### Source Model Storage and Model State
 

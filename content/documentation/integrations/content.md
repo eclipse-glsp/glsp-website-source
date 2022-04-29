@@ -29,7 +29,7 @@ Due to GLSP's architecture, you can even change any of those options above later
 There are many options to choose from.
 In the following, we list a few hints to help you decide.
 Please note that especially the tool platform integration doesn't have to be an ultimate decision.
-Many start deploying for one tool platform, e.g. Eclipse Theia, but add support for VS Code later and offer both options in parallel.
+Many adopters start deploying for one tool platform, e.g. Eclipse Theia, but add support for VS Code later and offer both options in parallel.
 
 ---
 
@@ -75,12 +75,12 @@ More information on the integration components is given in the section on [platf
 <!-- TODO write -->
 
 Depending on your choice of tool platform integration and server framework, a different selection of packages needs to be used.
-The project templates linked in the [getting started guide]({{< relref  "gettingStarted" >}}) provide the initial setup of the package architecture for the respective combination of integrations.
+The project templates linked in the [getting started guide]({{< relref  "gettingStarted" >}}) provide the initial setup of the package architecture for the respective combination of components.
 However, all of them will have a diagram-specific client package that depends on [@glsp/client](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/client) and a diagram-specific server package that either depends on the [node-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server-node/tree/main/packages/server-node) or the [Java-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server).
 
-Irrespectively of the used tool platform integration, server framework or source model integration, `your-glsp-client` is always the same and can be reused for all scenarios.
+Irrespectively of the used tool platform integration, server framework or source model integration, your custom `glsp-client` is always the same and can be reused for all scenarios.
 Your server implementation is also independent of the respective platform integration and reusable for multiple platforms.
-Depending on the source model framework, the server may add additional dependencies (e.g. to use the [emf.cloud model server client](https://github.com/eclipse-emfcloud/emfcloud-modelserver/tree/master/bundles/org.eclipse.emfcloud.modelserver.client)).
+Depending on the source model framework, the server may add additional dependencies (e.g. to use the [EMF.cloud model server client](https://github.com/eclipse-emfcloud/emfcloud-modelserver/tree/master/bundles/org.eclipse.emfcloud.modelserver.client)).
 
 As an example, the following figure shows the package architecture for a Theia-based GLSP editor with a node-based server.
 
@@ -115,7 +115,7 @@ The node-based GLSP server uses [inversify.js](https://inversify.io/) as depende
 
 For both servers, GLSP provides dedicated abstract base classes named `DiagramModule`, which are intended to be extended in order to implement a concrete diagram server.
 The idea of those abstract base classes is that the abstract methods they contain MUST be implemented in order to show a diagram, e.g. the [source model storage]({{< relref  "sourceModel" >}}) and the [graphical model factory]({{< relref  "gmodel" >}}), and additional methods MAY be overwritten to add functionalities, such as certain [editing operations]({{< relref  "modelOperations" >}}) or [model validation]({{< relref  "validation" >}}), or to customize default behavior.
-There are also [pre-configured diagram modules](#source-model-integrations) for certain source models, described below, e.g. for EMF or emf.cloud, which already bind relevant implementations.
+There are also [pre-configured diagram modules](#source-model-integrations) for certain source models, described below, e.g. for EMF or EMF.cloud, which already bind relevant implementations.
 
 The remainder of this documentation shows, whenever applicable, a code example for both servers.
 Also there are project templates for both servers, as listed in the [getting started guide]({{< relref  "gettingStarted" >}}), as well as an example server for the common "workflow diagram", in each of the server repositories, linked above.

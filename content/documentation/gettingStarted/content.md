@@ -8,7 +8,7 @@ title = "Getting Started"
   sticky = true
 +++
 
-GLSP is architected to be very flexible and provides several options:
+GLSP is architected to be very flexible and provides several implementation options:
 
 * 🖥️ **Server**<br/>
    GLSP servers can be written either in Java or with Typescript based on nodejs.
