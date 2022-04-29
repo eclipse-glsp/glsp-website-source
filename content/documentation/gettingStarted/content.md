@@ -33,7 +33,7 @@ Now select your preferred server language, source model format, and platform int
 Switch to the respective folder and follow its readme file.
 
 * [🖥️ Java ● 🗂️ EMF ● 🖼️ Theia -- `java-emf-theia`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/java-emf-theia)
-* [🖥️ Node ● 🗂️ Custom JSON ● 🖼️ Theia -- `node-json-theia`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/node-json-theia)
+* 🖥️ Node ● 🗂️ Custom JSON ● 🖼️ Theia -- `node-json-theia` ([coming soon](https://github.com/eclipse-glsp/glsp-examples/pull/117))
 * [🖥️ Node ● 🗂️ Custom JSON ● 🖼️ VS Code -- `node-json-vscode`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/node-json-vscode)
 
 If you don't find your preferred combination, please raise a question in the [Github discussions](https://github.com/eclipse-glsp/glsp/discussions).
@@ -46,3 +46,4 @@ Once you are up and running based on the project template above, we recommend to
 * ➡️ Add your custom [source model]({{< relref  "sourceModel" >}}) instead of using the example model!
 * ➡️ Define the diagram elements to be generated from the source model into the [graphical model]({{< relref  "gmodel" >}})!
 * ➡️ Make the diagram look the way you want by adjusting the [diagram rendering and styling]({{< relref  "rendering" >}})!
+* ➡️ Look at the [workflow example](https://github.com/eclipse-glsp/glsp-examples/tree/master/workflow) to explore the implementation of more advanced editor features
