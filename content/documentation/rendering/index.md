@@ -1,4 +1,4 @@
 +++
-title = "Model Rendering & Styling"
+title = "Rendering & Styling"
 weight = 35
 +++

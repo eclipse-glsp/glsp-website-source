@@ -8,17 +8,30 @@ title = "Actions & Action Handler"
   sticky = true
 +++
 
-Action messages are used for client-server communication.
-In addition, they are also used for the internal event flow in both the GLSP server and the GLSP client.
-Actions must be handled by at least one or more action handlers.
-Any service, mouse or keyboard tool, etc. can issue actions by invoking the action dispatcher, either on the client or the server.
-The action dispatcher – there is one on the client and one on the server – is the central component responsible for dispatching received actions to their 
-designated action handlers (see also [Action Dispatching & Handling]({{< ref "architecture#action-dispatching--handling" >}})).
+### Overview
 
-Adopters can contribute new action handlers or customize existing handlers for any action types of the [action protocol]({{< ref "architecture#action-protocol" >}}).
-In addition, the base action protocol can be extended with new action kinds and designated handlers.
+The client and the server communicate bidirectionally by sending actions via JSON-RPC.
+In addition, they are also used for the internal event flow in both the *GLSP server* and the *GLSP client*.
+Any service, mouse tool, etc. can issue actions by invoking the action dispatcher, either on the client or the server.
 
-To do that the following steps have to be performed
+The action dispatcher – there is one on the client and one on the server – is the central component responsible for dispatching actions to their designated action handlers.
+
+<p align="center">
+<img src="action-handler.png" alt="Action Dispatching & Handlers"  />
+</p>
+
+When the dispatcher receives a new action for dispatching, it determines whether it should be dispatched to the internal action handlers only or submitted to the opposite component via JSON-RCP (server or client), based on the registered handlers on the server or the client.
+
+The dispatcher distinguishes between notifications and request-response action pairs.
+Notification actions are one-way actions transferred between client and server.
+This means when the action dispatcher dispatches a notification it does not wait for a response and directly continues with dispatching the next incoming action.
+Request actions are typically issued by the *GLSP client* and can be used to block client-side action dispatching until the server has sent a corresponding response action.
+
+GLSP defines the standard action types of the [graphical language server protocol](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
+However, adopters can add new custom action types.
+Besides, adopters can replace and extend existing, or add additional action handlers for standard or custom action types.
+
+To do that the following steps have to be performed:
 
 1. Create a new action specification by providing a corresponding `Action` implementation
 2. Create a new action handler for the newly created action type by providing a implementation of the `ActionHandler` interface
@@ -65,7 +78,7 @@ export class MyCustomAction implements Action {
 </details>
 </br>
 
-Each action specification has a unique “kind” and can optionally declare additional data properties
+Each action specification has a unique “kind” and can optionally declare additional data properties.
 We recommend defining the action kind as a static constant of the implementing class so that it can be accessed from other places, e.g. when registering the handler.
 Note that action instances need to be serializable to JSON.
 Therefore the class should only contain plain data properties and no additional business logic.
@@ -214,14 +227,15 @@ export class MyCustomActionHandler implements ActionHandler {
 The `executeAction()` method has to be implemented to provide the custom logic of your action handler.
 It returns a set of response actions that should be dispatched after the handler execution.
 
-Finally the custom handler has to be configured in the `DiagramModule`:
+Next, the custom handler has to be configured in the `DiagramModule`:
 
 <details open><summary>Java GLSP Server</summary>
 
 ```java
-protected void configureClientActions(final MultiBinding<Action> binding) {
-    super.configureClientAction(binding);
-    binding.add(MyCustomRequestAction.class);
+@Override
+protected void configureActionHandlers(final MultiBinding<ActionHandler> binding) {
+    super.configureActionHandlers(binding);
+    binding.add(MyCustomActionHandler.class);
 }
 ```
 
@@ -230,12 +244,10 @@ protected void configureClientActions(final MultiBinding<Action> binding) {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-    protected configureClientActions(
-        binding: InstanceMultiBinding<string>
-    ): void {
-        super.configureClientActions(binding);
-        binding.add(MyCustomRequestAction.KIND);
-    }
+protected override configureActionHandlers(binding: InstanceMultiBinding<ActionHandlerConstructor>): void {
+    super.configureActionHandlers(binding);
+    binding.add(MyCustomActionHandler);
+}
 ```
 
 </details>
@@ -257,12 +269,12 @@ protected void configureClientActions(final MultiBinding<Action> binding) {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-    protected configureClientActions(
-        binding: InstanceMultiBinding<string>
-    ): void {
-        super.configureClientActions(binding);
-        binding.add(MyCustomRequestAction.KIND);
-    }
+protected configureClientActions(
+    binding: InstanceMultiBinding<string>
+): void {
+    super.configureClientActions(binding);
+    binding.add(MyCustomRequestAction.KIND);
+}
 ```
 
 </details>
@@ -279,7 +291,6 @@ The action dispatcher tracks all incoming request actions and automatically inte
 
 On the client, GLSP reuses the `IActionHandler` API of [Sprotty](https://github.com/eclipse/sprotty).
 Therefore, to create a new action handler, a class that implements the `IActionHandler` interface has to be created.
-
 
 ```ts
 @injectable()

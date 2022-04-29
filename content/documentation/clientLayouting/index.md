@@ -1,4 +1,4 @@
 +++
-title = "Client-side layouting"
+title = "Client-side Layouting"
 weight = 45
 +++

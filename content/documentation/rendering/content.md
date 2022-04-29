@@ -2,16 +2,16 @@
 fragment = "content"
 weight = 100
 
-title = "Model Rendering & Styling"
+title = "Graphical Model Rendering & Styling"
 
 [sidebar]
   sticky = true
 +++
 
-### Model Rendering
+### Rendering
 
-The input of the diagram rendering on the client is the GModel that has been generated on the server from the source model (see [Graphical Model Generation]({{< ref "modelGeneration" >}})) and sent to the client via a [SetModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#242-setmodelaction) or [UpdateModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#243-updatemodelaction).
-The client is then responsible for rendering the graphical model.
+The input of the diagram rendering on the client is the GModel that has been generated on the server from the source model (see [Graphical Model]({{< ref "gmodel" >}})) and sent to the client via a [SetModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#242-setmodelaction) or [UpdateModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#243-updatemodelaction).
+The client is then responsible for rendering the GModel.
 
 In order to render the received graphical model, each graphical element type needs to be associated with a view on the client.
 A view defines how a specific type of graphical element shall be transformed into a corresponding SVG representation.
@@ -132,3 +132,7 @@ const customDiagramModule= new ContainerModule((bind,unbind, isBound,rebind)=>{
 …
   });
 ```
+
+---
+
+➡️ Now it's best to learn more about [client-side layouting]({{< ref "clientLayouting" >}}) next!
