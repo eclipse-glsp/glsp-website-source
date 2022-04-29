@@ -100,10 +100,9 @@ protected Class<? extends ModelValidator> bindModelValidator() {
 <details><summary>Node Server</summary>
 
 ```ts
-    protected configure(bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
-        super.configure(bind, unbind, isBound, rebind);
-        bind(ModelValidator).to(CustomModelValidator).inSingletonScope();
-    }
+protected override bindModelValidator(): BindingTarget<ModelValidator> | undefined {
+    return CustomModelValidator;
+}
 ```
 
 </details>

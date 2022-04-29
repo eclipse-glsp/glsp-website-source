@@ -74,10 +74,10 @@ For all other use cases, an implementation of the `GModelFactory` needs to be pr
 <details open><summary>Java GLSP Server</summary>
 
 ```java
-  @Override
-   protected Class<? extends GModelFactory> bindGModelFactory() {
-      return MyModelFactory.class;
-   }
+@Override
+protected Class<? extends GModelFactory> bindGModelFactory() {
+    return MyModelFactory.class;
+}
 ```
 
 </details>
@@ -85,11 +85,9 @@ For all other use cases, an implementation of the `GModelFactory` needs to be pr
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-    protected configure(bind: interfaces.Bind, unbind: interfaces.Unbind,
-    isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
-        super.configure(bind, unbind, isBound, rebind);
-        bind(GModelFactory).to(MyModelFactory).inSingletonScope();
-    }
+protected override bindGModelFactory(): BindingTarget<GModelFactory> {
+    return MyModelFactory;
+}
 ```
 
 </details>

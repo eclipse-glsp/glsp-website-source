@@ -70,11 +70,8 @@ protected Class<? extends GModelState> bindGModelState() {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-protected configure(bind: interfaces.Bind, unbind: interfaces.Unbind,
-isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
-    super.configure(bind, unbind, isBound, rebind);
-    bind(MyModelState).toSelf().inSingletonScope();
-    bind(ModelState).toService(MyModelState);
+protected override bindModelState(): BindingTarget<ModelState> {
+   return MyModelState;
 }
 ```
 
@@ -87,10 +84,10 @@ First, we need to make the GLSP server aware of your `SourceModelStorage` implem
 <details open><summary>Java GLSP Server</summary>
 
 ```java
-  @Override
-  protected Class<? extends SourceModelStorage> bindSourceModelStorage() {
-    return MySourceModelStorage.class;
-  }
+@Override
+protected Class<? extends SourceModelStorage> bindSourceModelStorage() {
+   return MySourceModelStorage.class;
+}
 ```
 
 </details>
@@ -98,11 +95,9 @@ First, we need to make the GLSP server aware of your `SourceModelStorage` implem
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-  protected configure(bind: interfaces.Bind, unbind: interfaces.Unbind,
-   isBound: interfaces.IsBound, rebind: interfaces.Rebind): void {
-      super.configure(bind, unbind, isBound, rebind);
-      bind(SourceModelStorage).to(MySourceModelStorage);
-  }
+protected bindModelState(): BindingTarget<ModelState> {
+   return MySourceModelStorage;
+}
 ```
 
 </details>

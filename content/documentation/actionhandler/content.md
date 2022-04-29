@@ -227,14 +227,15 @@ export class MyCustomActionHandler implements ActionHandler {
 The `executeAction()` method has to be implemented to provide the custom logic of your action handler.
 It returns a set of response actions that should be dispatched after the handler execution.
 
-Finally the custom handler has to be configured in the `DiagramModule`:
+Next, the custom handler has to be configured in the `DiagramModule`:
 
 <details open><summary>Java GLSP Server</summary>
 
 ```java
-protected void configureClientActions(final MultiBinding<Action> binding) {
-    super.configureClientAction(binding);
-    binding.add(MyCustomRequestAction.class);
+@Override
+protected void configureActionHandlers(final MultiBinding<ActionHandler> binding) {
+    super.configureActionHandlers(binding);
+    binding.add(MyCustomActionHandler.class);
 }
 ```
 
@@ -243,12 +244,10 @@ protected void configureClientActions(final MultiBinding<Action> binding) {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-    protected configureClientActions(
-        binding: InstanceMultiBinding<string>
-    ): void {
-        super.configureClientActions(binding);
-        binding.add(MyCustomRequestAction.KIND);
-    }
+protected override configureActionHandlers(binding: InstanceMultiBinding<ActionHandlerConstructor>): void {
+    super.configureActionHandlers(binding);
+    binding.add(MyCustomActionHandler);
+}
 ```
 
 </details>
@@ -270,12 +269,12 @@ protected void configureClientActions(final MultiBinding<Action> binding) {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-    protected configureClientActions(
-        binding: InstanceMultiBinding<string>
-    ): void {
-        super.configureClientActions(binding);
-        binding.add(MyCustomRequestAction.KIND);
-    }
+protected configureClientActions(
+    binding: InstanceMultiBinding<string>
+): void {
+    super.configureClientActions(binding);
+    binding.add(MyCustomRequestAction.KIND);
+}
 ```
 
 </details>
@@ -292,7 +291,6 @@ The action dispatcher tracks all incoming request actions and automatically inte
 
 On the client, GLSP reuses the `IActionHandler` API of [Sprotty](https://github.com/eclipse/sprotty).
 Therefore, to create a new action handler, a class that implements the `IActionHandler` interface has to be created.
-
 
 ```ts
 @injectable()
