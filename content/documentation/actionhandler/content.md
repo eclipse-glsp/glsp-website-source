@@ -78,7 +78,7 @@ export class MyCustomAction implements Action {
 </details>
 </br>
 
-Each action specification has a unique “kind” and can optionally declare additional data properties
+Each action specification has a unique “kind” and can optionally declare additional data properties.
 We recommend defining the action kind as a static constant of the implementing class so that it can be accessed from other places, e.g. when registering the handler.
 Note that action instances need to be serializable to JSON.
 Therefore the class should only contain plain data properties and no additional business logic.
