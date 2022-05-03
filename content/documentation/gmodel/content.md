@@ -124,7 +124,7 @@ public class MyModelFactory implements GModelFactory {
          .addAll(entityNodes)
          .build();
 
-      modelState.setRoot(newModel);
+      modelState.updateRoot(newModel);
    }
 }
 ```
