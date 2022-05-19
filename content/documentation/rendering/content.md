@@ -85,11 +85,15 @@ The viewer queries all registered views and creates a new virtual DOM which is t
 Note that the `SLabelView` also checks whether the given element is visible and skips the SVG generation if the element is not visible in the diagram canvas.
 This check is optional but it’s highly recommended to implement it in your custom views as it heavily improves the rendering performance.
 
-The following sections give an overview of available default views in Sprotty and GLSP and how to configure them:
+### Default Views
+
+The following sections give an overview of available default views in Sprotty and GLSP and how to configure them.
 
 #### Default Sprotty Views
 
-##### CircularNodeView
+The following views are provided by the base framework [Sprotty](https://github.com/eclipse/sprotty).
+
+##### [CircularNodeView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/svg-views.tsx)
 
 A `CircularNodeView` creates a round shape with a radius computed from the shape's size (by default it computes the radius by the minimum of the shape's width or height and divides that by 2).
 The computation of the radius can be overriden and adapted to custom needs.
@@ -103,7 +107,7 @@ configureModelElement(
 );
 ```
 
-##### DiamondNodeView
+##### [DiamondNodeView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/svg-views.tsx)
 
 A `DiamondNodeView` creates a rhombus shape based on the shape's size.
 
@@ -116,9 +120,9 @@ configureModelElement(
 );
 ```
 
-##### ExpandButtonView
+##### [ExpandButtonView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/expand/views.tsx)
 
-The `ExpandButtonView` renders a SVG element in the shape of a triangle that allows exapandable parent elements to trigger expansion, for example to display further element information.
+The `ExpandButtonView` renders a SVG element in the shape of a triangle that allows expandable parent elements to trigger expansion, for example to display further element information.
 
 ```ts
 configureModelElement(
@@ -129,110 +133,10 @@ configureModelElement(
 );
 ```
 
-##### PreRenderedView
+##### [ForeignObjectView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/generic-views.tsx)
 
-The `PreRenderedView` visualizes a previously rendered piece of svg code as a separate SVG element.
-
-```ts
-configureModelElement(
-  context,
-  DefaultTypes.PRE_RENDERED,
-  PreRenderedElement | ShapedPreRenderedElement,
-  PreRenderedView
-);
-```
-
-##### RectangularNodeView
-
-A `RectangularNodeView` creates a rectangular shape based shape's size.
-
-```ts
-configureModelElement(
-  context,
-  DefaultTypes.NODE_RECTANGLE,
-  RectangularNode,
-  RectangularNodeView
-);
-```
-
-##### SGraphView
-
-The `SGraphView` renders the base svg canvas for an SModel and triggers the rendering of its children.
-
-```ts
-configureModelElement(context, DefaultTypes.GRAPH, GLSPGraph, SGraphView);
-```
-
-##### SLabelView
-
-The `SLabelView` renders a text element that contains the given label text.
-
-```ts
-configureModelElement(context, DefaultTypes.LABEL, SLabel, SLabelView);
-```
-
-##### SRoutingHandleView
-
-A `SRoutingHandleView` renders a circle shaped element that servers as routing point for routable elements (e.g. Edges).
-Its position is computed by either a register `EdgeRouterRegistry` or passed routing arguments.
-
-```ts
-configureModelElement(
-  context,
-  DefaultTypes.ROUTING_POINT,
-  SRoutingHandle,
-  SRoutingHandleView
-);
-```
-
-#### Default GLSP Views
-
-##### GEdgeView
-
-A `GEdgeView` renders a line element which is routed by the `EdgeRouterRegistry`.
-The view also triggers the rendering of additional elements (such as mouse handles) and edge children (such as edge labels or routing points).
-
-```ts
-configureModelElement(context, DefaultTypes.EDGE, SEdge, GEdgeView);
-```
-
-##### GIssueMarkerView
-
-A `GIssueMarkerView` renders a issue marker on top of shapes that have a validation issue.
-These issue markers are elements in the shape of an information, warning or error icon based on the severity of the issue.
-
-```ts
-configureModelElement(
-  context,
-  DefaultTypes.ISSUE_MARKER,
-  SIssueMarker,
-  GIssueMarkerView
-);
-```
-
-##### RoundedCornerNodeView
-
-A `RectangularNodeView` creates a rectangular shape based shape's size and computes and renders the corners in a rounded way, based on the given options (i.e. `getClipPathInsets`).
-
-```ts
-configureModelElement(context, DefaultTypes.NODE, SNode, RoundedCornerNodeView);
-```
-
-##### StructureCompartmentView
-
-```ts
-configureModelElement(
-  context,
-  "struct",
-  SCompartment,
-  StructureCompartmentView
-);
-```
-
-##### ForeignObjectView
-
-The `ForeignObjectView` renders a box , which is usually contained by a default node view, which takes care of resizing and moving of the element.
-The view then renders the provided code snippet, e.g. a `<pre>` element.
+The `ForeignObjectView` renders elements that are foreign to SVG, such as HTML, MathML, etc. as specified in their `namespace` and `code` property.
+Usually such an element is contained by a node view that enables features, such as resizing and moving of the element.
 
 ```ts
 configureModelElement(
@@ -246,7 +150,9 @@ configureModelElement(
 );
 ```
 
-An example use case for using a `ForeignObjectView` is for example a multiline-text-box.
+<details><summary>Example implementation</summary>
+
+A common example use case for using a `ForeignObjectView` is to benefit from word wrapping support of HTML to show multiline text box.
 Therefore we would create a custom text node (which extends the `ForeignObjectElement`) which also implements the `EditableLabel` interface.
 
 ```ts
@@ -295,6 +201,112 @@ configureModelElement(
   MultiLineTextNode,
   ForeignObjectView,
   { disable: [moveFeature, selectFeature], enable: [editLabelFeature] }
+);
+```
+
+</details>
+
+##### [PreRenderedView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/generic-views.tsx)
+
+The `PreRenderedView` visualizes a previously rendered piece of svg code as a separate SVG element.
+This enables putting SVG code directly in the graphical model, which may be useful for including complex images for certain use cases.
+However, usually it is recommended to create a dedicated element type and register a dedicated view, which produces custom SVG, as this yields more flexibility to take bounds, etc., into account.
+
+```ts
+configureModelElement(
+  context,
+  DefaultTypes.PRE_RENDERED,
+  PreRenderedElement | ShapedPreRenderedElement,
+  PreRenderedView
+);
+```
+
+##### [RectangularNodeView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/svg-views.tsx)
+
+A `RectangularNodeView` creates a rectangular shape based on the shape's size.
+
+```ts
+configureModelElement(
+  context,
+  DefaultTypes.NODE_RECTANGLE,
+  RectangularNode,
+  RectangularNodeView
+);
+```
+
+##### [SGraphView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+
+The `SGraphView` renders the base SVG canvas for an SModel and triggers the rendering of its children.
+
+```ts
+configureModelElement(context, DefaultTypes.GRAPH, GLSPGraph, SGraphView);
+```
+
+##### [SLabelView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+
+The `SLabelView` renders a text element that contains the given label text.
+
+```ts
+configureModelElement(context, DefaultTypes.LABEL, SLabel, SLabelView);
+```
+
+##### [SRoutingHandleView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+
+A `SRoutingHandleView` renders a circle shaped element that servers as routing point for routable elements (e.g. Edges).
+Its position is computed either by a registered `EdgeRouterRegistry` or the routing arguments of the element.
+
+```ts
+configureModelElement(
+  context,
+  DefaultTypes.ROUTING_POINT,
+  SRoutingHandle,
+  SRoutingHandleView
+);
+```
+
+#### Default GLSP Views
+
+The following views are provided by the [GLSP client](https://github.com/eclipse-glsp/glsp-client) framework.
+
+##### [GEdgeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/glsp-edge-view.tsx)
+
+A `GEdgeView` renders a line element which is routed by the `EdgeRouterRegistry`.
+The view also triggers the rendering of additional elements (such as mouse handles) and edge children (such as edge labels or routing points).
+
+```ts
+configureModelElement(context, DefaultTypes.EDGE, SEdge, GEdgeView);
+```
+
+##### [GIssueMarkerView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/issue-marker-view.tsx)
+
+A `GIssueMarkerView` renders an issue marker on top of shapes. This is used to show validation results on elements (see Model Validation).
+These issue markers are elements in the shape of an information, warning or error icon based on the severity of the issue.
+
+```ts
+configureModelElement(
+  context,
+  DefaultTypes.ISSUE_MARKER,
+  SIssueMarker,
+  GIssueMarkerView
+);
+```
+
+##### [RoundedCornerNodeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/rounded-corner-view.tsx)
+
+A `RectangularNodeView` creates a rectangular shape based shape's size and computes and renders the corners in a rounded way, based on the given options (i.e. `getClipPathInsets`).
+
+```ts
+configureModelElement(context, DefaultTypes.NODE, SNode, RoundedCornerNodeView);
+```
+
+##### [StructureCompartmentView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/compartments.tsx)
+
+```ts
+configureModelElement(
+  context,
+  "struct",
+  SCompartment,
+  StructureCompartmentView
 );
 ```
 

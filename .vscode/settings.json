@@ -10,7 +10,7 @@
   },
   "markdownlint.config": {
     "no-inline-html": {
-      "allowed_elements": ["br", "details", "kbd", "summary"]
+      "allowed_elements": ["br", "details", "em", "img", "kbd", "p", "summary"]
     }
   },
   "[json]": {

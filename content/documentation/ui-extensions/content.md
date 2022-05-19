@@ -8,29 +8,29 @@ title = "UI Extensions"
   sticky = true
 +++
 
-An UI Extension is a concept provided by the underlying framework Sprotty, which allows to display additional UI HTML elements on topf of a diagram.
+A UI Extension is a concept provided by the underlying framework Sprotty, which allows to display additional UI HTML elements on top of a diagram.
 
-It is often used to add UI controls to the diagram, good base examples are:
+It is often used to add UI controls to the diagram. It is also frequently used in the core GLSP functionality:
 
 - the GLSP [tool palette](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/protocol/src/action-protocol/tool-palette.ts)
 - the Sprotty [command palette](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/command-palette/command-palette.ts)
 - the Sprotty [EditLabelUI](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/edit/edit-label-ui.ts)
 
-#### Register and activate custom UI Extensions
+### Register and activate custom UI Extensions
 
 To implement a custom UI extension, it is necessary to extend the base [`AbstractUIExtension`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/base/ui-extensions/ui-extension.ts).
 This super class provides a base HTML element (`containerElement`) which is then the base for the custom UI elements.
 It also provides utility methods for showing/hiding or handling focus of the extension.
-To add custom UI elements, the abstract methods `initializeContents` shall be implemented.
+To add the actual UI elements to the DOM, the abstract method `initializeContents` must be implemented.
 
 [uiex-registry]: https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/base/ui-extensions/ui-extension-registry.ts
 
 The [UIExtensionRegistry][uiex-registry] allows to register multiple UIExtensions per diagram.
 
-To enable an UI Extension the corresponding Action or Command shall be used, namely [`SetUIExtensionVisibilityAction`][uiex-registry] or [`SetUIExtensionVisibilityCommand`][uiex-registry].
+To enable a UI Extension a [`SetUIExtensionVisibilityAction`][uiex-registry] or [`SetUIExtensionVisibilityCommand`][uiex-registry] with the respective UI Extension ID needs to be invoked.
 
 As already mentioned, there is a broad use case for UI extensions, hence also their trigger events can of course vary.
-UI extensions can be enabled via context menu entries, mouse click events, keyboard events or changes of the diagram itself, for example the change of the diagram's `EditMode`.
+UI extensions can be enabled practically with any event that can dispatch an action, e.g. via context menu entries, mouse click events, keyboard events or changes of the diagram itself, for example the change of the diagram's `EditMode`.
 
 For example:
 
@@ -43,7 +43,7 @@ The following GIF shows the different triggers of the the mentioned extensions:
 
 ![UI Extension Triggers](./ui-extension-triggers.gif)
 
-#### Button Overlay Showcase
+### Button Overlay Showcase
 
 The following section gives an overview of the necessary bits to create a very simple UI Extension that provides two buttons to center a diagram or fit it to the screen.
 This showcase is implemented on top of the Workflow example in the `glsp-client` and `glsp-theia-integration`.
@@ -158,15 +158,15 @@ bind(ButtonOverlay).toSelf().inSingletonScope();
 bind(TYPES.IUIExtension).toService(ButtonOverlay);
 ```
 
-Activate ui extension, for example directly after all necessary initially Actions where dispatched in [GLSPDiagramWidget#`dispatchInitialActions()`](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/packages/theia-integration/src/browser/diagram/glsp-diagram-widget.ts).
+To activate our UI extension, for example, alongside the initial actions, we can dispatch the `SetUIExtensionVisibilityAction` in [GLSPDiagramWidget#`dispatchInitialActions()`](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/packages/theia-integration/src/browser/diagram/glsp-diagram-widget.ts) after a certain delay.
 
 ```ts
-   protected dispatchInitialActions(): void {
-      ...
-      setTimeout(() => {
-         this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({ extensionId: "button-overlay", visible: true }));
-      }, 50);
-   }
+protected dispatchInitialActions(): void {
+  ...
+  setTimeout(() => {
+      this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({ extensionId: "button-overlay", visible: true }));
+  }, 50);
+}
 ```
 
 The outcome of this showcase is the following subtle UI overlay that offers to center the diagram or fit it to the screen:

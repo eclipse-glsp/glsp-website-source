@@ -56,6 +56,49 @@ GNode.builder()
 This node contains two label elements that should be layouted vertically (from top to bottom) using the `vbox` layouter.
 In addition, we specify options for that layouter by defining that the children should be centered horizontally.
 
+#### Layout Options
+
+To adapt the chosen Layout (for more details please see [below](#default-layouters)), the default Layout options [AbstractLayoutOptions](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/layout-options.ts) allow to configure:
+
+- `resizeContainer: boolean`</br>
+  Indicates, if the container is resizable depending on its children (e.g. `true` for `hbox` layout)
+- `paddingTop: number`</br>
+  Sets the height of the padding area on the top of an element to be positioned in pixel.
+- `paddingBottom: number`</br>
+  Sets the height of the padding area on the bottom of an element to be positioned in pixel.
+- `paddingLeft: number`</br>
+  Sets the height of the padding area to the left of an element to be positioned in pixel.
+- `paddingRight: number`</br>
+  Sets the height of the padding area to the right of an element to be positioned in pixel.
+- `paddingFactor: number`</br>
+  Defines the multiplication factor for an element's size, which is then added as padding space around this element.
+  E.g. For the `stack` layout `1` does not add additional padding to the element, `2` doubles the padding area around the element by its size.
+- `minWidth: number`</br>
+  Defines the minimum width of an element to be positioned.
+- `minHeight: number`</br>
+  Defines the minimum height of an element to be positioned.
+
+<details open><summary>Usage Java GLSP Server</summary>
+
+To use the Layout options on the GLSP Java Server, there are several utility classes for option keys and values, for example:
+
+- Edge label placement `GConstants.EdgeSide`: `LEFT` | `RIGHT` | `TOP` | `BOTTOM` | `ON`
+- Horizontal alignment `GConstants.HAlign`: `LEFT` | `CENTER` | `RIGHT`
+
+For more details, please see [`GLayoutOptions`](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.graph/src/org/eclipse/glsp/graph/builder/impl/GLayoutOptions.java)
+and [`GConstants`](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.graph/src/org/eclipse/glsp/graph/util/GConstants.java).
+
+</details>
+
+<details><summary>Usage Node GLSP Server</summary>
+
+To use the Layout options on the GLSP Node Server, the support via utility classes for option keys and values is currently very limited, e.g. only the [EdgeSide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/graph/src/gedge-layoutable.ts) type is available.
+Therefore please use the dedicated string values in the meantime, e.g. `"hAlign"` `"center"` and so on.
+
+</details>
+
+</br>
+
 #### Default Layouters
 
 In general, layouters can be applied to elements that are compartments, in order to layout the containers based on the sizes of their children.
@@ -64,22 +107,37 @@ There are four built-in layout types that can be used: `hbox`, `vbox`, `freeform
 ##### `hbox` Layout
 
 The [`HBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/hbox-layout.ts) layouts children of a container in a horizontal (left to right) direction.
-This layouter provides additional layout options (i.e. preferred sizes and grab options) via `HBoxLayoutOptionsExt` which defaults values can be overridden.
 
-- The layout options `prefWidth` and `prefHeight` define the preferred size of the container element (for example if all children would be deleted, this size is applied to the container element).
-- The special layout options `hGrab` and `vGrab` (boolean flags) indicate, if the remaining size (horizontally or vertically) can be grabbed by children.
+This layouter provides additional layout options via `HBoxLayoutOptionsExt`:
 
-<details open><summary>Example Usage Java GLSP Server</summary>
+- `hGap`: number</br>
+  Defines a horizontal gap between elements in the same container in pixel.
+- `vAlign`: VAlignment = 'top' | 'center' | 'bottom'</br>
+  Defines the vertical alignment of the element to be positioned.
+- `hGrab`: boolean</br>
+  Indicates whether the remaining horizontal size can be grabbed by its children.
+- `vGrab`: boolean</br>
+  Indicates whether the remaining vertical size can be grabbed by its children.
+- `prefWidth`: number | null</br>
+  Defines the preferred width of the container element, which will be assigned, if there is no manually specified width and the sizes of its children aren't requiring a larger width to fit into the container.
+- `prefHeight`: number | null</br>
+  Defines the preferred height of the container element, which will be assigned, if there is no manually specified height and the sizes of its children aren't requiring a larger height to fit into the container.
+
+According to the layout options, the children of the container are layouted and as concluding step, the final bounds of the container are computed based on the sum of this children bounds.
+
+###### `hbox` Layout Example
 
 This example creates a compartment of the default type `DefaultTypes.COMPARTMENT` using the `hbox` layout.
 It adds two children, one icon compartment (with custom type `"icon"`) and one label.
-The layout options define a horizontal gap of `3` between the children of the compartment.
+The layout options define a horizontal gap of `15` pixel between the children of the compartment.
+
+<details open><summary> Java GLSP Server</summary>
 
 ```java
    new GCompartmentBuilder()
          .type(DefaultTypes.COMPARTMENT)
          .layout(GConstants.Layout.HBOX)
-         .layoutOptions(new GLayoutOptions().hGap(3))
+         .layoutOptions(new GLayoutOptions().hGap(15))
          .add(new GCompartmentBuilder()
             .type("icon")
             .build())
@@ -98,7 +156,7 @@ The layout options define a horizontal gap of `3` between the children of the co
 GCompartment.builder()
   .builder()
   .layout("hbox")
-  .addLayoutOption("hGap", 3)
+  .addLayoutOption("hGap", 15)
   .add(GCompartment.builder().type("icon").build())
   .add(GLabel.builder().text("label").build())
   .build();
@@ -106,31 +164,60 @@ GCompartment.builder()
 
 </details>
 
-According to the layout options, the children of the container are layouted and as concluding step, the final bounds of the container are computed based on the maximum bounds of its children.
+</br>
+
+On the client side, we need to configure (besides the default elements `SCompartment` and `SLabel`) a custom `Icon` element and a `IconView` like this: `configureModelElement(context, 'icon', Icon, IconView)`.
+The [`Icon` element definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/model.ts) and the [`IconView` definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/workflow-views.tsx) are taken from the workflow example.
+
+The resulting element with the obvious horizontal gap between the child elements is shown in the following image:
+
+<p align="center">
+    <img src="./hbox-layout-example.png" alt="example-hbox-layout">
+</p>
+<p  align="center">
+    <em>Using no `hGap` layout option (left) or `hGap` layout option with 15 pixel (right)</em>
+</p>
+
+</br></br>
 
 ##### `vbox` Layout</br>
 
 The [`VBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/vbox-layout.ts) layouts children of a container in a vertical (top to bottom) direction.
-This layouter provides additional layout options via `VBoxLayoutOptionsExt` which defaults values can be overridden.
-These additional layout options are the same as for the `hbox` layout.
 
-According to the layout options, the children of the container are layouted and as concluding step, the final bounds of the container are computed based on the maximum bounds of its children.
+This layouter provides additional layout options via `VBoxLayoutOptionsExt`:
 
-<details open><summary>Example Usage Java GLSP Server</summary>
+- `vGap`: number</br>
+  Defines a vertical gap between elements in the same container in pixel.
+- `hAlign`: HAlignment = 'left' | 'center' | 'right'</br>
+  Defines the horizontal alignment of the element to be positioned.
+- `hGrab`: boolean</br>
+  Indicates whether the remaining horizontal size can be grabbed by its children.
+- `vGrab`: boolean</br>
+  Indicates whether the remaining vertical size can be grabbed by its children.
+- `prefWidth`: number | null</br>
+  Defines the preferred width of the container element, which will be assigned, if there is no manually specified width and the sizes of its children aren't requiring a larger width to fit into the container.
+- `prefHeight`: number | null</br>
+  Defines the preferred height of the container element, which will be assigned, if there is no manually specified height and the sizes of its children aren't requiring a larger height to fit into the container.
+
+According to the layout options, the children of the container are layouted and as concluding step, the final bounds of the container are computed based on the sum of this children bounds.
+
+###### `vbox` Layout Example
 
 This example creates a compartment of the default type `DefaultTypes.COMPARTMENT` using the `vbox` layout.
-It adds two children labels, which are aligned left horizontally.
+It adds two children labels, which are positioned vertically from top to bottom and are centered horizontally.
+
+<details open><summary> Java GLSP Server</summary>
 
 ```java
    new GCompartmentBuilder()
          .type(DefaultTypes.COMPARTMENT)
          .layout(GConstants.Layout.VBOX)
-         .layoutOptions(new GLayoutOptions().hAlign(GConstants.HAlign.LEFT))
-         .add(new GLabelBuilder()
-            .text("First child label")
+         .layoutOptions(new GLayoutOptions().hAlign(GConstants.HAlign.CENTER))
+         .add(new GCompartmentBuilder()
+            .type("icon")
             .build())
          .add(new GLabelBuilder()
-            .text("Second child label")
+            .text("Label")
             .build())
          .build();
    .build();
@@ -144,47 +231,63 @@ It adds two children labels, which are aligned left horizontally.
 GCompartment.builder()
   .builder()
   .layout("vbox")
-  .addLayoutOption("hAlign", "left")
-  .add(GLabel.builder().text("First child label").build())
-  .add(GLabel.builder().text("Second child label").build())
+  .addLayoutOption("hAlign", "center")
+  .add(GCompartment.builder().type("icon").build())
+  .add(GLabel.builder().text("Label").build())
   .build();
 ```
 
 </details>
 
+</br>
+
+On the client side, we use again the `Icon` element definition and `IconView`, please see section [`hbox` Layout Example](#hbox-layout-example).
+
+The resulting element positions its children vertically from top to bottom and aligns each element horizontally, this is shown in the following image:
+
+<p align="center">
+    <img src="./vbox-layout-example.png" alt="example-vbox-layout">
+</p>
+<p  align="center">
+    <em>Center children horizontally (left image) or align children to the left (right image)</em>
+</p>
+
+</br></br>
+
 ##### `freeform` Layout</br>
 
-The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/freeform-layout.ts) layouts children of a container according to their explicit `x/y` positions inside the parent container (relative position).
-This layouter uses the default `AbstractLayoutOptions` and provides default values (e.g. `0` padding), which of course can also be overridden.
+The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/freeform-layout.ts) positions the children of a container according to their explicit, parent-relative `x/y` coordinates inside the parent container.
+This layouter uses the default [Layout Options](#layout-options) and provides suitable default values (e.g. `resizeContainer: true`).
 
-Again here, the children of the container are layouted according to their explicit positions inside the container and as concluding step, the final bounds of the container are computed based on the maximum bounds of its children.
+Again here, the children of the container are positioned according to their explicit positions inside the container and as concluding step, the final bounds of the container are computed based on the required bounds of its children.
 
-<details open><summary>Example Usage Java GLSP Server</summary>
+###### `freeform` Layout Example
 
 This example creates a compartment of the custom type `"comp:structure"` using the `freeform` layout.
-It adds one child node, at the relative position `(5, 5)` of the parent.
+It adds one child node, at the relative position `(75, 35)` of the parent container.
+The parent container defines its preferred size of `250 x 125`.
+
+<details open><summary> Java GLSP Server</summary>
 
 ```java
-   GDimension containerPrefSize = GraphUtil.dimension(20 /*width*/, 10 /*height*/);
-   GDimension childSize = GraphUtil.dimension(22 /*width*/, 7 /*height*/);
-   GPoint childPosition = GraphUtil.point(5 /*x*/, 5 /*y*/);
+  GDimension containerPrefSize = GraphUtil.dimension(250 /*width*/, 125 /*height*/);
+  GPoint childPosition = GraphUtil.point(75 /*x*/, 35 /*y*/);
 
-   Map<String, Object> layoutOptions = new HashMap<>();
-   layoutOptions.put(H_GRAB, true);
-   layoutOptions.put(V_GRAB, true);
-   layoutOptions.put(GLayoutOptions.KEY_PREF_WIDTH, containerPrefSize.getWidth());
-   layoutOptions.put(GLayoutOptions.KEY_PREF_HEIGHT, containerPrefSize.getHeight());
-   new GCompartmentBuilder()
-      .type("comp:structure")
-      .layout(GConstants.Layout.FREEFORM)
-      .layoutOptions(layoutOptions)
-      .add(
-         new GNodeBuilder(DefaultTypes.NODE)
-            .position(childPosition)
-            .size(childSize)
-            .build()
-      )
-      .build();
+  Map<String, Object> layoutOptions = new HashMap<>();
+  layoutOptions.put(H_GRAB, true);
+  layoutOptions.put(V_GRAB, true);
+  layoutOptions.put(GLayoutOptions.KEY_PREF_WIDTH, containerPrefSize.getWidth());
+  layoutOptions.put(GLayoutOptions.KEY_PREF_HEIGHT, containerPrefSize.getHeight());
+  new GCompartmentBuilder()
+    .type("comp:structure")
+    .layout(GConstants.Layout.FREEFORM)
+    .layoutOptions(layoutOptions)
+    .add(
+      new GNodeBuilder(DefaultTypes.NODE)
+        .position(childPosition)
+        .build()
+    )
+    .build();
 ```
 
 </details>
@@ -192,9 +295,8 @@ It adds one child node, at the relative position `(5, 5)` of the parent.
 <details ><summary> Node GLSP Server</summary>
 
 ```ts
-const containerPrefSize = { width: 20, height: 10 };
-const childSize = { width: 22, height: 7 };
-const childPosition = { x: 5, y: 5 };
+const containerPrefSize = { width: 250, height: 125 };
+const childPosition = { x: 75, y: 35 };
 
 const layoutOptions = {
   ["hGrab"]: true,
@@ -206,36 +308,121 @@ return GCompartment.builder()
   .type("comp:structure")
   .layout("freeform")
   .addLayoutOptions(layoutOptions)
-  .add(
-    GNode.builder().type("node").position(childPosition).size(childSize).build()
-  )
+  .add(GNode.builder().type("node").position(childPosition).build())
   .build();
 ```
 
 </details>
 
+</br>
+
+On the client side, configure the `"comp:structure"` compartment as `configureModelElement(context, 'struct', SCompartment, StructureCompartmentView)`.
+
+The resulting compartment element positions its child at the desired position.
+The compartment defines its preferred size, which is used if the children do not enlarge the container. If the preferred size is omitted, the container's size depends on its children.
+
+<p align="center">
+    <img src="./freeform-layout-example.png" alt="freeform-layout-example">
+</p>
+<p  align="center">
+    <em>Container with preferred size (left image) or without preferred size (right image)</em>
+</p>
+
+</br></br>
+
 ##### `stack` Layout</br>
 
-The [`StackLayouter`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/stack-layout.ts) layouts children of a container according to their absolute position.
-This layouter provides additional layout options (i.e. padding factor, horizontal and vertical alignment) via `StackLayoutOptions` which defaults values can be overridden.
+The [`StackLayouter`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/stack-layout.ts) positions the children by stacking them on top of each other considering the given alignment.
 
-The children of the container are layouted according to their explicit positions. Based on that, the maximum height and width are computed and are used as bounds for the container.
+This layouter provides additional layout options via `StackLayoutOptions`:
 
-##### Common Layout Options
+- `vAlign`: VAlignment = 'top' | 'center' | 'bottom'</br>
+  Defines the vertical alignment of the element to be positioned.
+- `hAlign`: HAlignment = 'left' | 'center' | 'right'</br>
+  Defines the horizontal alignment of the element to be positioned.
 
-- Vertical alignment `GConstants.VAlign`: `TOP` | `CENTER` | `BOTTOM`
-- Horizontal alignment `GConstants.HAlign`: `LEFT` | `CENTER` | `RIGHT`
-- Preferred height / width `GLayoutOptions.KEY_PREF_WIDTH` | `GLayoutOptions.KEY_PREF_HEIGHT`
+The children of the container are positioned according to their order and the defined alignment. Based on that, the maximum height and width are computed and are used as bounds for the container.
 
-For more details, please see [`GLayoutOptions`](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.graph/src/org/eclipse/glsp/graph/builder/impl/GLayoutOptions.java)
-and [`GConstants`](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.graph/src/org/eclipse/glsp/graph/util/GConstants.java).
+###### `stack` Layout Example
+
+This example creates a compartment of the custom type `"comp:structure"` using the `freeform` layout.
+It adds one child node, at the relative position `(75, 35)` of the parent container.
+The parent container defines its preferred size of `250 x 125`.
+
+<details open><summary> Java GLSP Server</summary>
+
+```java
+  Map<String, Object> layoutOptions = new HashMap<>();
+  layoutOptions.put(GLayoutOptions.KEY_H_ALIGN, GConstants.HAlign.CENTER);
+  layoutOptions.put(GLayoutOptions.KEY_RESIZE_CONTAINER, false);
+  new GCompartmentBuilder()
+    .type(DefaultTypes.COMPARTMENT)
+    .layout(GConstants.Layout.STACK)
+    .layoutOptions(layoutOptions)
+    .size(GraphUtil.dimension(35, 35))
+    .add(
+      new GNodeBuilder("circle")
+        .size(GraphUtil.dimension(35, 35))
+        .build()
+    )
+    .add(
+      new GLabelBuilder()
+        .text("A")
+        .addCssClass("circle-letter")
+        .build()
+    )
+    .build();
+```
+
+</details>
+
+<details ><summary> Node GLSP Server</summary>
+
+```ts
+const layoutOptions = {
+  ["hAlign"]: "center",
+  ["resizeContainer"]: false,
+};
+return GCompartment.builder()
+  .type("comp")
+  .layout("struct")
+  .addLayoutOptions(layoutOptions)
+  .add(GNode.builder().type("circle").size(35, 35).build())
+  .add(GLabel.builder().text("A").addCssClass("circle-letter").build())
+  .build();
+```
+
+</details>
+
+</br>
+
+On the client side, configure the `"circle"` node element as `configureModelElement(context, 'circle', CircularNode, CircularNodeView)`.
+
+To style the letter label, we add this simple CSS rule as well:
+
+```css
+.circle-letter {
+  fill: lightsteelblue;
+}
+```
+
+The resulting compartment positions its children on top of each other and centers the label horizontally.
+
+<p align="center">
+    <img src="./struct-layout-example.png" alt="freeform-layout-example">
+</p>
+<p  align="center">
+    <em>Container that stacks its children and positions the label to the left (1), in the center (2) and to the right (3)</em>
+</p>
+
+</br></br>
 
 #### Custom Layouter
 
 Additional custom layouters can be contributed by creating a layouter class that extends the `AbstractLayouter` and optionally provide custom options that extend the `AbstractLayoutOptions`.
 
 In the following example we show a simple custom layouter that extends the `VBoxLayouterExt` and provides a custom layout option,
-which increases all children sizes by this value in both width and height, the default value is `50px`.
+which increases the widths and heights of all children by a specified value, the default value is `50` pixel.
 
 <details open><summary>GLSP Client</summary>
 
@@ -290,7 +477,8 @@ const myDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 
 </details>
 
-For independent implementations that extend the `AbstractLayout`, it will be bound as follows:
+Custom layouter, which don't overwrite existing ones, should extend the `AbstractLayout` and can be registered for a certain layouter key,
+e.g. `MyCustomLayouter.KIND`, that is used in the `layout` property of compartments as follows:
 
 <details open><summary>GLSP Client</summary>
 
@@ -302,9 +490,9 @@ const myDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 
 </details>
 
-Then the custom layouter is ready to use:
+With that, the custom layouter is ready to be used by compartments in the graphical model:
 
-<details open><summary>Example Usage Java GLSP Server</summary>
+<details open><summary> Java GLSP Server</summary>
 
 ```java
    new GCompartmentBuilder()
@@ -348,7 +536,7 @@ For example let's have a look at the following `GLabel`:
 ```java
 new GLabelBuilder()
    .edgePlacement(new GEdgePlacementBuilder()
-      .side("top")
+      .side(GConstants.EdgeSide.TOP)
       .position(0.5)
       .build())
    .add(new GLabelBuilder().text("MyLabel").build())
