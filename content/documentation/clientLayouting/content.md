@@ -154,7 +154,7 @@ The layout options define a horizontal gap of `15` pixel between the children of
 
 ```ts
 GCompartment.builder()
-  .builder()
+  .type("comp")
   .layout("hbox")
   .addLayoutOption("hGap", 15)
   .add(GCompartment.builder().type("icon").build())
@@ -229,7 +229,7 @@ It adds two children labels, which are positioned vertically from top to bottom 
 
 ```ts
 GCompartment.builder()
-  .builder()
+  .type("comp")
   .layout("vbox")
   .addLayoutOption("hAlign", "center")
   .add(GCompartment.builder().type("icon").build())
@@ -304,7 +304,7 @@ const layoutOptions = {
   ["prefWidth"]: containerPrefSize.width,
   ["prefHeight"]: containerPrefSize.height,
 };
-return GCompartment.builder()
+GCompartment.builder()
   .type("comp:structure")
   .layout("freeform")
   .addLayoutOptions(layoutOptions)
@@ -383,7 +383,7 @@ const layoutOptions = {
   ["hAlign"]: "center",
   ["resizeContainer"]: false,
 };
-return GCompartment.builder()
+GCompartment.builder()
   .type("comp")
   .layout("struct")
   .addLayoutOptions(layoutOptions)
