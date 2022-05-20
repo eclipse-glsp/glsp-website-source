@@ -96,7 +96,7 @@ The following views are provided by the base framework [Sprotty](https://github.
 ##### [CircularNodeView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/svg-views.tsx)
 
 A `CircularNodeView` creates a round shape with a radius computed from the shape's size (by default it computes the radius by the minimum of the shape's width or height and divides that by 2).
-The computation of the radius can be overriden and adapted to custom needs.
+The computation of the radius can be overridden and adapted to custom needs.
 
 ```ts
 configureModelElement(

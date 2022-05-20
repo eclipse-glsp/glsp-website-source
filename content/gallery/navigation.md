@@ -15,4 +15,4 @@ post = "©  logi.cals GmbH"
   image = "navigation.gif"
 +++
 
-A custom editor showing the navigation bewteen a diagram and source code.
+A custom editor showing the navigation between a diagram and source code.

@@ -15,4 +15,4 @@ title = "Validation Marker"
   image = "validationmarker.gif"
 +++
 
-A custom editor showing Validation Marker and the Problem View integration
+A custom editor showing Validation Marker and the Problem View integration.

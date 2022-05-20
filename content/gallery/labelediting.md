@@ -15,4 +15,4 @@ post = "©  logi.cals GmbH"
   image = "labelediting.gif"
 +++
 
-A custom editor showing avcanced Label editing and Auto Completion.
+A custom editor showing advanced Label editing and Auto Completion.

@@ -26,8 +26,8 @@ The graphical model is typically composed of the following elements.
 
 - **GModelRoot**: Each graphical model must have exactly one root
   - **GShapeElement**: A graphical element is represented by a shape with visual bounds (position and size).
-  Note that such elements can be nested based on their parent-child relationship.
-  There are a the following concrete sub-types of shapes:
+    Note that such elements can be nested based on their parent-child relationship.
+    There are a the following concrete sub-types of shapes:
     - **GNode**: Representation of a logical diagram node
     - **GPort**: Ports are typically children of nodes and serve as connection points for edges
     - **GLabel**: Representation of a text label
@@ -95,7 +95,7 @@ protected override bindGModelFactory(): BindingTarget<GModelFactory> {
 
 For the sake of an example, let’s assume that the source model is a simple list of named entities.
 Each entity should be visualized as a node with a label, which indicates its name.
- Then the corresponding `ModelFactory` could look as follows.
+Then the corresponding `ModelFactory` could look as follows.
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -136,27 +136,27 @@ public class MyModelFactory implements GModelFactory {
 ```ts
 @injectable()
 export class MyModelFactory implements GModelFactory {
-    @inject(MyModelState)
-    protected modelState: MyModelState;
+  @inject(MyModelState)
+  protected modelState: MyModelState;
 
-    createModel(): void {
-        const entities = this.modelState.getModel().getEntities();
+  createModel(): void {
+    const entities = this.modelState.getModel().getEntities();
 
-        const entityNodes = entities.map(entity =>
-            new GNodeBuilder(GNode).id('node:entity').layout('vbox')
-            .add(new GLabelBuilder(GLabel)
-                .text(entity.name)
-                .build())
-            .build()
-        );
+    const entityNodes = entities.map((entity) =>
+      new GNodeBuilder(GNode)
+        .id("node:entity")
+        .layout("vbox")
+        .add(new GLabelBuilder(GLabel).text(entity.name).build())
+        .build()
+    );
 
-        const newModel = new GGraphBuilder(GGraph)
-            .id('entity-graph')
-            .addChildren(...entityNodes)
-            .build();
+    const newModel = new GGraphBuilder(GGraph)
+      .id("entity-graph")
+      .addChildren(...entityNodes)
+      .build();
 
-        this.modelState.root = newModel;
-    }
+    this.modelState.root = newModel;
+  }
 }
 ```
 
@@ -184,7 +184,7 @@ We can define such an element by simply subclassing the `SEdge` class:
 
 ```ts
 export class WeightedEdge extends SEdge {
-   probability?: string;
+  probability?: string;
 }
 ```
 
@@ -206,18 +206,20 @@ For the node _GLSP server_ the new `WeightedEdge` type can be declared similar t
 
 ```ts
 export class WeightedEdge extends GEdge {
-    probability?: string;
+  probability?: string;
 }
 ```
 
 To use the builder API for `WeightedEdge` creation we also have to implement a `WeightedEdgeBuilder` that extends the default `GEdgeBuilder`.
 
 ```ts
-export class WeightedEdgeBuilder<E extends WeightedEdge = WeightedEdge> extends GEdgeBuilder<E> {
-    probability(probability: string): this {
-        this.proxy.probability = probability;
-        return this;
-    }
+export class WeightedEdgeBuilder<
+  E extends WeightedEdge = WeightedEdge
+> extends GEdgeBuilder<E> {
+  probability(probability: string): this {
+    this.proxy.probability = probability;
+    return this;
+  }
 }
 ```
 
@@ -226,7 +228,7 @@ export class WeightedEdgeBuilder<E extends WeightedEdge = WeightedEdge> extends 
 #### Java GLSP Server
 
 When using the _Java GLSP server_, a new Ecore model that extends the default "graph.ecore" model has to be created to declare new model elements.
-For more details, please have a look at the "workflow-graph.ecore" model in the [GLSP Workflow example](https://github.com/eclipse-glsp/glsp-examples). 
+For more details, please have a look at the "workflow-graph.ecore" model in the [GLSP Workflow example](https://github.com/eclipse-glsp/glsp-examples).
 Once the `WeightedEdge` is specified in the Ecore model, the corresponding source code has to be generated.
 Now the `GraphExtension` API can be used to configure the "workflow-graph.ecore" for the workflow diagram language.
 A class that implements the the corresponding interface has to created:

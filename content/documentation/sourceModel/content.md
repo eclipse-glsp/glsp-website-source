@@ -106,7 +106,7 @@ protected bindModelState(): BindingTarget<ModelState> {
 The registered implementation of the source model storage needs to provide two functionalities:
 
 1. Loading source models, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction), and adding them into the session’s model state.
-The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, a database, etc.).
+   The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, a database, etc.).
 2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction).
 
 <details open><summary>Java GLSP Server</summary>
@@ -132,12 +132,12 @@ public class MySourceModelStorage implements SourceModelStorage {
       final YourModel model = modelState.getModel();
       // get the information to know where to store your model
       final String uri = action.getFileUri().get();
-      
+
       try {
          // store your model
       } catch (IOException e) {
          LOG.error(e);
-         throw new GLSPServerException("An error occured while saving the model.", e);
+         throw new GLSPServerException("An error occurred while saving the model.", e);
       }
    }
 
@@ -168,7 +168,7 @@ export class MySourceModelStorage implements SourceModelStorage {
       const model = this.modelState.model;
       // get the information to know where to store your model
       const uri = this.modelState.sourceUri;
-      
+
       try {
          // store your model
       } catch (error) {
