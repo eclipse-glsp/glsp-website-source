@@ -7,4 +7,4 @@ weight = 50
   url = ""
 +++
 
-Please use our [GitHub repository](https://github.com/eclipse-glsp/glsp) to report features requests and bugs,
+Please use our [GitHub repository](https://github.com/eclipse-glsp/glsp) to report features requests and bugs.

@@ -11,7 +11,7 @@ title = "Actions & Action Handler"
 ### Overview
 
 The client and the server communicate bidirectionally by sending actions via JSON-RPC.
-In addition, they are also used for the internal event flow in both the *GLSP server* and the *GLSP client*.
+In addition, they are also used for the internal event flow in both the _GLSP server_ and the _GLSP client_.
 Any service, mouse tool, etc. can issue actions by invoking the action dispatcher, either on the client or the server.
 
 The action dispatcher – there is one on the client and one on the server – is the central component responsible for dispatching actions to their designated action handlers.
@@ -25,7 +25,7 @@ When the dispatcher receives a new action for dispatching, it determines whether
 The dispatcher distinguishes between notifications and request-response action pairs.
 Notification actions are one-way actions transferred between client and server.
 This means when the action dispatcher dispatches a notification it does not wait for a response and directly continues with dispatching the next incoming action.
-Request actions are typically issued by the *GLSP client* and can be used to block client-side action dispatching until the server has sent a corresponding response action.
+Request actions are typically issued by the _GLSP client_ and can be used to block client-side action dispatching until the server has sent a corresponding response action.
 
 GLSP defines the standard action types of the [graphical language server protocol](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
 However, adopters can add new custom action types.
@@ -67,14 +67,13 @@ public class MyCustomAction extends Action {
 
 ```ts
 export class MyCustomAction implements Action {
-    static readonly KIND = 'myCustomKind';
-    kind = MyCustomAction.KIND;
+  static readonly KIND = "myCustomKind";
+  kind = MyCustomAction.KIND;
 
-    constructor(public readonly additionalInformation: string) {
-        
-    }
+  constructor(public readonly additionalInformation: string) {}
 }
 ```
+
 </details>
 </br>
 
@@ -114,11 +113,16 @@ public class MyCustomRequestAction extends RequestAction<MyCustomResponseAction>
 <details open><summary>GLSP Client/Node GLSP Server</summary>
 
 ```ts
-export class MyCustomRequestAction implements RequestAction<MyCustomResponseAction> {
-    static readonly KIND = 'myCustomRequest';
-    kind = MyCustomRequestAction.KIND;
+export class MyCustomRequestAction
+  implements RequestAction<MyCustomResponseAction>
+{
+  static readonly KIND = "myCustomRequest";
+  kind = MyCustomRequestAction.KIND;
 
-    constructor(public readonly additionalInformation: string, public readonly requestId = '') {}
+  constructor(
+    public readonly additionalInformation: string,
+    public readonly requestId = ""
+  ) {}
 }
 ```
 
@@ -127,7 +131,6 @@ export class MyCustomRequestAction implements RequestAction<MyCustomResponseActi
 
 Each request action has a “requestId” and defines its response action as a type parameter.
 Of course, the response action specification has to be specified as well:
-
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -147,12 +150,11 @@ public class MyCustomResponseAction extends ResponseAction {
 
 ```ts
 export class MyCustomResponseAction implements ResponseAction {
-    static readonly KIND = 'myCustomResponse';
-    kind = MyCustomResponseAction.KIND;
+  static readonly KIND = "myCustomResponse";
+  kind = MyCustomResponseAction.KIND;
 
-    constructor(public responseId = '') {}
+  constructor(public responseId = "") {}
 }
-
 ```
 
 </details>
@@ -182,8 +184,8 @@ Response actions don’t necessarily have to be part of a response-request actio
 
 To create a new action handler, a class that implements the `ActionHandler` interface has to be created.
 In general, an action handler can handle one or more action kinds.
-However, handling multiple action kinds is typically reserved for rather uncommon edge cases. 
-Therefore, the Java GLSP server provides an abstract base class that is designed for the single-action-kind-per-hanlder use case.
+However, handling multiple action kinds is typically reserved for rather uncommon edge cases.
+Therefore, the Java GLSP server provides an abstract base class that is designed for the single-action-kind-per-handler use case.
 
 <details open><summary>Java GLSP Server</summary>
 
@@ -209,15 +211,15 @@ public class MyCustomActionHandler extends AbstractActionHandler<MyCustomRespons
 ```ts
 @injectable()
 export class MyCustomActionHandler implements ActionHandler {
-    actionKinds = [MyCustomRequestAction.KIND];
+  actionKinds = [MyCustomRequestAction.KIND];
 
-    execute(action: MyCustomRequestAction): MaybePromise<Action[]> {
-        // implement your custom logic to handle the action
+  execute(action: MyCustomRequestAction): MaybePromise<Action[]> {
+    // implement your custom logic to handle the action
 
-        // Finally issue response actions
-        // If no response actions should be issued '[]' can be used;
-        return [new MyCustomResponseAction()];
-    }
+    // Finally issue response actions
+    // If no response actions should be issued '[]' can be used;
+    return [new MyCustomResponseAction()];
+  }
 }
 ```
 
@@ -294,15 +296,15 @@ Therefore, to create a new action handler, a class that implements the `IActionH
 
 ```ts
 @injectable()
-export class MyCustomResponseActionHandler implements IActionHandler{
-    handle(action: MyCustomResponseAction): void | Action {
-        // implement your custom logic to handle the action
-        // Optionally issue a response action
-    }
+export class MyCustomResponseActionHandler implements IActionHandler {
+  handle(action: MyCustomResponseAction): void | Action {
+    // implement your custom logic to handle the action
+    // Optionally issue a response action
+  }
 }
 ```
 
-The `handle()` method has to be implemented to provide the custom logic of your action handler. 
+The `handle()` method has to be implemented to provide the custom logic of your action handler.
 It optionally returns a response action that should be dispatched after the handler execution.
 
 A dedicated configuration function is available to configure the new action handler in the diagram module (“di.config.ts”):
@@ -317,5 +319,5 @@ const diagramModule = new ContainerModule((bind, _unbind, isBound, rebind) => {
 The `configureActionHandler()` function takes the inversify binding context, the action kind that should be handled, and the action handler class, as input.
 It registers the action handler for the given action kind, so that it can be retrieved by the action dispatcher.
 
-Note that we don’t have to explicitly declare which actions are handled by the GLSP Server. 
+Note that we don’t have to explicitly declare which actions are handled by the GLSP Server.
 The GLSP server sends this information during the initialization process and the GLSP client automatically sets up the necessary action (handler) registrations.
