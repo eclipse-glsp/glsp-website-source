@@ -142,7 +142,7 @@ However, there are recurring popular choices, for which GLSP provides base modul
 * [Integration for EMF models](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF models with a separate notation model](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF.cloud model server](https://github.com/eclipse-emfcloud/modelserver-glsp-integration)
-* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/di/GModelJsonDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-node/src/gmodel-lib/gmodel-diagram-module.ts)
+* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/gmodel/GModelDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-node/src/gmodel-lib/gmodel-diagram-module.ts)
 
 ### Platform Integrations
 

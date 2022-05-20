@@ -4,7 +4,7 @@ weight = 30
 
 [asset]
   icon = "fab fa-soundcloud"
-  url = "documentation/architecture/#platform-integrations"
+  url = "documentation/integrations/#platform-integrations"
 +++
 
 <p style="margin-left: 5px; margin-right: 5px; text-align: justify">
