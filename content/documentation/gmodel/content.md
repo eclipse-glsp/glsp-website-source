@@ -155,7 +155,7 @@ export class MyModelFactory implements GModelFactory {
       .addChildren(...entityNodes)
       .build();
 
-    this.modelState.root = newModel;
+    this.modelState.updateRoot(newModel);
   }
 }
 ```
