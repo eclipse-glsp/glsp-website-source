@@ -6,8 +6,8 @@ weight = 100
 background = "dark" # can influence the text color
 particles = true
 
-title = "Graphical Language Server Platform (GLSP)"
-subtitle = "Eclipse Graphical Language Server Platform (GLSP)"
+title = "Graphical Language Server Platform™ (GLSP)"
+subtitle = "Eclipse GLSP™ <br/><span style=\"font-size: 0.65em; color: lightgrey\">Graphical Language Server Platform for next-generation diagram editors</span>"
 
 [header]
 
