@@ -99,9 +99,10 @@ Therefore please use the dedicated string values in the meantime, e.g. `"hAlign"
 
 </br>
 
-#### Default Layouters
+#### Default GLSP Layouters
 
 In general, layouters can be applied to elements that are compartments, in order to layout the containers based on the sizes of their children.
+
 There are four built-in layout types that can be used: `hbox`, `vbox`, `freeform` and `stack`.
 
 ##### `hbox` Layout
@@ -330,6 +331,12 @@ The compartment defines its preferred size, which is used if the children do not
 
 </br></br>
 
+#### Default Sprotty Layouters
+
+It is also possible to use default sprotty layouts, like for example the `stack` Layout as shown below in the example.
+Here it is necessary to use the sprotty specific Layouter which is available via sprotty's [`boundsModule`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/di.config.ts), which is also part of the GLSP client container's [default modules](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/base/container-modules.ts).
+However, we recommend using GLSP layouts.
+
 ##### `stack` Layout</br>
 
 The [`StackLayouter`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/stack-layout.ts) positions the children by stacking them on top of each other considering the given alignment.
@@ -343,11 +350,10 @@ This layouter provides additional layout options via `StackLayoutOptions`:
 
 The children of the container are positioned according to their order and the defined alignment. Based on that, the maximum height and width are computed and are used as bounds for the container.
 
-###### `stack` Layout Example
+<details><summary>`stack` Layout Example</summary>
 
-This example creates a compartment of the custom type `"comp:structure"` using the `freeform` layout.
-It adds one child node, at the relative position `(75, 35)` of the parent container.
-The parent container defines its preferred size of `250 x 125`.
+This example creates a compartment of the custom type `"comp"` using the `stack` layout.
+It adds two child nodes - a circle a node and a text label - that are stacked on top of each other.
 
 <details open><summary> Java GLSP Server</summary>
 
@@ -396,7 +402,9 @@ GCompartment.builder()
 
 </br>
 
-On the client side, configure the `"circle"` node element as `configureModelElement(context, 'circle', CircularNode, CircularNodeView)`.
+On the client side, please make sure that sprotty's [`boundsModule`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/di.config.ts) is registered.
+
+The `"circle"` node element has to be configured as `configureModelElement(context, 'circle', CircularNode, CircularNodeView)`.
 
 To style the letter label, we add this simple CSS rule as well:
 
@@ -414,6 +422,8 @@ The resulting compartment positions its children on top of each other and center
 <p  align="center">
     <em>Container that stacks its children and positions the label to the left (1), in the center (2) and to the right (3)</em>
 </p>
+
+</details>
 
 </br></br>
 

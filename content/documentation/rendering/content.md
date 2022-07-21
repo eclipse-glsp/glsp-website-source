@@ -461,10 +461,11 @@ We create the custom node element as follows:
 ```ts
 export class MultiLineTextNode
   extends ForeignObjectElement
-  implements SArgumentable
+  implements SArgumentable, EditableLabel
 {
   readonly isMultiLine = true;
   readonly args: Args;
+  text = "";
 
   override set bounds(bounds: Bounds) {
     /* ignore set bounds, always use the parent's bounds */
@@ -484,10 +485,23 @@ export class MultiLineTextNode
 
   // @ts-expect-error Arguments are set in the element
   override get code(): string {
-    return `<pre>${this.args["text"]}</pre>`;
+    if (this.text === "") {
+      const textArg = this.args["text"];
+      if (typeof textArg === "string") {
+        this.text = textArg;
+      }
+    }
+    return `<pre>${this.text}</pre>`;
   }
 
   override namespace = "http://www.w3.org/1999/xhtml";
+
+  get editControlDimension(): Dimension {
+    return {
+      width: this.bounds.width - 4,
+      height: this.bounds.height - 4,
+    };
+  }
 }
 ```
 
@@ -847,8 +861,8 @@ GNode.builder()
   .position(point ?? Point.ORIGIN)
   .size(50, 35)
   .add(
-    new GIssueMarkerBuilder()
-      .addIssue(new GIssue().severity("info").build())
+    GIssueMarker.builder()
+      .addIssue({ message: "Information message", severity: "info" })
       .position(-8, -8)
       .build()
   )
