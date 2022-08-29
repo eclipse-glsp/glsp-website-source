@@ -95,7 +95,7 @@ protected Class<? extends SourceModelStorage> bindSourceModelStorage() {
 <details><summary>Node GLSP Server</summary>
 
 ```ts
-protected bindModelState(): BindingTarget<ModelState> {
+protected bindSourceModelStorage(): BindingTarget<SourceModelStorage> {
    return MySourceModelStorage;
 }
 ```
