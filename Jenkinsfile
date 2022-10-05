@@ -55,7 +55,7 @@ spec:
         dir('www') {
             sshagent(['git.eclipse.org-bot-ssh']) {
                 sh '''
-                    git clone ssh://git@github.com:eclipse-glsp/glsp-website.git .
+                    git clone ssh://genie.glsp@github.com:eclipse-glsp/glsp-website.git .
                     git checkout ${BRANCH_NAME}
                 '''
             }
