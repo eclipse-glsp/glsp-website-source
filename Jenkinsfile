@@ -53,7 +53,7 @@ spec:
     stage('Checkout www repo') {
       steps {
         dir('www') {
-            sshagent(['git.eclipse.org-bot-ssh']) {
+            sshagent(['github-bot-ssh']) {
                 sh '''
                     git clone ssh://genie.glsp@github.com:eclipse-glsp/glsp-website.git .
                     git checkout ${BRANCH_NAME}
@@ -96,7 +96,7 @@ spec:
       steps {
         sh 'rm -rf www/* && cp -Rvf hugo/public/* www/'
         dir('www') {
-            sshagent(['git.eclipse.org-bot-ssh']) {
+            sshagent(['github-bot-ssh']) {
                 sh '''
                 git add -A
                 if ! git diff --cached --exit-code; then
