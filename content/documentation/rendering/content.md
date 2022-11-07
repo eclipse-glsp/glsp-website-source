@@ -222,22 +222,19 @@ The `ExpandButtonView` renders a SVG element in the shape of a triangle that all
 <details open><summary> Java GLSP Server</summary>
 
 ```java
-new GNodeBuilder()
-  .type(DefaultTypes.NODE)
+return new GNodeBuilder()
+  .type("node:expandable")
   .addCssClass("node-expandable")
   .position(point.orElse(GraphUtil.point(0, 0)))
-  .size(GraphUtil.dimension(80, 20))
-  .add(new GCompartmentBuilder()
-    .type("comp:expandable")
-    .layout(GConstants.Layout.HBOX)
-    .layoutOptions(new GLayoutOptions().hGap(15))
-    .add(new GLabelBuilder().text("Expand").build())
-    .add(new GButtonBuilder()
-        .type(DefaultTypes.EXPAND_BUTTON)
-        .addCssClass("button-expand")
-        .enabled(true)
-        .build())
-    .build());
+  .layout(GConstants.Layout.HBOX)
+  .layoutOptions(new GLayoutOptions().hGap(15))
+  .add(new GLabelBuilder().text("Expand").build())
+  .add(new GButtonBuilder()
+    .type(DefaultTypes.EXPAND_BUTTON)
+    .addCssClass("button-expand")
+    .enabled(true)
+    .build())
+  .build();
 ```
 
 </details>
@@ -246,23 +243,17 @@ new GNodeBuilder()
 
 ```ts
 GNode.builder()
-  .type(DefaultTypes.NODE)
+  .type("node:expandable")
   .addCssClass("node-expandable")
   .position(point ?? Point.ORIGIN)
-  .size(80, 20)
+  .layout("hbox")
+  .addLayoutOption("hGap", 15)
+  .add(GLabel.builder().text("Expand").build())
   .add(
-    GCompartment.builder()
-      .type("comp:expandable")
-      .layout("hbox")
-      .addLayoutOption("hGap", 15)
-      .add(GLabel.builder().text("Expand").build())
-      .add(
-        GButton.builder()
-          .type(DefaultTypes.BUTTON_EXPAND)
-          .addCssClass("button-expand")
-          .enabled(true)
-          .build()
-      )
+    GButton.builder()
+      .type(DefaultTypes.BUTTON_EXPAND)
+      .addCssClass("button-expand")
+      .enabled(true)
       .build()
   )
   .build();
@@ -272,7 +263,71 @@ GNode.builder()
 
 </br>
 
-The button element and its view are configured as follows:
+First, we start with the definition of an expandable node element and view.
+
+Define the node element supporting the expandable feature:
+
+```ts
+export class ExpandableNode extends RectangularNode implements Expandable {
+  static override readonly DEFAULT_FEATURES = [
+    ...SNode.DEFAULT_FEATURES,
+    expandFeature,
+  ];
+  expanded = false; // initially the node is collapsed
+}
+```
+
+The expandable node view renders an additional text element if the node is expanded and also increases its height:
+
+```ts
+@injectable()
+export class ExpandableNodeView extends ShapeView {
+  render(
+    node: Readonly<ExpandableNode>,
+    context: RenderingContext,
+    args?: IViewArgs
+  ): VNode | undefined {
+    if (!this.isVisible(node, context)) {
+      return undefined;
+    }
+    return (
+      <g>
+        <rect
+          class-sprotty-node={node instanceof SNode}
+          class-mouseover={node.hoverFeedback}
+          class-selected={node.selected}
+          x="0"
+          y="0"
+          width={Math.max(node.size.width, 0)}
+          height={Math.max(
+            node.expanded ? node.size.height + 20 : node.size.height,
+            0
+          )}
+        ></rect>
+        {context.renderChildren(node)}
+        {node.expanded && (
+          <text x="50" y="45">
+            More information
+          </text>
+        )}
+      </g>
+    );
+  }
+}
+```
+
+Now we can configure an expandable node element and view for the type `"node:expandable"`:
+
+```ts
+configureModelElement(
+  context,
+  "node:expandable",
+  ExpandableNode,
+  ExpandableNodeView
+);
+```
+
+The expand button element and its view can be configured with defaults as follows:
 
 ```ts
 configureModelElement(
@@ -280,67 +335,6 @@ configureModelElement(
   DefaultTypes.BUTTON_EXPAND,
   SButton,
   ExpandButtonView
-);
-```
-
-To be able to use this view, we need an expandable parent element as well as a corresponding view.
-
-Define the compartment element supporting the expandable feature:
-
-```ts
-export class ExpandableCompartment extends SCompartment implements Expandable {
-  static override readonly DEFAULT_FEATURES = [
-    boundsFeature,
-    layoutContainerFeature,
-    layoutableChildFeature,
-    fadeFeature,
-    expandFeature,
-  ];
-
-  expanded = false;
-}
-```
-
-The expandable compartment view renders an additional text element if the element is expanded:
-
-```ts
-@injectable()
-export class ExpandableCompartmentView extends SCompartmentView {
-  override render(
-    compartment: Readonly<ExpandableCompartment>,
-    context: RenderingContext,
-    args?: IViewArgs
-  ): VNode | undefined {
-    const translate = `translate(${compartment.bounds.x}, ${compartment.bounds.y})`;
-    const vnode: VNode = (
-      <g transform={translate} class-sprotty-comp="{true}">
-        {context.renderChildren(compartment)}
-      </g>
-    );
-    if (compartment.expanded) {
-      vnode.children?.push(
-        <text x="50" y="45">
-          More information
-        </text>
-      );
-    }
-    const subType = getSubType(compartment);
-    if (subType) {
-      setAttr(vnode, "class", subType);
-    }
-    return vnode;
-  }
-}
-```
-
-Putting those together, we can configure an expandable compartment element and view for the type `"comp:expandable"`:
-
-```ts
-configureModelElement(
-  context,
-  "comp:expandable",
-  ExpandableCompartment,
-  ExpandableCompartmentView
 );
 ```
 
