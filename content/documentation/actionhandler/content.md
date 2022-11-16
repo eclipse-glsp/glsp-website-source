@@ -66,11 +66,22 @@ public class MyCustomAction extends Action {
 <details open><summary>GLSP Client/Node GLSP Server</summary>
 
 ```ts
-export class MyCustomAction implements Action {
-  static readonly KIND = "myCustomKind";
-  kind = MyCustomAction.KIND;
+export interface MyCustomAction extends Action {
+    kind: typeof MyCustomAction.KIND;
+    additionalInformation: string;
+}
 
-  constructor(public readonly additionalInformation: string) {}
+export namespace MyCustomAction {
+    export const KIND = 'myCustomKind';
+    export function is(object: any): object is MyCustomAction {
+      return (Action.hasKind(object, KIND) && hasStringProp(object, 'additionalInformation'));
+    }
+    export function create(options: { additionalInformation?: string }): MyCustomAction {
+      return {
+          kind: KIND,
+          ...options
+      };
+    }
 }
 ```
 
@@ -113,16 +124,23 @@ public class MyCustomRequestAction extends RequestAction<MyCustomResponseAction>
 <details open><summary>GLSP Client/Node GLSP Server</summary>
 
 ```ts
-export class MyCustomRequestAction
-  implements RequestAction<MyCustomResponseAction>
-{
-  static readonly KIND = "myCustomRequest";
-  kind = MyCustomRequestAction.KIND;
+export interface MyCustomAction extends RequestAction<MyCustomResponseAction> {
+    kind: typeof MyCustomAction.KIND;
+    additionalInformation: string;
+}
 
-  constructor(
-    public readonly additionalInformation: string,
-    public readonly requestId = ""
-  ) {}
+export namespace MyCustomAction {
+    export const KIND = 'myCustomKind';
+    export function is(object: any): object is MyCustomAction {
+      return (RequestAction.hasKind(object, KIND) && hasStringProp(object, 'additionalInformation'));
+    }
+    export function create(options: { additionalInformation?: string, requestId?: string }): MyCustomAction {
+      return {
+          kind: KIND,
+          requestId: '',
+          ...options
+      };
+    }
 }
 ```
 
@@ -149,11 +167,24 @@ public class MyCustomResponseAction extends ResponseAction {
 <details open><summary>GLSP Client/Node GLSP Server</summary>
 
 ```ts
-export class MyCustomResponseAction implements ResponseAction {
-  static readonly KIND = "myCustomResponse";
-  kind = MyCustomResponseAction.KIND;
+export interface MyCustomResponseAction extends ResponseAction {
+    kind: typeof MyCustomResponseAction.KIND;
+}
 
-  constructor(public responseId = "") {}
+export namespace MyCustomResponseAction {
+    export const KIND = 'myCustomResponse';
+
+    export function is(object: any): object is SetContextActions {
+        return Action.hasKind(object, KIND);
+    }
+
+    export function create(options: { responseId?: string } = {}): SetContextActions {
+        return {
+            kind: KIND,
+            responseId: '',
+            ...options
+        };
+    }
 }
 ```
 
@@ -165,7 +196,7 @@ The client can dispatch a request action either in blocking fashion awaiting the
 ```ts
 @inject(TYPES.IActionDispatcher) protected actionDispatcher: GLSPActionDispatcher;
 …
-const response = await this.actionDispatcher.request(new MyCustomRequestAction(“info”));
+const response = await this.actionDispatcher.request(MyCustomRequestAction.create({ additionalInformation: "info" }));
 // response is of type MyCustomResponseAction
 ```
 
@@ -174,7 +205,7 @@ or simply dispatch the action as non-blocking notification:
 ```ts
 @inject(TYPES.IActionDispatcher) protected actionDispatcher: GLSPActionDispatcher;
 …
-this.actionDispatcher.dispatch(new MyCustomRequestAction(“info”));
+this.actionDispatcher.dispatch(MyCustomRequestAction.create({ additionalInformation: "info" }));
 ```
 
 Response actions don’t necessarily have to be part of a response-request action pair and can also be dispatched without a preceding request action.
