@@ -14,5 +14,5 @@ title = "Modern diagram editors for Eclipse Theia, VS Code, Web pages and more"
 The Graphical Language Server Platform (GLSP) is an extensible open-source framework for building custom diagram editors based on web technologies.
 Alongside an extensible client framework and a server framework, GLSP provides a language server protocol (LSP) for diagrams.
 With that, GLSP enables the development of modern, web-based diagram editors, whereas the heavy lifting, such as loading, interpreting, and editing according to the rules of the modeling language, is encapsulated in the server.
-GLSP provides integration layers, to use GLSP editors seamlessly in web pages, Eclipse Theia, VSCode and even Eclipse desktop.
+GLSP provides integration layers, to use GLSP editors seamlessly in web pages, Eclipse Theia, VS Code and even Eclipse desktop.
 </p>

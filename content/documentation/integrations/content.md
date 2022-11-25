@@ -150,7 +150,7 @@ GLSP-based editors can be integrated into any web application frame.
 To ease the platform integration for adopters, however, dedicated glue code frameworks are provided for
 
 * Creating an extension to provide a [GLSP editor for Eclipse Theia](https://github.com/eclipse-glsp/glsp-theia-integration)
-* Creating an extension to provide a [GLSP editor for VSCode](https://github.com/eclipse-glsp/glsp-vscode-integration)
+* Creating an extension to provide a [GLSP editor for VS Code](https://github.com/eclipse-glsp/glsp-vscode-integration)
 * Creating a plugin to prove a [GLSP editor for the Eclipse IDE](https://github.com/eclipse-glsp/glsp-eclipse-integration)
 * Creating a standalone GLSP web editor based on plain javascript
 

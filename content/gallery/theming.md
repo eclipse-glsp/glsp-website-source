@@ -15,4 +15,4 @@ title = "Theming and Styling"
   image = "theming.gif"
 +++
 
-Support for VSCode and Eclipse Theia themes and flexible styling.
+Support for VS Code and Eclipse Theia themes and flexible styling.
