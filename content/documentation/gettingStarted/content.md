@@ -35,6 +35,7 @@ Switch to the respective folder and follow its readme file.
 * [🖥️ Java ● 🗂️ EMF ● 🖼️ Theia -- `java-emf-theia`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/java-emf-theia)
 * [🖥️ Node ● 🗂️ Custom JSON ● 🖼️ Theia -- `node-json-theia`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/node-json-theia)
 * [🖥️ Node ● 🗂️ Custom JSON ● 🖼️ VS Code -- `node-json-vscode`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/node-json-vscode)
+* [🖥️ Java ● 🗂️ EMF ● 🖼️ Eclipse -- `java-emf-eclipse`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/java-emf-eclipse)
 
 If you don't find your preferred combination, please raise a question in the [Github discussions](https://github.com/eclipse-glsp/glsp/discussions).
 If you need help on deciding which combination is right for you, please refer to the [integrations]({{< relref  "integrations" >}}) page or look at our [support options]({{< relref  "support" >}}).

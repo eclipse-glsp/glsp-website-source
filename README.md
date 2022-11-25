@@ -6,14 +6,14 @@ Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The S
 
 ## Quick start
 
-### Open in VSCode dev container
+### Open in VS Code dev container
 
-To avoid the need to install hugo on development machines, a VSCode dev container is provided that runs hugo in a docker container.
+To avoid the need to install hugo on development machines, a VS Code dev container is provided that runs hugo in a docker container.
 
 * Get submodules `git submodule init && git submodule update`
-* Open the repository folder in VSCode
+* Open the repository folder in VS Code
 * If not installed, install Microsoft's "Remote - Containers" extension with id `ms-vscode-remote.remote-containers`.
-* Open this repository in VSCode as a [Dev Container](https://code.visualstudio.com/docs/remote/containers#_quick-start-open-an-existing-folder-in-a-container):
+* Open this repository in VS Code as a [Dev Container](https://code.visualstudio.com/docs/remote/containers#_quick-start-open-an-existing-folder-in-a-container):
   * Open command palette (`F1` or `Ctrl+Shift+P`)
   * Run `Remote-Containers: Reopen in Container`
 
