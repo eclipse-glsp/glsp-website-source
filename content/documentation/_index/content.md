@@ -10,7 +10,7 @@ The Graphical Language Server Platform (GLSP) is an extensible client-server fra
 The client is only responsible for rendering and user interaction, whereas the server encapsulates the language smarts of the graphical modeling language.
 To learn more about the architecture, concepts, and code examples for typical diagram editor scenarios, please use the table of contents on the left to navigate through the documentation pages.
 
-➡️ A great starting point is the [Overview]({{< relref  "overview" >}}) section.
+➡️ A great starting point is the [Overview section]({{< relref  "overview" >}}).
 
 GLSP clients are implemented in TypeScript. GLSP servers can actually be implemented in any language. 
 However, we provide two server frameworks that can be used to efficiently implement GLSP servers in Java or TypeScript. 
