@@ -37,10 +37,10 @@ Switch to the respective folder and follow its README file.
 * [🖥️ Node ● 🗂️ Custom JSON ● 🖼️ VS Code -- `node-json-vscode`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/node-json-vscode)
 * [🖥️ Java ● 🗂️ EMF ● 🖼️ Eclipse -- `java-emf-eclipse`](https://github.com/eclipse-glsp/glsp-examples/tree/master/project-templates/java-emf-eclipse)
 
-If you would like to use an external source model managing component, you can use the [EMF.cloud Model Server](https://github.com/eclipse-emfcloud/emfcloud-modelserver/) component.
+If you would like to use an external source model management component, you can use the [EMF.cloud Model Server](https://github.com/eclipse-emfcloud/emfcloud-modelserver/) component.
 Please see the following project-template and follow its README file.
 
-* [💾 Model Server ● 🖥️ Java ● 🗂️ EMF ● 🖼️ Theia -- `modelserver-glspjava-emf-theia`](https://github.com/eclipse-emfcloud/modelserver-glsp-integration/tree/main/project-templates/modelserver-glspjava-emf-theia)
+* [🖥️ Java ● 🗂️ EMF.cloud Model Server ● 🖼️ Theia -- `modelserver-glspjava-emf-theia`](https://github.com/eclipse-emfcloud/modelserver-glsp-integration/tree/main/project-templates/modelserver-glspjava-emf-theia)
 
 If you don't find your preferred combination, please raise a question in the [Github discussions](https://github.com/eclipse-glsp/glsp/discussions).
 If you need help on deciding which combination is right for you, please refer to the [integrations]({{< relref  "integrations" >}}) page or look at our [support options]({{< relref  "support" >}}).
