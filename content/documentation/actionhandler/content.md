@@ -2,7 +2,7 @@
 fragment = "content"
 weight = 100
 
-title = "Actions & Action Handler"
+title = "Actions & Action Handlers"
 
 [sidebar]
   sticky = true
