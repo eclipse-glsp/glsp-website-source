@@ -1,4 +1,4 @@
 +++
-title = "Actions & Action Handler"
+title = "Actions & Action Handlers"
 weight = 50
 +++
