@@ -19,6 +19,6 @@ Thus, the documentations provides code examples for those two frameworks in Java
 For more information on building and running GLSP, please also visit the [GLSP GitHub page](https://github.com/eclipse-glsp/glsp) and the [GLSP example repository](https://github.com/eclipse-glsp/glsp-examples). 
 Also check out the [additional external articles and videos about GLSP]({{< relref  "additionals" >}}).
 
-We are continuously working on improving this documentation. If you feel something is missing, please file an issue and open a PR at the [documentation repository](https://github.com/eclipsesource/graphical-lsp-website).
+We are continuously working on improving this documentation, if you feel something is missing, please file an issue and open a PR at the [documentation repository](https://github.com/eclipsesource/graphical-lsp-website).
 
 If you need more help, please have a look at our [available support options]({{< relref  "/support" >}}).
