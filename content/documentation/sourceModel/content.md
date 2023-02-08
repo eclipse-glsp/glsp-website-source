@@ -25,7 +25,7 @@ Therefore, a GLSP server needs to provide the following implementations:
 
 To load a source model and show a diagram, the following steps are performed:
 
-1. The client sends a [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction) with a URI or other arguments for identifying a source model to the server
+1. The client sends a [RequestModelAction](/documentation/protocol/#241-requestmodelaction) with a URI or other arguments for identifying a source model to the server
 2. The server invokes the [source model storage](#source-model-storage-and-model-state-and) to load the source model identified by the arguments sent by the client
 3. The server invokes the [graphical model factory]({{< ref "gmodel" >}}) to translate the source model into the graphical model
 4. The server sends the created graphical model to the client
@@ -105,9 +105,9 @@ protected bindSourceModelStorage(): BindingTarget<SourceModelStorage> {
 
 The registered implementation of the source model storage needs to provide two functionalities:
 
-1. Loading source models, based on the parameters that are contained in the [RequestModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#241-requestmodelaction), and adding them into the session’s model state.
+1. Loading source models, based on the parameters that are contained in the [RequestModelAction](/documentation/protocol/#241-requestmodelaction), and adding them into the session’s model state.
    The implementation mostly depends on where you need to load your source model(s) from and what kind of model(s) you are dealing with (files, XML, JSON, EMF, a database, etc.).
-2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#251-savemodelaction).
+2. Saving the current version of the source model from the `GModelState` back into its original resource (files, XML, EMF, database, etc.). This method is invoked when the client sends a [SaveModelAction](/documentation/protocol/#251-savemodelaction).
 
 <details open><summary>Java GLSP Server</summary>
 

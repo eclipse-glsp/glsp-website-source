@@ -82,7 +82,7 @@ This validator iterates over the given model elements and their children and cre
 An issue marker is associated with a graphical element via its “id”.
 In addition, the marker has a label, an issue description and a kind indicating its severity.
 The severity can either be “INFO”,”WARN” or “ERROR”.
-The created markers are then propagated to the client via a [SetMarkersAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#2102-setmarkersaction).
+The created markers are then propagated to the client via a [SetMarkersAction](/documentation/protocol/#2102-setmarkersaction).
 
 To enable the custom model validator, it has to be bound in the diagram module.
 
@@ -108,8 +108,8 @@ protected override bindModelValidator(): BindingTarget<ModelValidator> | undefin
 </details>
 </br>
 
-Validation is typically triggered by the client via a [RequestMarkersAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#2101-requestmarkersaction) – e.g., by clicking the validation button in the tool palette. 
-In addition, the server can also send a [SetMarkersAction](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md#2102-setmarkersaction) to the client without a preceding request at any time.
+Validation is typically triggered by the client via a [RequestMarkersAction](/documentation/protocol/#2101-requestmarkersaction) – e.g., by clicking the validation button in the tool palette. 
+In addition, the server can also send a [SetMarkersAction](/documentation/protocol/#2102-setmarkersaction) to the client without a preceding request at any time.
 This is useful to implement features such as automatic live validation after each model update.
 
 The client visualizes each marker by decorating the corresponding graphical element with an icon indicating the severity.

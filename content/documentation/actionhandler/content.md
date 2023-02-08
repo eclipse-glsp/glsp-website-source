@@ -27,7 +27,7 @@ Notification actions are one-way actions transferred between client and server.
 This means when the action dispatcher dispatches a notification it does not wait for a response and directly continues with dispatching the next incoming action.
 Request actions are typically issued by the _GLSP client_ and can be used to block client-side action dispatching until the server has sent a corresponding response action.
 
-GLSP defines the standard action types of the [graphical language server protocol](https://github.com/eclipse-glsp/glsp/blob/master/PROTOCOL.md).
+GLSP defines the standard action types of the [graphical language server protocol](/documentation/protocol/).
 However, adopters can add new custom action types.
 Besides, adopters can replace and extend existing, or add additional action handlers for standard or custom action types.
 
