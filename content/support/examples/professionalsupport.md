@@ -15,6 +15,4 @@ weight = 20
 **Private channel available (NDA)**\
 **Feature prioritization**
 
-Starts from 1,695.00 €: **[See our support page for details](https://eclipsesource.com/technology/eclipse-glsp)**\
-10h professional support\
-additionally 5h project sponsorship 
+**Visit [our web page](https://eclipsesource.com/technology/eclipse-glsp) for details**
