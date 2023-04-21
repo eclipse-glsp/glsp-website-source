@@ -1469,6 +1469,11 @@ interface RequestMarkersAction extends RequestAction {
      * The elements for which markers are requested, may be just the root element.
      */
     elementsIDs: string[];
+
+    /**
+     * The reason for this request, e.g. a `batch` validation or a `live` validation.
+     */
+    reason?: string;
 }
 ```
 
@@ -1477,6 +1482,8 @@ interface RequestMarkersAction extends RequestAction {
 #### 2.10.2. SetMarkersAction
 
 Response to the `RequestMarkersAction` containing all validation markers. Sent from the server to the client.
+This action always sends the entire list of markers.
+Thus, clients can replace all markers for a specific `reason` with the new ones that have been sent with the same `reason`.
 
 <details open><summary>Code</summary>
 
@@ -1488,9 +1495,14 @@ interface SetMarkersAction extends ResponseAction {
     kind = 'setMarkers';
 
     /**
-     * The list of markers that has been requested by the `RequestMarkersAction`.
+     * The list of markers to be set in the diagram editor.
      */
     markers: Marker[];
+
+    /**
+     * The reason for this response, e.g. a `batch` validation or a `live` validation.
+     */
+    reason?: string;
 }
 ```
 
