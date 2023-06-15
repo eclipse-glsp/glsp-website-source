@@ -14,4 +14,4 @@ title = "Custom Context Actions"
   image = "customcontextactions.gif"
 +++
 
-A custom context action in the workflow example. See [here](https://www.eclipse.org/glsp/documentation/#workflowoverview) for more details.
+A custom context action in the workflow example. See [here](https://www.eclipse.dev/glsp/documentation/#workflowoverview) for more details.

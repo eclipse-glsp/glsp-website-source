@@ -15,4 +15,4 @@ title = "Ecore Editor"
   image = "ecoreeditor.gif"
 +++
 
-The Ecore Editor provided by [EMF.cloud](https://www.eclipse.org/emfcloud/). See [here](https://github.com/eclipse-emfcloud/ecore-glsp) for more details.
+The Ecore Editor provided by [EMF.cloud](https://www.eclipse.dev/emfcloud/). See [here](https://github.com/eclipse-emfcloud/ecore-glsp) for more details.

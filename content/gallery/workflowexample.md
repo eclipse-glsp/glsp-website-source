@@ -15,4 +15,4 @@ title = "Workflow example"
   image = "diagramanimated.gif"
 +++
 
-An example workflow diagram available open source. See [here](https://www.eclipse.org/glsp/documentation/#workflowoverview) for more details.
+An example workflow diagram available open source. See [here](https://www.eclipse.dev/glsp/documentation/#workflowoverview) for more details.

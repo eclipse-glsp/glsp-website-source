@@ -15,7 +15,7 @@ On this page, we give an overview of the dedicated integration components and po
    GLSP servers can be written either in Java or with Typescript based on nodejs.
 * 🗂️ [**Source Model**](#source-model-integrations)<br/>
    You can use any format or framework for managing your source model.
-   For the most common choices, GLSP provides dedicated base modules, such as for [EMF](https://www.eclipse.org/modeling/emf), [emf.cloud](https://www.eclipse.org/emfcloud), or GModel-JSON, which contains the graphical model directly.
+   For the most common choices, GLSP provides dedicated base modules, such as for [EMF](https://www.eclipse.dev/modeling/emf), [emf.cloud](https://www.eclipse.dev/emfcloud), or GModel-JSON, which contains the graphical model directly.
 * 🖼️ [**Tool Platform**](#platform-integrations)<br/>
    Diagram editors can used in multiple tool platforms or used in plain web applications or in an Electron app.
    GLSP provides dedicated integration components for seamlessly deploying a GLSP editor inside of [Eclipse Theia](https://www.theia-ide.org), [VS Code](https://code.visualstudio.com), or [Eclipse RCP](https://www.eclipse.org/ide).

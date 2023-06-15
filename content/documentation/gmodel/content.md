@@ -46,7 +46,7 @@ Semantically, those elements, however, are equivalent and are exchanged transpar
 
 #### GModel: Graphical model on the server
 
-The [Java-based GLSP server](https://github.com/eclipse-glsp/glsp-server) uses [EMF](https://www.eclipse.org/modeling/emf) to represent and manage the graphical model internally.
+The [Java-based GLSP server](https://github.com/eclipse-glsp/glsp-server) uses [EMF](https://www.eclipse.dev/modeling/emf) to represent and manage the graphical model internally.
 Note that this is just an internal way of representing the `GModel` at runtime but doesn’t mean that adopters need to represent their original source models with EMF too.
 The GLSP server uses EMF in order to reuse its model management and editing capabilities, its command stack and command-based editing.
 Therefore, the graphical model is described as an Ecore model and the corresponding Java classes are automatically generated from this model.
