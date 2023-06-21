@@ -107,7 +107,7 @@ There are four built-in layout types that can be used: `hbox`, `vbox`, `freeform
 
 ##### `hbox` Layout
 
-The [`HBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/hbox-layout.ts) layouts children of a container in a horizontal (left to right) direction.
+The [`HBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/hbox-layout.ts) layouts children of a container in a horizontal (left to right) direction.
 
 This layouter provides additional layout options via `HBoxLayoutOptionsExt`:
 
@@ -183,7 +183,7 @@ The resulting element with the obvious horizontal gap between the child elements
 
 ##### `vbox` Layout</br>
 
-The [`VBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/vbox-layout.ts) layouts children of a container in a vertical (top to bottom) direction.
+The [`VBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/vbox-layout.ts) layouts children of a container in a vertical (top to bottom) direction.
 
 This layouter provides additional layout options via `VBoxLayoutOptionsExt`:
 
@@ -257,7 +257,7 @@ The resulting element positions its children vertically from top to bottom and a
 
 ##### `freeform` Layout</br>
 
-The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/layout/freeform-layout.ts) positions the children of a container according to their explicit, parent-relative `x/y` coordinates inside the parent container.
+The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/freeform-layout.ts) positions the children of a container according to their explicit, parent-relative `x/y` coordinates inside the parent container.
 This layouter uses the default [Layout Options](#layout-options) and provides suitable default values (e.g. `resizeContainer: true`).
 
 Again here, the children of the container are positioned according to their explicit positions inside the container and as concluding step, the final bounds of the container are computed based on the required bounds of its children.
