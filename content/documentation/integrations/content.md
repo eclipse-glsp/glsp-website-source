@@ -76,7 +76,7 @@ More information on the integration components is given in the section on [platf
 
 Depending on your choice of tool platform integration and server framework, a different selection of packages needs to be used.
 The project templates linked in the [getting started guide]({{< relref  "gettingStarted" >}}) provide the initial setup of the package architecture for the respective combination of components.
-However, all of them will have a diagram-specific client package that depends on [@glsp/client](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/client) and a diagram-specific server package that either depends on the [node-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server-node/tree/main/packages/server-node) or the [Java-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server).
+However, all of them will have a diagram-specific client package that depends on [@glsp/client](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/client) and a diagram-specific server package that either depends on the [node-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server-node/tree/main/packages/server) or the [Java-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server).
 
 Irrespectively of the used tool platform integration, server framework or source model integration, your custom `glsp-client` is always the same and can be reused for all scenarios.
 Your server implementation is also independent of the respective platform integration and reusable for multiple platforms.
@@ -142,7 +142,7 @@ However, there are recurring popular choices, for which GLSP provides base modul
 * [Integration for EMF models](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF models with a separate notation model](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF.cloud model server](https://github.com/eclipse-emfcloud/modelserver-glsp-integration)
-* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/gmodel/GModelDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-node/src/gmodel-lib/gmodel-diagram-module.ts)
+* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/gmodel/GModelDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server/src/common/gmodel/gmodel-diagram-module.ts)
 
 ### Platform Integrations
 
