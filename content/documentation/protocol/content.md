@@ -1217,11 +1217,19 @@ interface FitToScreenAction extends Action {
 
 #### 2.8.2. Client Notification
 
-In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
+To notify the client about user-facing events or long running operations, the server can send a server status notification, a server message notification or progress notifications.
 
-##### 2.8.2.1. SPServerStatusAction
+Status and message notifications are used to inform the user about one-time events.
+Status notifications are typically shown directly on the diagram as an overlay for a certain time.
+Status messages, on the other hand, are persistent notifications and are typically shown in a dedicated notification area until the user discards them.
 
-This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
+Progress notifications only appear while the long running operation is running and indicate the progress of this operation with messages and optionally a progress bar.
+
+##### 2.8.2.1. ServerStatusAction
+
+This action is typically sent by the server to signal a state change.
+This action extends the corresponding Sprotty action to include a timeout.
+If a timeout is given the respective status should disappear after the timeout is reached.
 
 <details open><summary>Code</summary>
 
@@ -1281,11 +1289,6 @@ interface ServerMessageAction extends Action {
      * Further details on the message.
      */
     details: string;
-
-    /**
-     * Timeout after which a displayed message disappears.
-     */
-    timeout?: number;
 }
 ```
 
@@ -1302,6 +1305,102 @@ The severity of a status or message.
  * The possible server status severity levels.
  */
 type ServerSeverity = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
+```
+
+</details>
+
+##### 2.8.2.4. StartProgressAction
+
+This action is sent by the server to the client to request presenting the progress of a long running process in the UI.
+
+<details open><summary>Code</summary>
+
+```typescript
+export interface StartProgressAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'startProgress';
+
+    /**
+     * An ID that can be used in subsequent `updateProgress` and `endProgress` events to make them refer to the same progress reporting.
+     */
+    progressId: string;
+
+    /**
+     * Short title of the progress reporting. Shown in the UI to describe the long running process.
+     */
+    title: string;
+
+    /**
+     * Optional additional progress message. Shown in the UI to describe the long running process.
+     */
+    message?: string;
+
+    /**
+     * Progress percentage to display (value range: 0 to 100). If omitted no percentage is shown.
+     */
+    percentage?: number;
+}
+```
+
+</details>
+
+##### 2.8.2.5. UpdateProgressAction
+
+This action is sent by the server to the client to presenting an update of the progress of a long running process in the UI.
+
+<details open><summary>Code</summary>
+
+```typescript
+export interface UpdateProgressAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'updateProgress';
+
+    /**
+     * The ID of the progress reporting to update.
+     */
+    progressId: string;
+
+    /**
+     * The message to show in the progress reporting.
+     */
+    message?: string;
+
+    /**
+     * The percentage (value range: 0 to 100) to show in the progress reporting.
+     */
+    percentage?: number;
+}
+```
+
+</details>
+
+##### 2.8.2.6. EndProgressAction
+
+This action is sent by the server to the client to end the reporting of a progress.
+
+<details open><summary>Code</summary>
+
+```typescript
+export interface EndProgressAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'endProgress';
+
+    /**
+     * The ID of the progress reporting to update.
+     */
+    progressId: string;
+    
+    /**
+     * The message to show in the progress reporting.
+     */
+    message?: string;
+}
 ```
 
 </details>
