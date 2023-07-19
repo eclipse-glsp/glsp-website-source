@@ -1,6 +1,6 @@
 # Sources of the GLSP Website
 
-This page hosts the sources of [eclipse.org/glsp](https://www.eclipse.org/glsp).
+This page hosts the sources of [eclipse.dev/glsp](https://www.eclipse.dev/glsp).
 We use the [Syna](https://github.com/okkur/syna) thema for [Hugo](https://gohugo.io/)
 
 Please check the [Syna documentation](https://about.okkur.org/syna/docs/). The Syna theme heavily works with fragments, therefore the development differs a bit from a "normal" Hugo website.

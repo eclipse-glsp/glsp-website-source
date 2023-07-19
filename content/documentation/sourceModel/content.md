@@ -11,7 +11,7 @@ title = "Source Model & Model State"
 ### Source Model
 
 The source model represents the actual data that is represented in the diagram and that is modified when the user applies changes in the diagram.
-Typical source model formats are [EMF](https://www.eclipse.org/modeling/emf) models, JSON files, and databases, etc.
+Typical source model formats are [EMF](https://www.eclipse.dev/modeling/emf) models, JSON files, and databases, etc.
 However, GLSP and the GLSP server frameworks don't put any restrictions on what the format of this source model is.
 This is achieved by putting developers of GLSP diagram servers in charge of defining how to load a source model, how to transform it into a [graphical model]({{< ref "gmodel" >}}), which is the description of the diagram to be rendered, and how to manipulate the source model, if a user edits a diagram.
 
