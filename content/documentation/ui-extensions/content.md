@@ -161,11 +161,14 @@ bind(TYPES.IUIExtension).toService(ButtonOverlay);
 To activate our UI extension, for example, alongside the initial actions, we can dispatch the `SetUIExtensionVisibilityAction` in [GLSPDiagramWidget#`dispatchInitialActions()`](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/packages/theia-integration/src/browser/diagram/glsp-diagram-widget.ts) after a certain delay.
 
 ```ts
-protected dispatchInitialActions(): void {
-  ...
-  setTimeout(() => {
-      this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({ extensionId: "button-overlay", visible: true }));
-  }, 50);
+export class MyGLSPDiagramWidget extends GLSPDiagramWidget {
+    ...
+    protected async dispatchInitialActions(): Promise<void> {
+        super.dispatchInitialActions();
+        this.actionDispatcher.onceModelInitialized().then(() =>
+            this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({ extensionId: "button-overlay", visible: true }))
+        );
+    }
 }
 ```
 
