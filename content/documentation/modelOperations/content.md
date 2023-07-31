@@ -15,7 +15,7 @@ If such a behavior of an action now is intended to change the [underlying source
 
 An operation is a special type of action denoting a request for performing a specific modification of the source model.
 An operation `kind` identifier declares the specific modification to be applied.
-GLSP defines a set of reusable pre-defined operation types, such as for adding and deleting nodes and edges (see [protocol](/documentation/protocol/) for a detailed list).
+GLSP defines a set of reusable pre-defined operation types, such as for adding and deleting nodes and edges (see [protocol]({{< relref "protocol" >}}) for a detailed list).
 This pre-defined set of operations, however, can be easily extended by custom operation types.
 Each operation type can define additional attributes, such as the coordinates on which a node is to be created, that are required to perform the model modification.
 Note, however, that many pre-defined operation types support generic arguments (see property `args` in the type definitions), which allow to pass on simple, custom data with the existing pre-defined operations without the overhead of defining custom operation types.
