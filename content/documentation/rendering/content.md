@@ -873,7 +873,7 @@ The issue marker element and its view are configured as follows:
 configureModelElement(
   context,
   DefaultTypes.ISSUE_MARKER,
-  SIssueMarker,
+  GIssueMarker,
   GIssueMarkerView
 );
 ```
