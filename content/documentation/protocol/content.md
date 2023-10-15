@@ -32,7 +32,8 @@ interface GLSPClient {
 
     /**
      * Initializes the client and the server connection. During the start procedure the client is in the
-     * `Starting` state and will transition to either `Running` or `StartFailed`.
+     * `Starting` state and will transition to either `Running` or `StartFailed`. Calling this method
+     *  if the client is already running has no effect.
      *
      * @returns A promise that resolves if the startup was successful.
      */
@@ -40,7 +41,10 @@ interface GLSPClient {
 
     /**
      * Send an `initialize` request to the server. The server needs to be initialized in order to accept and
-     * process other requests and notifications.
+     * process other requests and notifications. The {@link InitializeResult} ist cached and can be retrieved
+     * via the {@link GLSPClient.initializeResult} property.
+     * Only the first method invocation actually sends a request to the server. Subsequent invocations simply
+     * return the cached result.
      *
      * @param params Initialize parameters
      * @returns A promise of the {@link InitializeResult}.
@@ -48,9 +52,20 @@ interface GLSPClient {
     initializeServer(params: InitializeParameters): Promise<InitializeResult>;
 
     /**
+     * The cached {@link {InitializeResult}. Is `undefined` if the server has not been initialized yet via
+     * the {@link GLSPClient.initializeServer} method.
+     */
+    readonly initializeResult: InitializeResult | undefined;
+
+    /**
+     * Event that is fired once the first invocation of {@link GLSPClient.initializeServer} has been completed.
+     */
+    readonly onServerInitialized: Event<InitializeResult>;
+
+    /**
      * Send an `initializeClientSession` request to the server. One client application may open several session.
      * Each individual diagram on the client side counts as one session and has to provide
-     * a unique clientSessionId.
+     * a unique clientId.
      *
      * @param params InitializeClientSession parameters
      * @returns A promise that resolves if the initialization was successful
@@ -72,7 +87,7 @@ interface GLSPClient {
     shutdownServer(): void;
 
     /**
-     * Stops the client and disposes any resources. During the stop procedure the client is in the `Stopping` state and will
+     * Stops the client and disposes unknown resources. During the stop procedure the client is in the `Stopping` state and will
      * transition to either `Stopped` or `ServerError`.
      *
      * @returns A promise that resolves after the server was stopped and disposed.
@@ -88,10 +103,13 @@ interface GLSPClient {
 
     /**
      * Sets a handler/listener for action messages received from the server.
+     * Can be scoped to a particular client session by passing the corresponding `clientId`.
      *
      * @param handler The action message handler
+     * @param clientId If passed given action message handler will only be invoked for action messages with this client id.
+     * @returns A {@link Disposable} that can be used to unregister the handler
      */
-    onActionMessage(handler: ActionMessageHandler): void;
+    onActionMessage(handler: ActionMessageHandler, clientId?: string): Disposable;
 }
 
 export enum ClientState {
@@ -204,6 +222,12 @@ interface InitializeClientSessionParameters {
     diagramType: string;
 
     /**
+     * The set of action kinds that can be handled by the client.
+     * Used by the server to know which dispatched actions should be forwarded to the client.
+     */
+    clientActionKinds: string[];
+
+    /**
      * Additional custom arguments.
      */
     args?: Args;
@@ -244,7 +268,7 @@ Any communication that is performed between initialization and shutdown is handl
 
 ## 2. Graphical Language Server Protocol
 
-The graphical language server protocol defines how the client and the server communicate and which actions are sent between them. It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities. Actions that are re-used from Sprotty are marked as such in their code and we re-use their documentation where applicable. Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
+The graphical language server protocol defines how the client and the server communicate and which actions are sent between them. It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities. Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
 
 Please note that there are several actions that are used purely on the client side. Such actions are not part of this protocol.
 
@@ -259,9 +283,6 @@ A general message serves as an envelope carrying an action to be transmitted bet
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ActionMessage.
- */
 interface ActionMessage<A extends Action = Action> {
     /**
      * Used to identify a specific client session.
@@ -284,9 +305,6 @@ An action is a declarative description of a behavior that shall be invoked by th
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Action.
- */
 interface Action {
     /**
      * Unique identifier specifying the kind of action to process.
@@ -304,9 +322,6 @@ A request action is tied to the expectation of receiving a corresponding respons
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestAction.
- */
 interface RequestAction<Res extends ResponseAction> extends Action {
     /**
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
@@ -324,9 +339,6 @@ A response action is sent to respond to a request action. The `responseId` must 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ResponseAction.
- */
 interface ResponseAction extends Action {
     /**
      * Id corresponding to the request this action responds to.
@@ -344,9 +356,6 @@ A reject action is a response fired to indicate that a request must be rejected.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RejectAction.
- */
 interface RejectAction extends ResponseAction {
     kind: 'rejectRequest';
 
@@ -399,21 +408,18 @@ interface CompoundOperation extends Operation {
 
 ### 2.2. Model Structure
 
-The basic structure in Sprotty is called an `SModel`. Such a model consists of `SModelElements` conforming to an `SModelElementSchema`.
+The basic model structure in GLSP is called a `GModel`. Such a model consists of `GModelElements` conforming to an `GModelElementSchema`.
 
-Based on those classes Sprotty already defines a graph-like model called `SGraph` conforming to the `SGraphSchema`. This graph consists nodes, edges, compartments, labels, and ports.
+Sprotty already defines a similar, graph-like model called `SGraph` conforming to the `SGraphSchema`. This graph consists nodes, edges, compartments, labels, and ports. The `GModel`is an extension of the sprotty graph model.
 
-#### 2.2.1. SModelElementSchema
+#### 2.2.1. GModelElementSchema
 
-The schema of an `SModelElement` describes its serializable form. The actual model is created from its schema with an `IModelFactory`. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
+The schema of an `GModelElement` describes its serializable form. The actual class-based actual model is created from its schema in a deserialization step on client and server side. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElementSchema.
- */
-interface SModelElementSchema {
+interface GModelElementSchema {
     /**
      * Unique identifier for this element.
      */
@@ -427,7 +433,7 @@ interface SModelElementSchema {
     /**
      * Children of this element.
      */
-    children?: SModelElementSchema[];
+    children?: GModelElementSchema[];
 
     /**
      * CSS classes that should be applied on this element.
@@ -438,17 +444,14 @@ interface SModelElementSchema {
 
 </details>
 
-##### 2.2.1.1. SModelRootSchema
+##### 2.2.1.1. GModelRootSchema
 
-Serializable schema for the root element of the model tree. Usually actions refer to elements in the graphical model via an `elementId`. However, a few actions actually need to transfer the graphical model. In such cases, the graphical model needs to be represented as a serializable `SModelRootSchema`.
+Serializable schema for the root element of the model tree. Usually actions refer to elements in the graphical model via an `elementId`. However, a few actions actually need to transfer the graphical model. In such cases, the graphical model needs to be represented as a serializable `GModelRootSchema`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRootSchema.
- */
-interface SModelRootSchema extends SModelElementSchema {
+interface GModelRootSchema extends GModelElementSchema {
     /**
      * Bounds of this element in the canvas.
      */
@@ -463,19 +466,16 @@ interface SModelRootSchema extends SModelElementSchema {
 
 </details>
 
-#### 2.2.2. SModelElement
+#### 2.2.2. GModelElement
 
-All elements of the diagram model inherit from base class `SModelElement`. Each model element must have a unique ID and a type that is used to look up its view. Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
+All elements of the diagram model inherit from base class `GModelElement`. Each model element must have a unique ID and a type that is used to look up its view. Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
 
 Each model element has a set of features. A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a `resizeFeature`. The set of supported features is determined by the `features` property.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElement.
- */
-class SModelElement {
+class GModelElement {
     /**
      * Unique identifier for this element.
      */
@@ -499,92 +499,83 @@ class SModelElement {
     /**
      * This element's root element.
      */
-    root: SModelRoot;
+    root: GModelRoot;
 
     /**
      * Access to the model's index for faster element lookup.
      */
-    index: SModelIndex<SModelElement>;
+    index: GModelIndex<GModelElement>;
 }
 ```
 
 </details>
 
-##### 2.2.2.1. SParentElement
+##### 2.2.2.1. GParentElement
 
 A parent element may contain child elements, thus the diagram model forms a tree.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SParentElement.
- */
-class SParentElement extends SModelElement {
+class GParentElement extends GModelElement {
     /**
      * Children of this element.
      */
-    readonly children: ReadonlyArray<SChildElement>;
+    readonly children: ReadonlyArray<GChildElement>;
 
     /**
      * Adds a child element to this element.
      */
-    add(child: SChildElement, index?: number);
+    add(child: GChildElement, index?: number);
 
     /**
      * Removes a child element from this element.
      */
-    remove(child: SChildElement);
+    remove(child: GChildElement);
 
     /**
      * Removes all child elements from this element.
      */
-    removeAll(filter?: (e: SChildElement) => boolean);
+    removeAll(filter?: (e: GChildElement) => boolean);
 
     /**
      * Moves a child element to a new index.
      */
-    move(child: SChildElement, newIndex: number);
+    move(child: GChildElement, newIndex: number);
 }
 ```
 
 </details>
 
-##### 2.2.2.2. SChildElement
+##### 2.2.2.2. GChildElement
 
 A child element is contained in a parent element. All elements except the model root are child elements. In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SChildElement.
- */
-class SChildElement extends SParentElement {
+class GChildElement extends GParentElement {
     /**
      * Parent of this element.
      */
-    readonly parent: SParentElement;
+    readonly parent: GParentElement;
 }
 ```
 
 </details>
 
-##### 2.2.2.3. SModelRoot
+##### 2.2.2.3. GModelRoot
 
 Base class for the root element of the diagram model tree.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRoot.
- */
-class SModelRoot extends SParentElement {
+class GModelRoot extends GParentElement {
     /**
      * Access to the index which is built up for faster element lookup.
      */
-    readonly index: SModelIndex<SModelElement>;
+    readonly index: GModelIndex<GModelElement>;
 
     /**
      * Bounds of this element in the canvas.
@@ -621,9 +612,6 @@ A `Point` is composed of the (x,y) coordinates of an object.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Point.
- */
 interface Point {
     /**
      * The abscissa of the point.
@@ -646,9 +634,6 @@ The `Dimension` of an object is composed of its width and height.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Dimension.
- */
 interface Dimension {
     /**
      * The width of an element.
@@ -671,9 +656,6 @@ The bounds are the position (x, y) and dimension (width, height) of an object. A
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Bounds.
- */
 interface Bounds extends Point, Dimension {}
 ```
 
@@ -686,9 +668,6 @@ The `ElementAndBounds` type is used to associate new bounds with a model element
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndBounds.
- */
 interface ElementAndBounds {
     /**
      * The identifier of the element.
@@ -716,9 +695,6 @@ The `ElementAndAlignment` type is used to associate a new alignment with a model
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndAlignment.
- */
 interface ElementAndAlignment {
     /**
      * The identifier of an element.
@@ -790,9 +766,6 @@ Labeled actions are used to denote a group of actions in a user-interface contex
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's LabeledAction.
- */
 interface LabeledAction {
     /**
      * Group label.
@@ -822,9 +795,6 @@ Sent from the client to the server in order to request a graphical model. Usuall
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestModelAction.
- */
 interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * The kind of the action.
@@ -847,9 +817,6 @@ Sent from the server to the client in order to set the model. If a model is alre
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SetModelAction.
- */
 interface SetModelAction extends ResponseAction {
     /**
      * The kind of the action.
@@ -859,7 +826,7 @@ interface SetModelAction extends ResponseAction {
     /**
      * The new graphical model elements.
      */
-    newRoot: SModelRootSchema;
+    newRoot: GModelRootSchema;
 }
 ```
 
@@ -872,9 +839,6 @@ Sent from the server to the client in order to update the model. If no model is 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's UpdateModelAction.
- */
 interface UpdateModelAction extends Action {
     /**
      * The kind of the action.
@@ -884,22 +848,12 @@ interface UpdateModelAction extends Action {
     /**
      * The new root element of the graphical model.
      */
-    newRoot?: SModelRootSchema;
+    newRoot?: GModelRootSchema;
 
     /**
      * Boolean flag to indicate wether updated/changed elements should be animated in the diagram.
      */
     animate?: boolean;
-}
-
-/**
- * Sprotty's Match.
- */
-interface Match {
-    left?: SModelElementSchema;
-    right?: SModelElementSchema;
-    leftParentId?: string;
-    rightParentId?: string;
 }
 ```
 
@@ -979,17 +933,15 @@ interface SetDirtyStateAction extends Action {
 
 </details>
 
-#### 2.5.3. ExportSvgAction
+#### 2.5.3. RequestExportSvgAction
 
-The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
+A `RequestExportSvgAction` is sent by the client (or the server) to initiate the SVG export of the current diagram.
+The handler of this action is expected to retrieve the diagram SVG and should send an `ExportSvgAction` as response.
+Typically the `ExportSvgAction` is handled directly on client side.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ExportSvgAction.
- * Note that sprotty also provides a `RequestExportSvgAction` which is currently not supported in GLSP.
- */
 interface ExportSvgAction extends ResponseAction {
     /**
      * The kind of the action.
@@ -997,7 +949,7 @@ interface ExportSvgAction extends ResponseAction {
     kind = 'exportSvg';
 
     /**
-     * The diagram SModel as serializable SVG.
+     * The diagram GModel as serializable SVG.
      */
     svg: string;
 
@@ -1010,11 +962,40 @@ interface ExportSvgAction extends ResponseAction {
 
 </details>
 
+#### 2.5.4. ExportSvgAction
+
+The client sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format.
+The action only provides the diagram SVG as plain string.
+The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem.
+However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
+So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface ExportSvgAction extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'exportSvg';
+
+    /**
+     * The diagram GModel as serializable SVG.
+     */
+    svg: string;
+
+    /**
+     * Id corresponding to the request this action responds to.
+     */
+    responseId: string;
+}
+```
+
 ### 2.6. Model Layout
 
 In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
 
-On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
+On the client-side GLSP calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
 
 #### 2.6.1. RequestBoundsAction
 
@@ -1023,9 +1004,6 @@ Sent from the server to the client to request bounds for the given model. The mo
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestBoundsAction.
- */
 interface RequestBoundsAction extends RequestAction {
     /**
      * The kind of the action.
@@ -1035,7 +1013,7 @@ interface RequestBoundsAction extends RequestAction {
     /**
      * The model elements to consider to compute the new bounds.
      */
-    newRoot: SModelRootSchema;
+    newRoot: GModelRootSchema;
 }
 ```
 
@@ -1048,9 +1026,6 @@ Sent from the client to the server to transmit the result of bounds computation 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ComputedBoundsAction.
- */
 interface ComputedBoundsAction extends ResponseAction {
     /**
      * The kind of the action.
@@ -1088,9 +1063,6 @@ Request a layout of the diagram or selected elements from the server.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Layout Operation based on Sprotty's LayoutAction.
- */
 interface LayoutOperation extends Operation {
     /**
      * The kind of the action.
@@ -1147,9 +1119,6 @@ Centers the viewport on the elements with the given identifiers. It changes the 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's CenterAction.
- */
 interface CenterAction extends Action {
     /**
      * The kind of the action.
@@ -1182,9 +1151,6 @@ Triggers to fit all or a list of elements into the available drawing area. The r
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's FitToScreenAction.
- */
 interface FitToScreenAction extends Action {
     /**
      * The kind of the action.
@@ -1225,28 +1191,25 @@ Status messages, on the other hand, are persistent notifications and are typical
 
 Progress notifications only appear while the long running operation is running and indicate the progress of this operation with messages and optionally a progress bar.
 
-##### 2.8.2.1. ServerStatusAction
+##### 2.8.2.1. StatusAction
 
-This action is typically sent by the server to signal a state change.
-This action extends the corresponding Sprotty action to include a timeout.
+This action is typically sent by the server (or the client) to signal a state change.
 If a timeout is given the respective status should disappear after the timeout is reached.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Based on Sprotty's ServerStatusAction but extended with a timeout.
- */
-interface ServerStatusAction extends Action {
+
+interface StatusAction extends Action {
     /**
      * The kind of the action.
      */
-    kind = 'serverStatus';
+    kind = 'status';
 
     /**
      * The severity of the status.
      */
-    severity: ServerSeverity;
+    severity: SeverityLeel;
 
     /**
      * The message describing the status.
@@ -1262,23 +1225,23 @@ interface ServerStatusAction extends Action {
 
 </details>
 
-##### 2.8.2.2. ServerMessageAction
+##### 2.8.2.2. MessageAction
 
-This action is typically sent by the server to notify the user about something of interest.
+This action is typically sent by the server (or the client) to notify the user about something of interest.
 
 <details open><summary>Code</summary>
 
 ```typescript
-interface ServerMessageAction extends Action {
+interface MessageAction extends Action {
     /**
      * The kind of the action.
      */
-    kind = 'serverMessage';
+    kind = 'message';
 
     /**
      * The severity of the message.
      */
-    severity: ServerSeverity;
+    severity: SeverityLevel;
 
     /**
      * The message text.
@@ -1294,7 +1257,7 @@ interface ServerMessageAction extends Action {
 
 </details>
 
-##### 2.8.2.3. ServerSeverity
+##### 2.8.2.3. SeverityLevel
 
 The severity of a status or message.
 
@@ -1304,7 +1267,7 @@ The severity of a status or message.
 /**
  * The possible server status severity levels.
  */
-type ServerSeverity = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
+type SeverityLevel = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
 ```
 
 </details>
@@ -1395,7 +1358,7 @@ export interface EndProgressAction extends Action {
      * The ID of the progress reporting to update.
      */
     progressId: string;
-    
+
     /**
      * The message to show in the progress reporting.
      */
@@ -1414,9 +1377,6 @@ Triggered when the user changes the selection, e.g. by clicking on a selectable 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SelectAction.
- */
 interface SelectAction extends Action {
     /**
      * The kind of the action.
@@ -1432,6 +1392,10 @@ interface SelectAction extends Action {
      * The identifier of the elements to mark as not selected.
      */
     deselectedElementsIDs: string[];
+    /**
+     * Whether all currently selected elements should be deselected.
+     */
+    deselectAll?: boolean;
 }
 ```
 
@@ -1444,9 +1408,6 @@ Used for selecting or deselecting all elements.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SelectAllAction.
- */
 interface SelectAllAction extends Action {
     /**
      * The kind of the action.
@@ -1471,9 +1432,6 @@ Triggered when the user hovers the mouse pointer over an element to get a popup 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestPopupModelAction.
- */
 interface RequestPopupModelAction extends Action {
     /**
      * The kind of the action.
@@ -1501,9 +1459,6 @@ Sent from the server to the client to display a popup in response to a `RequestP
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SetPopupModelAction.
- */
 interface SetPopupModelAction extends Action {
     /**
      * The kind of the action.
@@ -1513,7 +1468,7 @@ interface SetPopupModelAction extends Action {
     /**
      * The model elements composing the popup to display.
      */
-    newRoot: SModelRootSchema;
+    newRoot: GModelRootSchema;
 }
 ```
 
@@ -1850,19 +1805,29 @@ interface ShapeTypeHint extends TypeHint {
 
 interface EdgeTypeHint extends TypeHint {
     /**
-     * Specifies whether the routing of this element can be changed.
+     * Specifies whether the routing points of the edge can be changed
+     * i.e. edited by the user.
      */
     readonly routable: boolean;
 
     /**
      * Allowed source element types for this edge type
+     * If not defined unknown element can be used as source element for this edge.
      */
-    readonly sourceElementTypeIds: string[];
+    readonly sourceElementTypeIds?: string[];
 
     /**
      * Allowed targe element types for this edge type
+     * If not defined unknown element can be used as target element for this edge.
      */
-    readonly targetElementTypeIds: string[];
+    readonly targetElementTypeIds?: string[];
+
+    /**
+     * Indicates whether this type hint is dynamic or not. Dynamic edge type hints
+     * require an additional runtime check before creating an edge, when checking
+     * source and target element types is not sufficient.
+     */
+    readonly dynamic?: boolean;
 }
 ```
 
@@ -1907,6 +1872,70 @@ interface SetTypeHintsAction extends ResponseAction {
      * The hints for edge types.
      */
     edgeHints: EdgeTypeHint[];
+}
+```
+
+</details>
+
+#### 2.12.3. RequestCheckEdgeAction
+
+Sent from the client to the server to check wether the provided edge context information is valid i.e. creation of an edge with the given edge type and source/target element is allowed by the server.
+Typically this action is dispatched by edge creation tools in the creation phase of an edge that's associated with a dynamic `EdgeTypeHint`.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface RequestCheckEdgeAction extends RequestAction<CheckEdgeResultAction> {
+    kind: 'requestCheckEdge';
+
+    /**
+     * The element type of the edge being created.
+     */
+    edgeType: string;
+
+    /**
+     * The ID of the edge source element.
+     */
+    sourceElementId: string;
+
+    /**
+     * The ID of the edge target element to check.
+     */
+    targetElementId?: string;
+}
+```
+
+</details>
+
+#### 2.12.4. CheckEdgeResultAction
+
+Sent from the server to the client as a response for a {@link RequestCheckEdgeAction}.
+It provides a boolean indicating whether the edge context information provided by the corresponding request action is valid i.e. creation of an edge with the given edge type and source/target element is allowed.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface CheckEdgeResultAction extends ResponseAction {
+    kind: 'checkEdgeTargetResult';
+
+    /**
+     * true if the selected element is a valid target for this edge,
+     * false otherwise.
+     */
+    isValid: boolean;
+    /**
+     * The element type of the edge that has been checked.
+     */
+    edgeType: string;
+
+    /**
+     * The ID of the source element of the edge that has been checked.
+     */
+    sourceElementId: string;
+    /**
+     * The ID of the target element of the edge that has been checked.
+     */
+    targetElementId?: string;
 }
 ```
 
@@ -2225,7 +2254,7 @@ interface SetEditValidationResultAction extends ResponseAction {
 
 #### 2.16.3. ApplyLabelEditOperation
 
-A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
+A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `GGraph` model has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
 
 <details open><summary>Code</summary>
 

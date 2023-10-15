@@ -18,25 +18,25 @@ A view defines how a specific type of graphical element shall be transformed int
 The derived SVG elements are then rendered on the canvas of the diagram widget.
 
 To define a new view, we have to create a class that implements the `IView` interface and register it for a specific type that is used in the graphical model.
-As an example, let’s configure that the view named `SLabelView` is used for all elements with the type “label:custom”.
-Therefore, we first need to create a dependency injection module, named `customDiagramModule` below, and configure the SLabelView for the graphical model element type “label:custom” using the `configureModelElement()` utility function:
+As an example, let’s configure that the view named `GLabelView` is used for all elements with the type “label:custom”.
+Therefore, we first need to create a dependency injection module, named `customDiagramModule` below, and configure the GLabelView for the graphical model element type “label:custom” using the `configureModelElement()` utility function:
 
 ```ts
 const customDiagramModule = new ContainerModule(
   (bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind };
-    configureModelElement(context, "label:custom", SLabel, SLabelView);
+    configureModelElement(context, "label:custom", GLabel, GLabelView);
   }
 );
 ```
 
 The `configureModeElement()` function takes the inversify binding context, the graphical model type, its model class and its associated view as input. Under the hood this function sets up the necessary bindings so that the _GLSP client_ knows that
 
-- Graphical model elements (received from the GLSP Server) with type ‘label:custom’ are deserialized to instances of `SLabel`
-- Graphical model element with type ‘label:custom’ are rendered with the `SLabelView`
+- Graphical model elements (received from the GLSP Server) with type ‘label:custom’ are deserialized to instances of `GLabel`
+- Graphical model element with type ‘label:custom’ are rendered with the `GLabelView`
 
 In order to be effective, we need to load the module `customDiagramModule` defined above in the diagram DI container, aka the root "di.config.ts" of your diagram implementation.
-With that, every element of type “label:custom” will be rendered with the view implementation `SLabelView`.
+With that, every element of type “label:custom” will be rendered with the view implementation `GLabelView`.
 
 Views themselves are typically implemented with [JSX](https://www.typescriptlang.org/docs/handbook/jsx.html), which simplifies the definition of SVG elements in Typescript. Therefore, the following generic imports are required in any module declaring a view to enable declaration of svg elements with JSX:
 
@@ -60,9 +60,9 @@ With that, we can implement a view as follows:
 
 ```tsx
 @injectable()
-export class SLabelView extends ShapeView {
+export class GLabelView extends ShapeView {
   render(
-    label: Readonly<SLabel>,
+    label: Readonly<GLabel>,
     context: RenderingContext
   ): VNode | undefined {
     if (!isEdgeLayoutable(label) && !this.isVisible(label, context)) {
@@ -82,7 +82,7 @@ Every view has to implement the `render()` method.
 The `render()` method takes the graphical model element as input and returns the corresponding SVG element as virtual DOM node.
 The viewer queries all registered views and creates a new virtual DOM which is then used to patch the current DOM of the diagram widget.
 
-Note that the `SLabelView` also checks whether the given element is visible and skips the SVG generation if the element is not visible in the diagram canvas.
+Note that the `GLabelView` also checks whether the given element is visible and skips the SVG generation if the element is not visible in the diagram canvas.
 This check is optional but it’s highly recommended to implement it in your custom views as it heavily improves the rendering performance.
 
 </br></br>
@@ -270,7 +270,7 @@ Define the node element supporting the expandable feature:
 ```ts
 export class ExpandableNode extends RectangularNode implements Expandable {
   static override readonly DEFAULT_FEATURES = [
-    ...SNode.DEFAULT_FEATURES,
+    ...GNode.DEFAULT_FEATURES,
     expandFeature,
   ];
   expanded = false; // initially the node is collapsed
@@ -293,7 +293,7 @@ export class ExpandableNodeView extends ShapeView {
     return (
       <g>
         <rect
-          class-sprotty-node={node instanceof SNode}
+          class-sprotty-node={node instanceof GNode}
           class-mouseover={node.hoverFeedback}
           class-selected={node.selected}
           x="0"
@@ -333,7 +333,7 @@ The expand button element and its view can be configured with defaults as follow
 configureModelElement(
   context,
   DefaultTypes.BUTTON_EXPAND,
-  SButton,
+  GButton,
   ExpandButtonView
 );
 ```
@@ -375,7 +375,7 @@ export class ExpandHandler implements IActionHandler {
     // eslint-disable-next-line guard-for-in
     for (const id in this.expansionState) {
       const element = this.modelRoot.index.getById(id);
-      if (element && element instanceof SParentElement && element.children) {
+      if (element && element instanceof GParentElement && element.children) {
         const expanded = this.expansionState[id];
         (element as any).expanded = expanded;
       }
@@ -403,7 +403,7 @@ Usually such an element is contained by a node view that enables features, such 
 <details><summary>Example implementation</summary>
 
 A common example use case for using a `ForeignObjectView` is to benefit from word wrapping support of HTML to show multiline text box.
-Therefore we would create a custom text node (which extends the `ForeignObjectElement`) which is contained by a parent node (hence we will configure both as node types in the diagram configuration).
+Therefore we would create a custom text node (which extends the `GForeignObjectElement`) which is contained by a parent node (hence we will configure both as node types in the diagram configuration).
 
 <details open><summary> Java GLSP Server</summary>
 
@@ -454,8 +454,8 @@ We create the custom node element as follows:
 
 ```ts
 export class MultiLineTextNode
-  extends ForeignObjectElement
-  implements SArgumentable, EditableLabel
+  extends GForeignObjectElement
+  implements ArgsAware, EditableLabel
 {
   readonly isMultiLine = true;
   readonly args: Args;
@@ -506,7 +506,7 @@ To be able to edit this multi-line comment node we need to enable the `editLabel
 configureModelElement(
   context,
   "comment-node-parent",
-  SNode,
+  GNode,
   RoundedCornerNodeView
 );
 configureModelElement(
@@ -568,7 +568,7 @@ The `PreRenderedView` visualizes a previously rendered piece of svg code as a se
 This enables putting SVG code directly in the graphical model, which may be useful for including complex images for certain use cases.
 However, usually it is recommended to create a dedicated element type and register a dedicated view, which produces custom SVG, as this yields more flexibility to take bounds, etc., into account.
 
-The implementation here is rather similar to the `ForeignObjectElement`, is a sub-class of `ShapedPreRenderedElement`. Please see ForeignObjectElement's example implementation.
+The implementation here is rather similar to the `GForeignObjectElement`, is a sub-class of `GShapedPreRenderedElement`. Please see GForeignObjectElement's example implementation.
 
 ##### [RectangularNodeView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/lib/svg-views.tsx)
 
@@ -624,9 +624,9 @@ configureModelElement(
 
 </br>
 
-##### [SGraphView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+##### [GGraphView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
 
-The `SGraphView` renders the base SVG canvas for an SModel and triggers the rendering of its children.
+The `GGraphView` renders the base SVG canvas for a GModel and triggers the rendering of its children.
 
 <details><summary>Example implementation</summary>
 
@@ -651,16 +651,16 @@ GGraph.builder().build();
 The graph element and its view are configured as follows:
 
 ```ts
-configureModelElement(context, DefaultTypes.GRAPH, GLSPGraph, SGraphView);
+configureModelElement(context, DefaultTypes.GRAPH, GGraph, GGraphView);
 ```
 
 </details>
 
 </br>
 
-##### [SLabelView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+##### [GLabelView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
 
-The `SLabelView` renders a text element that contains the given label text.
+The `GLabelView` renders a text element that contains the given label text.
 
 <p align="center">
     <img src="./label-view.png" alt="label-view">
@@ -702,16 +702,16 @@ GNode.builder()
 The label element and its view are configured as follows:
 
 ```ts
-configureModelElement(context, DefaultTypes.LABEL, SLabel, SLabelView);
+configureModelElement(context, DefaultTypes.LABEL, GLabel, GLabelView);
 ```
 
 </details>
 
 </br>
 
-##### [SRoutingHandleView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
+##### [GRoutingHandleView](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/graph/views.tsx)
 
-A `SRoutingHandleView` renders a circle shaped element that serves as routing point for routable elements (e.g. Edges).
+A `GRoutingHandleView` renders a circle shaped element that serves as routing point for routable elements (e.g. Edges).
 Its position is computed either by a registered `EdgeRouterRegistry` or the routing arguments of the element.
 
 <p align="center">
@@ -755,8 +755,8 @@ The routing handle element and its view are configured as follows:
 configureModelElement(
   context,
   DefaultTypes.ROUTING_POINT,
-  SRoutingHandle,
-  SRoutingHandleView
+  GRoutingHandle,
+  GRoutingHandleView
 );
 ```
 
@@ -809,7 +809,7 @@ GEdge.builder()
 The edge element and its view are configured as follows:
 
 ```ts
-configureModelElement(context, DefaultTypes.EDGE, SEdge, GEdgeView);
+configureModelElement(context, DefaultTypes.EDGE, GEdge, GEdgeView);
 ```
 
 </details>
@@ -873,7 +873,7 @@ The issue marker element and its view are configured as follows:
 configureModelElement(
   context,
   DefaultTypes.ISSUE_MARKER,
-  SIssueMarker,
+  GIssueMarker,
   GIssueMarkerView
 );
 ```
@@ -926,7 +926,7 @@ GNode.builder()
 A node element and its rounded corner node view are configured as follows:
 
 ```ts
-configureModelElement(context, DefaultTypes.NODE, SNode, RoundedCornerNodeView);
+configureModelElement(context, DefaultTypes.NODE, GNode, RoundedCornerNodeView);
 ```
 
 </details>
@@ -943,7 +943,7 @@ The `StructureCompartmentView` allows to contain children if using the `freeform
 
 The style of the rendered SVG elements is controlled with plain CSS.
 CSS classes can be declared directly in the corresponding view.
-The `SLabelView`, for instance, adds the CSS class ‘sprotty-label’ to the generated SVG text element.
+The `GLabelView`, for instance, adds the CSS class ‘sprotty-label’ to the generated SVG text element.
 
 ```tsx
 const vnode = <text class-sprotty-label={true}>{label.text}</text>;

@@ -103,7 +103,7 @@ Therefore please use the dedicated string values in the meantime, e.g. `"hAlign"
 
 In general, layouters can be applied to elements that are compartments, in order to layout the containers based on the sizes of their children.
 
-There are four built-in layout types that can be used: `hbox`, `vbox`, `freeform` and `stack`.
+There are three built-in layout types that can be used: `hbox`, `vbox` and `freeform`.
 
 ##### `hbox` Layout
 
@@ -167,7 +167,7 @@ GCompartment.builder()
 
 </br>
 
-On the client side, we need to configure (besides the default elements `SCompartment` and `SLabel`) a custom `Icon` element and a `IconView` like this: `configureModelElement(context, 'icon', Icon, IconView)`.
+On the client side, we need to configure (besides the default elements `GCompartment` and `GLabel`) a custom `Icon` element and a `IconView` like this: `configureModelElement(context, 'icon', Icon, IconView)`.
 The [`Icon` element definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/model.ts) and the [`IconView` definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/workflow-views.tsx) are taken from the workflow example.
 
 The resulting element with the obvious horizontal gap between the child elements is shown in the following image:
@@ -317,7 +317,7 @@ GCompartment.builder()
 
 </br>
 
-On the client side, configure the `"comp:structure"` compartment as `configureModelElement(context, 'struct', SCompartment, StructureCompartmentView)`.
+On the client side, configure the `"comp:structure"` compartment as `configureModelElement(context, 'struct', GCompartment, StructureCompartmentView)`.
 
 The resulting compartment element positions its child at the desired position.
 The compartment defines its preferred size, which is used if the children do not enlarge the container. If the preferred size is omitted, the container's size depends on its children.
@@ -328,102 +328,6 @@ The compartment defines its preferred size, which is used if the children do not
 <p  align="center">
     <em>Container with preferred size (left image) or without preferred size (right image)</em>
 </p>
-
-</br></br>
-
-#### Default Sprotty Layouters
-
-It is also possible to use default sprotty layouts, like for example the `stack` Layout as shown below in the example.
-Here it is necessary to use the sprotty specific Layouter which is available via sprotty's [`boundsModule`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/di.config.ts), which is also part of the GLSP client container's [default modules](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/base/container-modules.ts).
-However, we recommend using GLSP layouts.
-
-##### `stack` Layout</br>
-
-The [`StackLayouter`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/stack-layout.ts) positions the children by stacking them on top of each other considering the given alignment.
-
-This layouter provides additional layout options via `StackLayoutOptions`:
-
-- `vAlign`: VAlignment = 'top' | 'center' | 'bottom'</br>
-  Defines the vertical alignment of the element to be positioned.
-- `hAlign`: HAlignment = 'left' | 'center' | 'right'</br>
-  Defines the horizontal alignment of the element to be positioned.
-
-The children of the container are positioned according to their order and the defined alignment. Based on that, the maximum height and width are computed and are used as bounds for the container.
-
-<details><summary>`stack` Layout Example</summary>
-
-This example creates a compartment of the custom type `"comp"` using the `stack` layout.
-It adds two child nodes - a circle a node and a text label - that are stacked on top of each other.
-
-<details open><summary> Java GLSP Server</summary>
-
-```java
-  Map<String, Object> layoutOptions = new HashMap<>();
-  layoutOptions.put(GLayoutOptions.KEY_H_ALIGN, GConstants.HAlign.CENTER);
-  layoutOptions.put(GLayoutOptions.KEY_RESIZE_CONTAINER, false);
-  new GCompartmentBuilder()
-    .type(DefaultTypes.COMPARTMENT)
-    .layout(GConstants.Layout.STACK)
-    .layoutOptions(layoutOptions)
-    .size(GraphUtil.dimension(35, 35))
-    .add(
-      new GNodeBuilder("circle")
-        .size(GraphUtil.dimension(35, 35))
-        .build()
-    )
-    .add(
-      new GLabelBuilder()
-        .text("A")
-        .addCssClass("circle-letter")
-        .build()
-    )
-    .build();
-```
-
-</details>
-
-<details ><summary> Node GLSP Server</summary>
-
-```ts
-const layoutOptions = {
-  ["hAlign"]: "center",
-  ["resizeContainer"]: false,
-};
-GCompartment.builder()
-  .type("comp")
-  .layout("struct")
-  .addLayoutOptions(layoutOptions)
-  .add(GNode.builder().type("circle").size(35, 35).build())
-  .add(GLabel.builder().text("A").addCssClass("circle-letter").build())
-  .build();
-```
-
-</details>
-
-</br>
-
-On the client side, please make sure that sprotty's [`boundsModule`](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/bounds/di.config.ts) is registered.
-
-The `"circle"` node element has to be configured as `configureModelElement(context, 'circle', CircularNode, CircularNodeView)`.
-
-To style the letter label, we add this simple CSS rule as well:
-
-```css
-.circle-letter {
-  fill: lightsteelblue;
-}
-```
-
-The resulting compartment positions its children on top of each other and centers the label horizontally.
-
-<p align="center">
-    <img src="./struct-layout-example.png" alt="freeform-layout-example">
-</p>
-<p  align="center">
-    <em>Container that stacks its children and positions the label to the left (1), in the center (2) and to the right (3)</em>
-</p>
-
-</details>
 
 </br></br>
 
@@ -446,7 +350,7 @@ export class MyCustomLayouter extends VBoxLayouterExt {
   static override KIND = "myCustomLayout";
 
   protected override getChildrenSize(
-    container: SParentElement & LayoutContainer,
+    container: GParentElement & LayoutContainer,
     containerOptions: MyCustomLayoutOptions,
     layouter: StatefulLayouter
   ): Dimension {

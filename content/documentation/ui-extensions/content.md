@@ -34,7 +34,7 @@ UI extensions can be enabled practically with any event that can dispatch an act
 
 For example:
 
-- The GLSP `ToolPalette` is opened via the GLSP Action `EnableToolPalette` right after the model was requested in [GLSPDiagramWidget#`dispatchInitialActions()`](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/packages/theia-integration/src/browser/diagram/glsp-diagram-widget.ts).
+- The GLSP `ToolPalette` is opened via a [`IDiagramStartup` hook](https://github.com/eclipse-glsp/glsp-client/blob/12ca7983757966419ca1c15cdc333cefdf56558f/packages/client/src/features/tool-palette/tool-palette.ts#L398) right before the initial model is requested
 - The `CommandPalette` is opened via the keyboard shortcut <kbd>Ctrl</kbd>+<kbd>Space</kbd>.
 - The `EditLabelUI` is opened via a double click on an editable Label (e.g. a Category or Task node in the Workflow example).
 - The `TaskEditor` in the Workflow example is opened via a context menu entry (`Direct Edit Task`) for the Task node.
@@ -51,68 +51,59 @@ This showcase is implemented on top of the Workflow example in the `glsp-client`
 At first, the UI extension needs to be defined, in this case we want the provided base HTML element (`containerElement`) to contain our buttons.
 Those buttons should show an icon as well as a descriptive text label and should trigger the respective GLSP Action on click of either one of them.
 Therefore we create for each button a `<div>` which contains the icon `<i>` and the description as adjacent text.
+The Button overlay should become visible after the initial model has been loaded.
+Therefore we implement the `IDiagramStartup` interface and trigger the `show()` method
+in the `postModelInitialization` hook.
 
 ```ts
 @injectable()
-export class ButtonOverlay extends AbstractUIExtension {
-  @inject(TYPES.IActionDispatcher)
-  protected readonly actionDispatcher: IActionDispatcher;
+export class ButtonOverlay extends AbstractUIExtension implements IDiagramStartup {
+    @inject(TYPES.IActionDispatcher)
+    protected readonly actionDispatcher: IActionDispatcher;
 
-  static readonly ID = "button-overlay";
+    @inject(EditorContextService)
+    protected editorContext: EditorContextService;
 
-  id() {
-    return ButtonOverlay.ID;
-  }
+    static readonly ID = 'button-overlay';
 
-  containerClass() {
-    return ButtonOverlay.ID;
-  }
-
-  protected initializeContents(containerElement: HTMLElement): void {
-    containerElement.appendChild(
-      this.createButton(
-        "btn_center_diagram",
-        "Center",
-        "screen-normal",
-        CenterAction.create([])
-      )
-    );
-    containerElement.appendChild(
-      this.createButton(
-        "btn_fit_diagram",
-        "Fit to screen",
-        "screen-full",
-        FitToScreenAction.create([])
-      )
-    );
-  }
-
-  protected createButton(
-    id: string,
-    label: string,
-    codiconId: string,
-    action: Action
-  ): HTMLElement {
-    const baseDiv = document.getElementById(this.options.baseDiv);
-    if (baseDiv) {
-      const button = document.createElement("div");
-      const insertedDiv = baseDiv.insertBefore(button, baseDiv.firstChild);
-      button.id = id;
-      button.classList.add("overlay-button");
-      const icon = this.createIcon(codiconId);
-      insertedDiv.appendChild(icon);
-      insertedDiv.onclick = () => this.actionDispatcher.dispatch(action);
-      insertedDiv.insertAdjacentText("beforeend", label);
-      return button;
+    id() {
+        return ButtonOverlay.ID;
     }
-    return document.createElement("div");
-  }
 
-  protected createIcon(codiconId: string): HTMLElement {
-    const icon = document.createElement("i");
-    icon.classList.add(...codiconCSSClasses(codiconId), "overlay-icon");
-    return icon;
-  }
+    containerClass() {
+        return ButtonOverlay.ID;
+    }
+
+    protected initializeContents(containerElement: HTMLElement): void {
+        containerElement.appendChild(this.createButton('btn_center_diagram', 'Center', 'screen-normal', CenterAction.create([])));
+        containerElement.appendChild(this.createButton('btn_fit_diagram', 'Fit to screen', 'screen-full', FitToScreenAction.create([])));
+    }
+
+    protected createButton(id: string, label: string, codiconId: string, action: Action): HTMLElement {
+        const baseDiv = document.getElementById(this.options.baseDiv);
+        if (baseDiv) {
+            const button = document.createElement('div');
+            const insertedDiv = baseDiv.insertBefore(button, baseDiv.firstChild);
+            button.id = id;
+            button.classList.add('overlay-button');
+            const icon = this.createIcon(codiconId);
+            insertedDiv.appendChild(icon);
+            insertedDiv.onclick = () => this.actionDispatcher.dispatch(action);
+            insertedDiv.insertAdjacentText('beforeend', label);
+            return button;
+        }
+        return document.createElement('div');
+    }
+
+    protected createIcon(codiconId: string): HTMLElement {
+        const icon = document.createElement('i');
+        icon.classList.add(...codiconCSSClasses(codiconId), 'overlay-icon');
+        return icon;
+    }
+
+    postModelInitialization(): MaybePromise<void> {
+        this.show(this.editorContext.modelRoot);
+    }
 }
 ```
 
@@ -156,20 +147,7 @@ To register the extension, it has to be bound as singleton and
 ```ts
 bind(ButtonOverlay).toSelf().inSingletonScope();
 bind(TYPES.IUIExtension).toService(ButtonOverlay);
-```
-
-To activate our UI extension, for example, alongside the initial actions, we can dispatch the `SetUIExtensionVisibilityAction` in [GLSPDiagramWidget#`dispatchInitialActions()`](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/packages/theia-integration/src/browser/diagram/glsp-diagram-widget.ts) after a certain delay.
-
-```ts
-export class MyGLSPDiagramWidget extends GLSPDiagramWidget {
-    ...
-    protected async dispatchInitialActions(): Promise<void> {
-        super.dispatchInitialActions();
-        this.actionDispatcher.onceModelInitialized().then(() =>
-            this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({ extensionId: "button-overlay", visible: true }))
-        );
-    }
-}
+bind(TYPES.IDiagramStartup).toService(ButtonOverlay);
 ```
 
 The outcome of this showcase is the following subtle UI overlay that offers to center the diagram or fit it to the screen:
