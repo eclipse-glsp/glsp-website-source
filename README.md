@@ -48,3 +48,5 @@ To avoid the need to install hugo on development machines, a VS Code dev contain
  ## Best practices
 
   Check the example site provided with Syna in `themes/syna/exampleSite`
+
+(Temporary change to trigger netlify deployment)
