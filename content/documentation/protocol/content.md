@@ -414,7 +414,7 @@ Sprotty already defines a similar, graph-like model called `SGraph` conforming t
 
 #### 2.2.1. GModelElementSchema
 
-The schema of an `GModelElement` describes its serializable form. The actual class-based actual model is created from its schema in a deserialization step on client and server side. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
+The schema of an `GModelElement` describes its serializable form. The actual class-based model is created from its schema in a deserialization step on client and server side. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
 
 <details open><summary>Code</summary>
 
