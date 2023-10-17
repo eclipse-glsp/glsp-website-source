@@ -10,6 +10,8 @@ title = "Model Operations"
 
 ### Operations are just special actions
 
+> _**Remark:**_ This documentation is outdated and not updated for GLSP 2.0 yet!
+
 In the previous section, we discussed [actions and action handlers]({{< relref  "actionhandler" >}}) as the general way of how a diagram client and a diagram server communicate with each other and how they can invoke behavior or query data from each other.
 If such a behavior of an action now is intended to change the [underlying source model]({{< relref "sourceModel" >}}) on the server, there is a dedicated type of action for that: _a model operation_ or operation for short.
 

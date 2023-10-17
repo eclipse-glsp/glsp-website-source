@@ -286,33 +286,6 @@ protected override configureActionHandlers(binding: InstanceMultiBinding<ActionH
 </details>
 </br>
 
-In addition, each response action of the handler that should be handled by the _GLSP client_ has to be configured as dedicated client action to indicate that it needs to be dispatched to the client:
-
-<details open><summary>Java GLSP Server</summary>
-
-```java
-protected void configureClientActions(final MultiBinding<Action> binding) {
-    super.configureClientAction(binding);
-    binding.add(MyCustomRequestAction.class);
-}
-```
-
-</details>
-
-<details><summary>Node GLSP Server</summary>
-
-```ts
-protected configureClientActions(
-    binding: InstanceMultiBinding<string>
-): void {
-    super.configureClientActions(binding);
-    binding.add(MyCustomRequestAction.KIND);
-}
-```
-
-</details>
-</br>
-
 #### Request-Response Handling
 
 Action handlers can treat request-response actions in the same way as plain actions.
@@ -349,6 +322,3 @@ const diagramModule = new ContainerModule((bind, _unbind, isBound, rebind) => {
 
 The `configureActionHandler()` function takes the inversify binding context, the action kind that should be handled, and the action handler class, as input.
 It registers the action handler for the given action kind, so that it can be retrieved by the action dispatcher.
-
-Note that we don’t have to explicitly declare which actions are handled by the GLSP Server.
-The GLSP server sends this information during the initialization process and the GLSP client automatically sets up the necessary action (handler) registrations.

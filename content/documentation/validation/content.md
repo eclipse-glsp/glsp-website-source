@@ -48,8 +48,8 @@ public class CustomModelValidator implements ModelValidator {
 ```ts
 @injectable()
 export class CustomModelValidator implements ModelValidator {
-    @inject(GModelState)
-    protected readonly modelState: GModelState;
+    @inject(ModelState)
+    protected readonly modelState: ModelState;
 
     validate(elements: GModelElement[]): Marker[] {
         const markers: Marker[] = [];
@@ -108,7 +108,7 @@ protected override bindModelValidator(): BindingTarget<ModelValidator> | undefin
 </details>
 </br>
 
-Validation is typically triggered by the client via a [RequestMarkersAction]({{< relref "protocol#2101-requestmarkersaction" >}}) – e.g., by clicking the validation button in the tool palette. 
+Validation is typically triggered by the client via a [RequestMarkersAction]({{< relref "protocol#2101-requestmarkersaction" >}}) – e.g., by clicking the validation button in the tool palette.
 In addition, the server can also send a [SetMarkersAction]({{< relref "protocol#2102-setmarkersaction" >}}) to the client without a preceding request at any time.
 This is useful to implement features such as automatic live validation after each model update.
 
@@ -118,7 +118,6 @@ The client visualizes each marker by decorating the corresponding graphical elem
 <img src="issue_marker.png" alt="issue" width=300/>
 <br>
 <br>
-
 
 Depending on the chosen platform integration, validation markers are propagated to other user interface components.
 For instance, when integrating GLSP into Theia, markers are also translated into items shown in the Problems view.

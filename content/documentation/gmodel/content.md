@@ -34,15 +34,15 @@ The graphical model is typically composed of the following elements.
     - **GCompartment**: A generic container element used for element grouping
   - **GEdge**: A diagram edge that connects a source element and a target element (typically nodes or ports).
 
-#### SModel: Graphical model on the client
+#### Graphical model on the client
 
 The default GLSP client uses [Sprotty](https://github.com/eclipse/sprotty), an SVG-based diagramming framework, to render diagrams.
 Sprotty uses a model to represent a diagram too -- the so-called `SModel`.
 The graphical model of GLSP is based on the SModel and, thus, can be seen as a compatible extension of the Sprotty model.
-
-As a naming convention, GLSP uses the S-prefix for model elements on the client to conform to the naming of the Sprotty model.
-Thus, a node of the graphical model on the GLSP client is called `SNode`, whereas it is called `GNode` on the server, the same is true for `SEdge` / `GEdge`, etc.
-Semantically, those elements, however, are equivalent and are exchanged transparently between the server and the client via JSON-RPC.
+To ensure a consistent development experience GLSP aliases all reused `SModel` types to the `GModel` namespace.
+For instance sprotty's `SModelElementImpl` is equivalent to GLSP's `GModelElement`.
+There should almost never be a reason to directly use the sprotty types. If possible always try to use the `GModel` API when developing
+on the client.
 
 #### GModel: Graphical model on the server
 
@@ -180,10 +180,10 @@ As an example, let’s have a look at the custom WeightedEdge element introduced
 #### GLSP Client
 
 A WeightedEdge is a special edge that has an optional “probability” property.
-We can define such an element by simply subclassing the `SEdge` class:
+We can define such an element by simply subclassing the `GEdge` class:
 
 ```ts
-export class WeightedEdge extends SEdge {
+export class WeightedEdge extends GEdge {
   probability?: string;
 }
 ```
