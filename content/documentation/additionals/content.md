@@ -26,6 +26,7 @@ title = "External Articles & Videos"
 
 ### Videos
 
+* EclipseCon 2023: <a target="_blank" href="https://www.youtube.com/watch?v=RBbI_QBzwl4">Diagram Editors Boosted: Collaborative, Testable and Accessible diagrams with Eclipse GLSP</a>
 * EclipseCon 2022: <a target="_blank" href="https://www.youtube.com/watch?v=mSTXgUZCBVE">Diagram Editors with GLSP: Why flexibility is key</a>
 * MDE Net 2022: <a target="_blank" href="https://www.youtube.com/watch?v=f5gVKh04Oho">Building Modern Diagram Editors with Eclipse GLSP</a>
 * Cloud IDE Days 2022: <a target="_blank" href="https://www.youtube.com/watch?v=Ug-90u8Ra0E">Diagram Editors in Cloud IDEs</a>
