@@ -768,7 +768,7 @@ configureModelElement(
 
 The following views are provided by the [GLSP client](https://github.com/eclipse-glsp/glsp-client) framework.
 
-##### [GEdgeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/glsp-edge-view.tsx)
+##### [GEdgeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/gedge-view.tsx)
 
 A `GEdgeView` renders a line element which is routed by the `EdgeRouterRegistry`.
 The view also triggers the rendering of additional elements (such as mouse handles) and edge children (such as edge labels or routing points).
