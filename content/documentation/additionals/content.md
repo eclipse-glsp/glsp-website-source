@@ -10,6 +10,7 @@ title = "External Articles & Videos"
 
 ### Articles
 
+* <a target="_blank" href="https://eclipsesource.com/blogs/2024/01/31/eclipse-glsp-2-elevating-web-based-diagram-editors/">Eclipse GLSP 2: Elevating Web-based Diagram Editors</a>
 * <a target="_blank" href="https://eclipsesource.com/blogs/2022/07/06/eclipse-glsp-1-0-release-is-here/">Eclipse GLSP 1.0 Release is here!</a>
 * <a target="_blank" href="https://eclipsesource.com/blogs/2022/07/14/eclipse-glsp-1-0-leading-edge-diagram-editor-support/">Eclipse GLSP 1.0: Leading-edge diagram editor support</a>
 * <a target="_blank" href="https://eclipsesource.com/blogs/2022/07/20/eclipse-glsp-1-0-typescript-support-for-glsp-server-implementations/">Eclipse GLSP 1.0: TypeScript support for GLSP server implementations</a>
