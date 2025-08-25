@@ -1056,7 +1056,25 @@ interface ComputedBoundsAction extends ResponseAction {
 
 </details>
 
-#### 2.6.3. LayoutOperation
+#### 2.6.3. TriggerLayoutAction
+
+Triggers a request for layout on the client. The handler of this request can collect client-side model information, such as viewport data, before sending a `LayoutOperation` to the server.
+
+<details open><summary Code></summary>
+
+```typescript
+interface TriggerLayoutAction extends Action {
+    kind: 'triggerLayout';
+    /**
+     * Custom arguments that may be interpreted by the client.
+     */
+    args?: Args;
+}
+```
+
+</details>
+
+#### 2.6.4. LayoutOperation
 
 Request a layout of the diagram or selected elements from the server.
 
@@ -1073,6 +1091,16 @@ interface LayoutOperation extends Operation {
      * The identifiers of the elements that should be layouted, will default to the root element if not defined.
      */
     elementIds?: string[];
+
+    /**
+     * The current bounds of the canvas at time of layout.
+     */
+    canvasBounds?: Bounds;
+
+    /**
+     * The current viewport information at time of layout.
+     */
+    viewport?: Viewport;
 }
 ```
 
@@ -2426,9 +2454,9 @@ interface RedoAction {
 
 A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:
 
--   The Context Menu with the context id `context-menu`
--   The Command Palette with the context id `command-palette`
--   The Tool Palette with the context id `tool-palette`
+- The Context Menu with the context id `context-menu`
+- The Command Palette with the context id `command-palette`
+- The Tool Palette with the context id `tool-palette`
 
 #### 2.19.1. RequestContextActions
 
@@ -2523,9 +2551,9 @@ interface Tool {
 
 By default, the tool palette in GLSP includes the following tools in the palette:
 
--   Default Tool (Selection Tool)
--   Mouse Delete Tool
--   Validation Tool
+- Default Tool (Selection Tool)
+- Mouse Delete Tool
+- Validation Tool
 
 The supported actions of the tool palette come from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette. A user may click on any of the entries in the tool palette to trigger the corresponding action.
 
