@@ -152,7 +152,7 @@ To ease the platform integration for adopters, however, dedicated glue code fram
 * Creating an extension to provide a [GLSP editor for Eclipse Theia](https://github.com/eclipse-glsp/glsp-theia-integration)
 * Creating an extension to provide a [GLSP editor for VS Code](https://github.com/eclipse-glsp/glsp-vscode-integration)
 * Creating a plugin to prove a [GLSP editor for the Eclipse IDE](https://github.com/eclipse-glsp/glsp-eclipse-integration)
-* Creating a standalone GLSP web editor based on plain javascript
+* Creating a standalone GLSP web editor based on plain javascript is supported by just using the [GLSP client](https://github.com/eclipse-glsp/glsp-client) (see [example](https://github.com/eclipse-glsp/glsp-client/tree/master/examples/workflow-standalone))
 
 In general it is recommended to keep the GLSP diagram implementation separated from the platform integration code by splitting them into separate packages.
 With that, the core GLSP editor can be easily reused and integrated into another platform.
