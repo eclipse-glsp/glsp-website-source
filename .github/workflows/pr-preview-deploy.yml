@@ -67,4 +67,4 @@ jobs:
           header: pr-preview
           number: ${{ steps.pr.outputs.number }}
           message: |
-            🚀 **Website preview deployed to** ${{ steps.preview.outputs.deployment-url }}
+            🚀 **Website preview deployed to** ${{ steps.preview.outputs.deployment-url }}index.html
