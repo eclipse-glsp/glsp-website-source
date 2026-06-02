@@ -31,6 +31,11 @@ interface GLSPClient {
     readonly currentState: ClientState;
 
     /**
+     * Event that is fired whenever the client state changes.
+     */
+    readonly onCurrentStateChanged: Event<ClientState>;
+
+    /**
      * Initializes the client and the server connection. During the start procedure the client is in the
      * `Starting` state and will transition to either `Running` or `StartFailed`. Calling this method
      *  if the client is already running has no effect.
@@ -82,9 +87,11 @@ interface GLSPClient {
     disposeClientSession(params: DisposeClientSessionParameters): Promise<void>;
 
     /**
-     * Send a `shutdown` notification to the server.
+     * Send a `shutdown` notification to the server. New implementations should return a
+     * `Promise<void>` that resolves once the notification has been flushed to the wire, so
+     * callers disposing the connection immediately afterwards don't race the pending notification.
      */
-    shutdownServer(): void;
+    shutdownServer(): Promise<void> | void;
 
     /**
      * Stops the client and disposes unknown resources. During the stop procedure the client is in the `Stopping` state and will
@@ -159,7 +166,7 @@ In GLSP we provide a default client implementation based on [JSON-RPC messages](
 
 **Initialize Request**
 
-The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
+The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on (the current protocol version is `1.0.0`). In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
@@ -292,7 +299,7 @@ interface ActionMessage<A extends Action = Action> {
     /**
      * The action to execute.
      */
-    Action: A;
+    action: A;
 }
 ```
 
@@ -327,6 +334,12 @@ interface RequestAction<Res extends ResponseAction> extends Action {
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
      */
     requestId: string;
+
+    /**
+     * Optional timeout in milliseconds. When set, the sender controls how long the receiver waits for a response
+     * before the request is rejected.
+     */
+    timeout?: number;
 }
 ```
 
@@ -368,7 +381,7 @@ interface RejectAction extends ResponseAction {
     /**
      * Optional additional details.
      */
-    detail?: JsonAny;
+    detail?: string;
 }
 ```
 
@@ -389,6 +402,11 @@ interface Operation extends Action {
      * Discriminator property to make operations distinguishable from plain Actions.
      */
     isOperation: true;
+
+    /**
+     * Optional custom arguments.
+     */
+    args?: Args;
 }
 
 /**
@@ -751,6 +769,16 @@ interface EditorContext {
     readonly lastMousePosition?: Point;
 
     /**
+     * The current viewport (scroll position and zoom level).
+     */
+    readonly viewport?: Viewport;
+
+    /**
+     * The bounds of the canvas element in the browser.
+     */
+    readonly canvasBounds?: Bounds;
+
+    /**
      * Custom arguments.
      */
     readonly args?: Args;
@@ -786,6 +814,45 @@ interface LabeledAction {
 
 </details>
 
+#### 2.3.10. LayoutData
+
+Data computed by the client-side layouter for a model element.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface LayoutData {
+    /**
+     * The computed minimum size of the element.
+     */
+    computedDimensions?: Dimension;
+}
+```
+
+</details>
+
+#### 2.3.11. ElementAndLayoutData
+
+The `ElementAndLayoutData` type is used to associate new layout data with a model element, which is referenced via its id.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface ElementAndLayoutData {
+    /**
+     * The identifier of the element.
+     */
+    elementId: string;
+
+    /**
+     * The data provided by the layouter.
+     */
+    layoutData: LayoutData;
+}
+```
+
+</details>
+
 ### 2.4 Model Data
 
 #### 2.4.1. RequestModelAction
@@ -804,7 +871,7 @@ interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * Additional options used to compute the graphical model.
    */
-  options?: { [key: string]: string });
+  options?: Args;
 }
 ```
 
@@ -925,10 +992,12 @@ interface SetDirtyStateAction extends Action {
     isDirty: boolean;
 
     /**
-     * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
+     * Indicates the reason for the dirty state change.
      */
-    reason?: string;
+    reason?: DirtyStateChangeReason;
 }
+
+type DirtyStateChangeReason = 'operation' | 'undo' | 'redo' | 'save' | 'external';
 ```
 
 </details>
@@ -942,21 +1011,16 @@ Typically the `ExportSvgAction` is handled directly on client side.
 <details open><summary>Code</summary>
 
 ```typescript
-interface ExportSvgAction extends ResponseAction {
+interface RequestExportSvgAction extends RequestAction<ExportSvgAction> {
     /**
      * The kind of the action.
      */
-    kind = 'exportSvg';
+    kind = 'requestExportSvg';
 
     /**
-     * The diagram GModel as serializable SVG.
+     * Optional configuration options for the SVG export.
      */
-    svg: string;
-
-    /**
-     * Id corresponding to the request this action responds to.
-     */
-    responseId: string;
+    options?: ExportSvgOptions;
 }
 ```
 
@@ -989,7 +1053,16 @@ interface ExportSvgAction extends ResponseAction {
      */
     responseId: string;
 }
+
+interface ExportSvgOptions {
+    /**
+     * If set to `false`, applied diagram styles are not copied to the exported SVG.
+     */
+    skipCopyStyles?: boolean;
+}
 ```
+
+</details>
 
 ### 2.6. Model Layout
 
@@ -1051,6 +1124,21 @@ interface ComputedBoundsAction extends ResponseAction {
      * The route of the model elements.
      */
     routes?: ElementAndRoutingPoints[];
+
+    /**
+     * The layout data of the model elements.
+     */
+    layoutData?: ElementAndLayoutData[];
+
+    /**
+     * The current bounds of the canvas at time of layout.
+     */
+    canvasBounds?: Bounds;
+
+    /**
+     * The current viewport information at time of layout.
+     */
+    viewport?: Viewport;
 }
 ```
 
@@ -1060,7 +1148,7 @@ interface ComputedBoundsAction extends ResponseAction {
 
 Triggers a request for layout on the client. The handler of this request can collect client-side model information, such as viewport data, before sending a `LayoutOperation` to the server.
 
-<details open><summary Code></summary>
+<details open><summary>Code</summary>
 
 ```typescript
 interface TriggerLayoutAction extends Action {
@@ -1237,7 +1325,7 @@ interface StatusAction extends Action {
     /**
      * The severity of the status.
      */
-    severity: SeverityLeel;
+    severity: SeverityLevel;
 
     /**
      * The message describing the status.
@@ -1279,7 +1367,7 @@ interface MessageAction extends Action {
     /**
      * Further details on the message.
      */
-    details: string;
+    details?: string;
 }
 ```
 
@@ -1739,7 +1827,7 @@ interface ResolveNavigationTargetAction extends RequestAction<SetResolvedNavigat
 
 </details>
 
-#### 2.11.4. SetResolvedNavigationTargetAction
+#### 2.11.5. SetResolvedNavigationTargetAction
 
 An action sent from the server in response to a `ResolveNavigationTargetAction`. The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
 
@@ -1766,7 +1854,7 @@ interface SetResolvedNavigationTargetAction extends ResponseAction {
 
 </details>
 
-#### 2.11.5. NavigateToExternalTargetAction
+#### 2.11.6. NavigateToExternalTargetAction
 
 If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
@@ -2078,7 +2166,7 @@ The client sends a `ChangeContainerOperation` to the server to request the execu
 <details open><summary>Code</summary>
 
 ```typescript
-interface ChangeContainerOperation implements Operation {
+interface ChangeContainerOperation extends Operation {
     /**
      * The kind of the action.
      */
@@ -2097,7 +2185,7 @@ interface ChangeContainerOperation implements Operation {
     /**
      * The graphical location.
      */
-    location?: string;
+    location?: Point;
 }
 ```
 
@@ -2204,7 +2292,7 @@ interface ResponseError {
     /**
      * Additional custom data, e.g., a serialized stacktrace.
      */
-    readonly data: Object;
+    readonly data: Record<string, unknown>;
 }
 
 namespace ValidationStatus {
@@ -2578,10 +2666,30 @@ interface TriggerNodeCreationAction extends Action {
     elementTypeId: string;
 
     /**
+     * An optional ghost element that schematically represents the node that may be created.
+     * It is not guaranteed that the created element will match the ghost element exactly.
+     */
+    ghostElement?: GhostElement;
+
+    /**
      * Custom arguments.
      */
     args?: Args;
 }
+
+/**
+ * A ghost element describes an element that may be rendered as a schematic visualization
+ * of an element that may be inserted during creation.
+ */
+interface GhostElement {
+    /**
+     * Either a reference to an existing element by id or a `GModelElementSchema`.
+     */
+    template: ElementTemplate;
+    dynamic?: boolean;
+}
+
+type ElementTemplate = string | GModelElementSchema;
 ```
 
 </details>
