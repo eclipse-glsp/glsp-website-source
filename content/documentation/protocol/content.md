@@ -210,6 +210,68 @@ interface ServerActions {
 
 </details>
 
+**MCP Server Configuration** _(experimental)_
+
+A GLSP server can optionally expose a [Model Context Protocol (MCP)]({{< relref "mcp" >}}) server alongside the GLSP protocol, so that AI agents can query and modify the diagram. An MCP-aware client opts in by adding an `mcpServer` configuration to the `initialize` request. The **presence** of the `mcpServer` key is the opt-in signal: an empty object enables the MCP server with defaults, omitting the key disables it. Once started, the resolved MCP server URL is reported back via the `mcpServer` property of the `InitializeResult`. These extensions are experimental and may still change while the feature matures.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface McpInitializeParameters extends InitializeParameters {
+    /**
+     * MCP server configuration. Its presence enables the MCP server;
+     * omitting the key disables it.
+     */
+    mcpServer?: McpServerConfiguration;
+}
+
+interface McpInitializeResult extends InitializeResult {
+    /**
+     * The announced MCP server (only present if MCP was opted in).
+     */
+    mcpServer: McpServerResult;
+}
+
+interface McpServerConfiguration {
+    /**
+     * Port the MCP server listens on. Defaults to 0 (a random free port).
+     */
+    port?: number;
+
+    /**
+     * HTTP route of the MCP endpoint (default '/mcp').
+     */
+    route?: string;
+
+    /**
+     * Name reported in the MCP server handshake.
+     */
+    name?: string;
+
+    // Additional behavioral options (e.g. the data exposure mode) are
+    // described in the MCP documentation.
+}
+
+interface McpServerResult {
+    /**
+     * The name of the MCP server.
+     */
+    name: string;
+
+    /**
+     * The URL at which the MCP server is accessible.
+     */
+    url: string;
+
+    /**
+     * Optional headers AI clients should include when connecting.
+     */
+    headers?: Record<string, string>;
+}
+```
+
+</details>
+
 **InitializeClientSession Request**
 
 When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server. Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
@@ -1008,6 +1070,8 @@ A `RequestExportSvgAction` is sent by the client (or the server) to initiate the
 The handler of this action is expected to retrieve the diagram SVG and should send an `ExportSvgAction` as response.
 Typically the `ExportSvgAction` is handled directly on client side.
 
+> **Deprecated.** Prefer the generic [`RequestExportAction`](#255-requestexportaction) / [`ExportResultAction`](#256-exportresultaction) pair, which also supports other formats such as PNG.
+
 <details open><summary>Code</summary>
 
 ```typescript
@@ -1034,6 +1098,8 @@ The expected result of executing an `ExportSvgAction` is a new file in SVG-forma
 However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
 So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
 
+> **Deprecated.** Use [`ExportResultAction`](#256-exportresultaction) as the response to a generic [`RequestExportAction`](#255-requestexportaction) instead.
+
 <details open><summary>Code</summary>
 
 ```typescript
@@ -1059,6 +1125,93 @@ interface ExportSvgOptions {
      * If set to `false`, applied diagram styles are not copied to the exported SVG.
      */
     skipCopyStyles?: boolean;
+}
+```
+
+</details>
+
+#### 2.5.5. RequestExportAction
+
+A generic, format-agnostic export request. It is sent by the client to itself for UI-driven export flows, or from the server to the client for server-orchestrated flows (e.g. an MCP tool requesting a PNG snapshot of the active diagram). The expected response is an `ExportResultAction` carrying the rendered bytes. The package ships `svg` and `png` formats; adopters can register additional formats.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface RequestExportAction extends RequestAction<ExportResultAction> {
+    kind = 'requestExport';
+
+    /**
+     * The requested export format, e.g. 'svg' or 'png'.
+     */
+    format: ExportFormat;
+
+    /**
+     * Format-specific options (e.g. `PngExportOptions` for PNG).
+     */
+    formatOptions?: unknown;
+}
+
+type ExportFormat = 'svg' | 'png' | string;
+
+interface PngExportOptions {
+    /**
+     * Output width in px.
+     */
+    width?: number;
+
+    /**
+     * Output height in px. Derived from the rendered aspect ratio if omitted.
+     */
+    height?: number;
+
+    /**
+     * CSS color painted as the canvas background before drawing the diagram.
+     */
+    background?: string;
+
+    /**
+     * If `false`, applied diagram styles are not copied before rasterizing.
+     */
+    skipCopyStyles?: boolean;
+}
+```
+
+</details>
+
+#### 2.5.6. ExportResultAction
+
+Response to a `RequestExportAction` carrying the rendered diagram. Text-encoded payloads (e.g. SVG markup) ride in `data` directly; binary payloads (e.g. PNG) are base64-encoded so the action stays JSON-safe.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface ExportResultAction extends ResponseAction {
+    kind = 'exportResult';
+
+    /**
+     * Echoes the requested format.
+     */
+    format: ExportFormat;
+
+    /**
+     * MIME type of the data, e.g. 'image/svg+xml' or 'image/png'.
+     */
+    mimeType: string;
+
+    /**
+     * Encoding of `data`: 'text' for markup, 'base64' for binary blobs.
+     */
+    encoding: 'text' | 'base64' | string;
+
+    /**
+     * SVG markup ('text' encoding) or base64-encoded bytes ('base64' encoding).
+     */
+    data: string;
+
+    /**
+     * Echoes the request's `formatOptions`.
+     */
+    formatOptions?: unknown;
 }
 ```
 
@@ -1292,6 +1445,55 @@ interface FitToScreenAction extends Action {
      * Indicate if the action should be performed with animation support or not.
      */
     animate: boolean = true;
+}
+```
+
+</details>
+
+##### 2.8.1.3. OriginViewportAction
+
+Resets the viewport to its origin (zoom 1, scroll 0). This is typically dispatched by the client (e.g., from the tool palette) but can also be sent by the server to reset the viewport remotely.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface OriginViewportAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'originViewport';
+
+    /**
+     * Indicate if the viewport change should be animated.
+     */
+    animate: boolean = true;
+}
+```
+
+</details>
+
+##### 2.8.1.4. MoveViewportAction
+
+Moves the diagram canvas by the given amount. This can be dispatched on the client or sent by the server to scroll the viewport remotely.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface MoveViewportAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'moveViewport';
+
+    /**
+     * The amount to be moved in the x-axis.
+     */
+    moveX: number;
+
+    /**
+     * The amount to be moved in the y-axis.
+     */
+    moveY: number;
 }
 ```
 
@@ -1534,6 +1736,49 @@ interface SelectAllAction extends Action {
      * If `select` is true, all elements are selected, otherwise they are deselected.
      */
     select: boolean;
+}
+```
+
+</details>
+
+#### 2.8.4. Editor Context
+
+GLSP requests are bidirectional: in addition to the client querying the server, the server can also send request actions to the client and await a response. The optional `timeout` field on [`RequestAction`](#2121-requestaction) bounds how long the sender waits. A common case is the server asking the client for the current [`EditorContext`](#238-editorcontext) snapshot. More specific queries such as `GetSelectionAction` and `GetViewportAction` (reused from Sprotty) follow the same request/response pattern.
+
+##### 2.8.4.1. GetEditorContextAction
+
+Sent from the server to the client to request the current editor context. The response is an `EditorContextResult` carrying a snapshot of the client state at the time the response is generated.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface GetEditorContextAction extends RequestAction<EditorContextResult> {
+    /**
+     * The kind of the action.
+     */
+    kind = 'getEditorContext';
+}
+```
+
+</details>
+
+##### 2.8.4.2. EditorContextResult
+
+Response to a `GetEditorContextAction` containing a snapshot of the client-side editor state. The server should not assume that these values are still current when it processes the response, as the client state may have changed in the meantime.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface EditorContextResult extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'editorContextResult';
+
+    /**
+     * The editor context snapshot.
+     */
+    editorContext: EditorContext;
 }
 ```
 

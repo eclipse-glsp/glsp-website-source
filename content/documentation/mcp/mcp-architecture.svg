@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="'Helvetica Neue', Arial, sans-serif" role="img" aria-label="High-level GLSP MCP architecture">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto-start-reverse">
+      <path d="M0,0 L6.5,3 L0,6 Z" fill="#5b6b7b"/>
+    </marker>
+  </defs>
+
+  <!-- containers -->
+  <rect x="250" y="22" width="448" height="360" rx="9" fill="none" stroke="#9aa7b4" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="264" y="42" font-size="12" fill="#5b6b7b" font-style="italic">GLSP server process</text>
+
+  <rect x="276" y="62" width="404" height="300" rx="8" fill="#fbfcfd" stroke="#9aa7b4" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="290" y="82" font-size="12" fill="#5b6b7b" font-style="italic">GLSP server — one per connected app</text>
+
+  <!-- client-side boxes -->
+  <rect x="28" y="44" width="172" height="48" rx="6" fill="#f5f7fa" stroke="#5b6b7b" stroke-width="1.5"/>
+  <text x="114" y="73" font-size="13" fill="#2d3a45" text-anchor="middle">AI agent / LLM</text>
+
+  <rect x="28" y="150" width="172" height="58" rx="6" fill="#f5f7fa" stroke="#5b6b7b" stroke-width="1.5"/>
+  <text x="114" y="174" font-size="13" fill="#2d3a45" text-anchor="middle">MCP client</text>
+  <text x="114" y="192" font-size="11" fill="#5b6b7b" text-anchor="middle">(Theia · VS Code · Claude)</text>
+
+  <rect x="28" y="300" width="172" height="58" rx="6" fill="#f5f7fa" stroke="#5b6b7b" stroke-width="1.5"/>
+  <text x="114" y="324" font-size="13" fill="#2d3a45" text-anchor="middle">GLSP client</text>
+  <text x="114" y="342" font-size="11" fill="#5b6b7b" text-anchor="middle">(diagram editor)</text>
+
+  <!-- server-side boxes -->
+  <rect x="300" y="150" width="178" height="58" rx="6" fill="#eaf3fb" stroke="#2b6cb0" stroke-width="1.5"/>
+  <text x="389" y="174" font-size="13" fill="#1c4e80" text-anchor="middle">MCP server</text>
+  <text x="389" y="192" font-size="11" fill="#3a6ea5" text-anchor="middle">(one per GLSP server)</text>
+
+  <rect x="300" y="300" width="178" height="58" rx="6" fill="#f5f7fa" stroke="#5b6b7b" stroke-width="1.5"/>
+  <text x="389" y="324" font-size="13" fill="#2d3a45" text-anchor="middle">Client sessions</text>
+  <text x="389" y="342" font-size="11" fill="#5b6b7b" text-anchor="middle">(one per open diagram)</text>
+
+  <!-- arrows -->
+  <line x1="114" y1="92" x2="114" y2="149" stroke="#5b6b7b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="120" y="125" font-size="11" fill="#5b6b7b">uses</text>
+
+  <line x1="201" y1="179" x2="299" y2="179" stroke="#5b6b7b" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="250" y="171" font-size="11" fill="#5b6b7b" text-anchor="middle">MCP / HTTP</text>
+
+  <line x1="201" y1="329" x2="299" y2="329" stroke="#5b6b7b" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="250" y="321" font-size="11" fill="#5b6b7b" text-anchor="middle">GLSP protocol</text>
+
+  <line x1="389" y1="209" x2="389" y2="299" stroke="#5b6b7b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="399" y="250" font-size="11" fill="#5b6b7b">operates on</text>
+  <text x="399" y="264" font-size="11" fill="#5b6b7b">sessions</text>
+</svg>
