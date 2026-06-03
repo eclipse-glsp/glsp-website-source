@@ -31,6 +31,11 @@ interface GLSPClient {
     readonly currentState: ClientState;
 
     /**
+     * Event that is fired whenever the client state changes.
+     */
+    readonly onCurrentStateChanged: Event<ClientState>;
+
+    /**
      * Initializes the client and the server connection. During the start procedure the client is in the
      * `Starting` state and will transition to either `Running` or `StartFailed`. Calling this method
      *  if the client is already running has no effect.
@@ -82,9 +87,11 @@ interface GLSPClient {
     disposeClientSession(params: DisposeClientSessionParameters): Promise<void>;
 
     /**
-     * Send a `shutdown` notification to the server.
+     * Send a `shutdown` notification to the server. New implementations should return a
+     * `Promise<void>` that resolves once the notification has been flushed to the wire, so
+     * callers disposing the connection immediately afterwards don't race the pending notification.
      */
-    shutdownServer(): void;
+    shutdownServer(): Promise<void> | void;
 
     /**
      * Stops the client and disposes unknown resources. During the stop procedure the client is in the `Stopping` state and will
@@ -159,7 +166,7 @@ In GLSP we provide a default client implementation based on [JSON-RPC messages](
 
 **Initialize Request**
 
-The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
+The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on (the current protocol version is `1.0.0`). In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
@@ -198,6 +205,75 @@ interface InitializeResult {
  */
 interface ServerActions {
     [key: string]: string[];
+}
+```
+
+</details>
+
+**MCP Server Configuration** _(experimental)_
+
+A GLSP server can optionally expose a [Model Context Protocol (MCP)]({{< relref "mcp" >}}) server alongside the GLSP protocol, so that AI agents can query and modify the diagram. Setting it up is an interplay between the client and the server over the `initialize` exchange:
+
+1. The client opts in by adding an `mcpServer` configuration to its `InitializeParameters` (the `McpInitializeParameters` extension). The presence of the key is the opt-in signal: an empty object enables the MCP server with defaults, and omitting the key disables it. The client may set behavioral fields such as the `port`, `route`, and `name`, and tuning options such as the data-exposure mode and the agent persona.
+2. On a request that carries an `mcpServer` key, the server starts its MCP server, merging the client-provided fields with its own deploy-time defaults. Security-sensitive fields such as the network binding and host allowlist are controlled by the server alone and cannot be set from the request.
+3. The server reports the resolved server back in its `InitializeResult` (the `McpInitializeResult` extension), announcing the `name`, `url`, and optional `headers`.
+4. The client, or its IDE integration, connects its MCP client to that announced `url`.
+
+These extensions are experimental and may still change while the feature matures.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface McpInitializeParameters extends InitializeParameters {
+    /**
+     * MCP server configuration. Its presence enables the MCP server;
+     * omitting the key disables it.
+     */
+    mcpServer?: McpServerConfiguration;
+}
+
+interface McpInitializeResult extends InitializeResult {
+    /**
+     * The announced MCP server (only present if MCP was opted in).
+     */
+    mcpServer: McpServerResult;
+}
+
+interface McpServerConfiguration {
+    /**
+     * Port the MCP server listens on. Defaults to 0 (a random free port).
+     */
+    port?: number;
+
+    /**
+     * HTTP route of the MCP endpoint (default '/mcp').
+     */
+    route?: string;
+
+    /**
+     * Name reported in the MCP server handshake.
+     */
+    name?: string;
+
+    // Additional behavioral options (e.g. the data exposure mode) are
+    // described in the MCP documentation.
+}
+
+interface McpServerResult {
+    /**
+     * The name of the MCP server.
+     */
+    name: string;
+
+    /**
+     * The URL at which the MCP server is accessible.
+     */
+    url: string;
+
+    /**
+     * Optional headers AI clients should include when connecting.
+     */
+    headers?: Record<string, string>;
 }
 ```
 
@@ -292,7 +368,7 @@ interface ActionMessage<A extends Action = Action> {
     /**
      * The action to execute.
      */
-    Action: A;
+    action: A;
 }
 ```
 
@@ -327,6 +403,12 @@ interface RequestAction<Res extends ResponseAction> extends Action {
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
      */
     requestId: string;
+
+    /**
+     * Optional timeout in milliseconds. When set, the sender controls how long the receiver waits for a response
+     * before the request is rejected.
+     */
+    timeout?: number;
 }
 ```
 
@@ -368,7 +450,7 @@ interface RejectAction extends ResponseAction {
     /**
      * Optional additional details.
      */
-    detail?: JsonAny;
+    detail?: string;
 }
 ```
 
@@ -389,6 +471,11 @@ interface Operation extends Action {
      * Discriminator property to make operations distinguishable from plain Actions.
      */
     isOperation: true;
+
+    /**
+     * Optional custom arguments.
+     */
+    args?: Args;
 }
 
 /**
@@ -751,6 +838,16 @@ interface EditorContext {
     readonly lastMousePosition?: Point;
 
     /**
+     * The current viewport (scroll position and zoom level).
+     */
+    readonly viewport?: Viewport;
+
+    /**
+     * The bounds of the canvas element in the browser.
+     */
+    readonly canvasBounds?: Bounds;
+
+    /**
      * Custom arguments.
      */
     readonly args?: Args;
@@ -786,6 +883,45 @@ interface LabeledAction {
 
 </details>
 
+#### 2.3.10. LayoutData
+
+Data computed by the client-side layouter for a model element.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface LayoutData {
+    /**
+     * The computed minimum size of the element.
+     */
+    computedDimensions?: Dimension;
+}
+```
+
+</details>
+
+#### 2.3.11. ElementAndLayoutData
+
+The `ElementAndLayoutData` type is used to associate new layout data with a model element, which is referenced via its id.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface ElementAndLayoutData {
+    /**
+     * The identifier of the element.
+     */
+    elementId: string;
+
+    /**
+     * The data provided by the layouter.
+     */
+    layoutData: LayoutData;
+}
+```
+
+</details>
+
 ### 2.4 Model Data
 
 #### 2.4.1. RequestModelAction
@@ -804,7 +940,7 @@ interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * Additional options used to compute the graphical model.
    */
-  options?: { [key: string]: string });
+  options?: Args;
 }
 ```
 
@@ -925,10 +1061,12 @@ interface SetDirtyStateAction extends Action {
     isDirty: boolean;
 
     /**
-     * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
+     * Indicates the reason for the dirty state change.
      */
-    reason?: string;
+    reason?: DirtyStateChangeReason;
 }
+
+type DirtyStateChangeReason = 'operation' | 'undo' | 'redo' | 'save' | 'external';
 ```
 
 </details>
@@ -939,24 +1077,21 @@ A `RequestExportSvgAction` is sent by the client (or the server) to initiate the
 The handler of this action is expected to retrieve the diagram SVG and should send an `ExportSvgAction` as response.
 Typically the `ExportSvgAction` is handled directly on client side.
 
+> **Deprecated.** Prefer the generic [`RequestExportAction`](#255-requestexportaction) / [`ExportResultAction`](#256-exportresultaction) pair, which also supports other formats such as PNG.
+
 <details open><summary>Code</summary>
 
 ```typescript
-interface ExportSvgAction extends ResponseAction {
+interface RequestExportSvgAction extends RequestAction<ExportSvgAction> {
     /**
      * The kind of the action.
      */
-    kind = 'exportSvg';
+    kind = 'requestExportSvg';
 
     /**
-     * The diagram GModel as serializable SVG.
+     * Optional configuration options for the SVG export.
      */
-    svg: string;
-
-    /**
-     * Id corresponding to the request this action responds to.
-     */
-    responseId: string;
+    options?: ExportSvgOptions;
 }
 ```
 
@@ -970,6 +1105,8 @@ The expected result of executing an `ExportSvgAction` is a new file in SVG-forma
 However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
 So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
 
+> **Deprecated.** Use [`ExportResultAction`](#256-exportresultaction) as the response to a generic [`RequestExportAction`](#255-requestexportaction) instead.
+
 <details open><summary>Code</summary>
 
 ```typescript
@@ -989,7 +1126,103 @@ interface ExportSvgAction extends ResponseAction {
      */
     responseId: string;
 }
+
+interface ExportSvgOptions {
+    /**
+     * If set to `false`, applied diagram styles are not copied to the exported SVG.
+     */
+    skipCopyStyles?: boolean;
+}
 ```
+
+</details>
+
+#### 2.5.5. RequestExportAction
+
+A generic, format-agnostic export request. It is sent by the client to itself for UI-driven export flows, or from the server to the client for server-orchestrated flows (e.g. an MCP tool requesting a PNG snapshot of the active diagram). The expected response is an `ExportResultAction` carrying the rendered bytes. The package ships `svg` and `png` formats; adopters can register additional formats.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface RequestExportAction extends RequestAction<ExportResultAction> {
+    kind = 'requestExport';
+
+    /**
+     * The requested export format, e.g. 'svg' or 'png'.
+     */
+    format: ExportFormat;
+
+    /**
+     * Format-specific options (e.g. `PngExportOptions` for PNG).
+     */
+    formatOptions?: unknown;
+}
+
+type ExportFormat = 'svg' | 'png' | string;
+
+interface PngExportOptions {
+    /**
+     * Output width in px.
+     */
+    width?: number;
+
+    /**
+     * Output height in px. Derived from the rendered aspect ratio if omitted.
+     */
+    height?: number;
+
+    /**
+     * CSS color painted as the canvas background before drawing the diagram.
+     */
+    background?: string;
+
+    /**
+     * If `false`, applied diagram styles are not copied before rasterizing.
+     */
+    skipCopyStyles?: boolean;
+}
+```
+
+</details>
+
+#### 2.5.6. ExportResultAction
+
+Response to a `RequestExportAction` carrying the rendered diagram. Text-encoded payloads (e.g. SVG markup) ride in `data` directly; binary payloads (e.g. PNG) are base64-encoded so the action stays JSON-safe.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface ExportResultAction extends ResponseAction {
+    kind = 'exportResult';
+
+    /**
+     * Echoes the requested format.
+     */
+    format: ExportFormat;
+
+    /**
+     * MIME type of the data, e.g. 'image/svg+xml' or 'image/png'.
+     */
+    mimeType: string;
+
+    /**
+     * Encoding of `data`: 'text' for markup, 'base64' for binary blobs.
+     */
+    encoding: 'text' | 'base64' | string;
+
+    /**
+     * SVG markup ('text' encoding) or base64-encoded bytes ('base64' encoding).
+     */
+    data: string;
+
+    /**
+     * Echoes the request's `formatOptions`.
+     */
+    formatOptions?: unknown;
+}
+```
+
+</details>
 
 ### 2.6. Model Layout
 
@@ -1051,6 +1284,21 @@ interface ComputedBoundsAction extends ResponseAction {
      * The route of the model elements.
      */
     routes?: ElementAndRoutingPoints[];
+
+    /**
+     * The layout data of the model elements.
+     */
+    layoutData?: ElementAndLayoutData[];
+
+    /**
+     * The current bounds of the canvas at time of layout.
+     */
+    canvasBounds?: Bounds;
+
+    /**
+     * The current viewport information at time of layout.
+     */
+    viewport?: Viewport;
 }
 ```
 
@@ -1060,7 +1308,7 @@ interface ComputedBoundsAction extends ResponseAction {
 
 Triggers a request for layout on the client. The handler of this request can collect client-side model information, such as viewport data, before sending a `LayoutOperation` to the server.
 
-<details open><summary Code></summary>
+<details open><summary>Code</summary>
 
 ```typescript
 interface TriggerLayoutAction extends Action {
@@ -1209,6 +1457,55 @@ interface FitToScreenAction extends Action {
 
 </details>
 
+##### 2.8.1.3. OriginViewportAction
+
+Resets the viewport to its origin (zoom 1, scroll 0). This is typically dispatched by the client (e.g., from the tool palette) but can also be sent by the server to reset the viewport remotely.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface OriginViewportAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'originViewport';
+
+    /**
+     * Indicate if the viewport change should be animated.
+     */
+    animate: boolean = true;
+}
+```
+
+</details>
+
+##### 2.8.1.4. MoveViewportAction
+
+Moves the diagram canvas by the given amount. This can be dispatched on the client or sent by the server to scroll the viewport remotely.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface MoveViewportAction extends Action {
+    /**
+     * The kind of the action.
+     */
+    kind = 'moveViewport';
+
+    /**
+     * The amount to be moved in the x-axis.
+     */
+    moveX: number;
+
+    /**
+     * The amount to be moved in the y-axis.
+     */
+    moveY: number;
+}
+```
+
+</details>
+
 #### 2.8.2. Client Notification
 
 To notify the client about user-facing events or long running operations, the server can send a server status notification, a server message notification or progress notifications.
@@ -1237,7 +1534,7 @@ interface StatusAction extends Action {
     /**
      * The severity of the status.
      */
-    severity: SeverityLeel;
+    severity: SeverityLevel;
 
     /**
      * The message describing the status.
@@ -1279,7 +1576,7 @@ interface MessageAction extends Action {
     /**
      * Further details on the message.
      */
-    details: string;
+    details?: string;
 }
 ```
 
@@ -1739,7 +2036,7 @@ interface ResolveNavigationTargetAction extends RequestAction<SetResolvedNavigat
 
 </details>
 
-#### 2.11.4. SetResolvedNavigationTargetAction
+#### 2.11.5. SetResolvedNavigationTargetAction
 
 An action sent from the server in response to a `ResolveNavigationTargetAction`. The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
 
@@ -1766,7 +2063,7 @@ interface SetResolvedNavigationTargetAction extends ResponseAction {
 
 </details>
 
-#### 2.11.5. NavigateToExternalTargetAction
+#### 2.11.6. NavigateToExternalTargetAction
 
 If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
@@ -2078,7 +2375,7 @@ The client sends a `ChangeContainerOperation` to the server to request the execu
 <details open><summary>Code</summary>
 
 ```typescript
-interface ChangeContainerOperation implements Operation {
+interface ChangeContainerOperation extends Operation {
     /**
      * The kind of the action.
      */
@@ -2097,7 +2394,7 @@ interface ChangeContainerOperation implements Operation {
     /**
      * The graphical location.
      */
-    location?: string;
+    location?: Point;
 }
 ```
 
@@ -2204,7 +2501,7 @@ interface ResponseError {
     /**
      * Additional custom data, e.g., a serialized stacktrace.
      */
-    readonly data: Object;
+    readonly data: Record<string, unknown>;
 }
 
 namespace ValidationStatus {
@@ -2578,10 +2875,30 @@ interface TriggerNodeCreationAction extends Action {
     elementTypeId: string;
 
     /**
+     * An optional ghost element that schematically represents the node that may be created.
+     * It is not guaranteed that the created element will match the ghost element exactly.
+     */
+    ghostElement?: GhostElement;
+
+    /**
      * Custom arguments.
      */
     args?: Args;
 }
+
+/**
+ * A ghost element describes an element that may be rendered as a schematic visualization
+ * of an element that may be inserted during creation.
+ */
+interface GhostElement {
+    /**
+     * Either a reference to an existing element by id or a `GModelElementSchema`.
+     */
+    template: ElementTemplate;
+    dynamic?: boolean;
+}
+
+type ElementTemplate = string | GModelElementSchema;
 ```
 
 </details>
@@ -2608,6 +2925,49 @@ interface TriggerEdgeCreationAction extends Action {
      * Custom arguments.
      */
     args?: Args;
+}
+```
+
+</details>
+
+### 2.20. Editor Context
+
+While most requests flow from the client to the server, the server can also send request actions to the client and await a response. The most common case is the server asking the client for its current [`EditorContext`](#238-editorcontext) snapshot. This is a server-initiated request. The client itself does not need it, since it has the editor context directly.
+
+#### 2.20.1. GetEditorContextAction
+
+Sent from the server to the client to request the current editor context. The response is an `EditorContextResult` carrying a snapshot of the client state at the time the response is generated.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface GetEditorContextAction extends RequestAction<EditorContextResult> {
+    /**
+     * The kind of the action.
+     */
+    kind = 'getEditorContext';
+}
+```
+
+</details>
+
+#### 2.20.2. EditorContextResult
+
+Response to a `GetEditorContextAction` containing a snapshot of the client-side editor state. The server should not assume that these values are still current when it processes the response, as the client state may have changed in the meantime.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface EditorContextResult extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'editorContextResult';
+
+    /**
+     * The editor context snapshot.
+     */
+    editorContext: EditorContext;
 }
 ```
 
