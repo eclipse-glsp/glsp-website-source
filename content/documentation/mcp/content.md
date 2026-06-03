@@ -13,7 +13,7 @@ A GLSP server can optionally act as an MCP server, so that AI clients such as an
 
 In practice this lets an assistant answer questions about a diagram, suggest improvements, create or adjust elements from a natural-language request, or check the model for problems, all while the diagram stays open in the GLSP editor.
 
-<small>*Experimental: MCP support is under active development and its configuration may still change. It is currently available for the [Node GLSP server](https://github.com/eclipse-glsp/glsp-server-node) only, with [Java server support](https://github.com/eclipse-glsp/glsp/issues/1672) planned.*</small>
+<small>*Experimental: MCP support is under active development and its configuration may still change. It is currently available for the [Node GLSP server](https://github.com/eclipse-glsp/glsp-server-node) only.*</small>
 
 ### What it provides
 
@@ -27,9 +27,23 @@ Each MCP client connects over the standard MCP streamable HTTP transport and get
 
 ### Enabling MCP
 
-MCP is opt-in and off by default.
-An MCP-aware GLSP client enables it by adding an `mcpServer` configuration to the [initialize request]({{< relref "protocol" >}}) it already sends.
-The standalone workflow example, for instance, passes it through the diagram loader:
+MCP is opt-in and off by default. Enabling it has a server and a client part.
+
+**On the server**, add the `@eclipse-glsp/server-mcp` package and load its two modules in the GLSP server's DI configuration: a per-session diagram module and a launcher-level server module.
+
+```ts
+const serverModule = new MyServerModule().configureDiagramModule(
+    new MyDiagramModule(...),
+    new DefaultMcpDiagramModule()           // per-session MCP services
+);
+launcher.configure(serverModule, new NodeMcpServerModule()); // MCP HTTP server
+```
+
+The two modules bind into different scopes: the server module holds process-wide singletons such as the MCP server itself, while the diagram module is instantiated fresh for each open diagram.
+By subclassing the server module you set the deploy-time options that are kept off the initialize payload for security, such as the network binding and the host and origin allowlists.
+By subclassing the diagram module you bind the per-session services, such as the model serializer, label provider, and element-types provider, plus any diagram-scoped tools, resources, or prompts (see [Adapting it to your language](#adapting-it-to-your-language)).
+
+**On the client**, an MCP-aware GLSP client opts in by adding an `mcpServer` configuration to the [initialize request]({{< relref "protocol" >}}) it already sends. The standalone workflow example passes it through the diagram loader:
 
 ```ts
 diagramLoader.load<McpInitializeParameters>({
@@ -39,7 +53,7 @@ diagramLoader.load<McpInitializeParameters>({
 ```
 
 An empty `mcpServer: {}` enables MCP with all defaults.
-Its options such as the port, route, and name are documented in the [adopter guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/README.md).
+Its options, such as the port, route, name, data-exposure mode, and agent persona, are documented in the [adopter guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/README.md).
 
 ### Architecture
 
@@ -84,7 +98,8 @@ How the announced MCP server URL reaches the AI client depends on the platform:
 ### Security
 
 The shipped defaults assume a single trusted local process reaching the server over loopback, which is the typical desktop IDE setup.
-The server binds to loopback only and performs the standard Host and Origin checks to defeat DNS rebinding, but it ships with **no authentication**.
+The server binds to loopback only and performs the spec-mandated Host-header check to defeat DNS rebinding, but it ships with **no authentication**.
+Origin checking is available but off by default, since desktop MCP clients omit the Origin header.
 If an adopter widens the bind beyond loopback without acknowledging the missing authentication, the server refuses to start. Doing so safely requires an external authenticating layer such as a reverse proxy.
 The server is not hardened for hostile multi-tenant or public exposure.
 

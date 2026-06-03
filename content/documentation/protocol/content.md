@@ -212,7 +212,14 @@ interface ServerActions {
 
 **MCP Server Configuration** _(experimental)_
 
-A GLSP server can optionally expose a [Model Context Protocol (MCP)]({{< relref "mcp" >}}) server alongside the GLSP protocol, so that AI agents can query and modify the diagram. An MCP-aware client opts in by adding an `mcpServer` configuration to the `initialize` request. The **presence** of the `mcpServer` key is the opt-in signal: an empty object enables the MCP server with defaults, omitting the key disables it. Once started, the resolved MCP server URL is reported back via the `mcpServer` property of the `InitializeResult`. These extensions are experimental and may still change while the feature matures.
+A GLSP server can optionally expose a [Model Context Protocol (MCP)]({{< relref "mcp" >}}) server alongside the GLSP protocol, so that AI agents can query and modify the diagram. Setting it up is an interplay between the client and the server over the `initialize` exchange:
+
+1. The client opts in by adding an `mcpServer` configuration to its `InitializeParameters` (the `McpInitializeParameters` extension). The presence of the key is the opt-in signal: an empty object enables the MCP server with defaults, and omitting the key disables it. The client may set behavioral fields such as the `port`, `route`, and `name`, and tuning options such as the data-exposure mode and the agent persona.
+2. On a request that carries an `mcpServer` key, the server starts its MCP server, merging the client-provided fields with its own deploy-time defaults. Security-sensitive fields such as the network binding and host allowlist are controlled by the server alone and cannot be set from the request.
+3. The server reports the resolved server back in its `InitializeResult` (the `McpInitializeResult` extension), announcing the `name`, `url`, and optional `headers`.
+4. The client, or its IDE integration, connects its MCP client to that announced `url`.
+
+These extensions are experimental and may still change while the feature matures.
 
 <details open><summary>Code</summary>
 
@@ -1741,49 +1748,6 @@ interface SelectAllAction extends Action {
 
 </details>
 
-#### 2.8.4. Editor Context
-
-GLSP requests are bidirectional: in addition to the client querying the server, the server can also send request actions to the client and await a response. The optional `timeout` field on [`RequestAction`](#2121-requestaction) bounds how long the sender waits. A common case is the server asking the client for the current [`EditorContext`](#238-editorcontext) snapshot. More specific queries such as `GetSelectionAction` and `GetViewportAction` (reused from Sprotty) follow the same request/response pattern.
-
-##### 2.8.4.1. GetEditorContextAction
-
-Sent from the server to the client to request the current editor context. The response is an `EditorContextResult` carrying a snapshot of the client state at the time the response is generated.
-
-<details open><summary>Code</summary>
-
-```typescript
-interface GetEditorContextAction extends RequestAction<EditorContextResult> {
-    /**
-     * The kind of the action.
-     */
-    kind = 'getEditorContext';
-}
-```
-
-</details>
-
-##### 2.8.4.2. EditorContextResult
-
-Response to a `GetEditorContextAction` containing a snapshot of the client-side editor state. The server should not assume that these values are still current when it processes the response, as the client state may have changed in the meantime.
-
-<details open><summary>Code</summary>
-
-```typescript
-interface EditorContextResult extends ResponseAction {
-    /**
-     * The kind of the action.
-     */
-    kind = 'editorContextResult';
-
-    /**
-     * The editor context snapshot.
-     */
-    editorContext: EditorContext;
-}
-```
-
-</details>
-
 ### 2.9. Element Hover
 
 #### 2.9.1. RequestPopupModelAction
@@ -2961,6 +2925,49 @@ interface TriggerEdgeCreationAction extends Action {
      * Custom arguments.
      */
     args?: Args;
+}
+```
+
+</details>
+
+### 2.20. Editor Context
+
+While most requests flow from the client to the server, the server can also send request actions to the client and await a response. The most common case is the server asking the client for its current [`EditorContext`](#238-editorcontext) snapshot. This is a server-initiated request. The client itself does not need it, since it has the editor context directly.
+
+#### 2.20.1. GetEditorContextAction
+
+Sent from the server to the client to request the current editor context. The response is an `EditorContextResult` carrying a snapshot of the client state at the time the response is generated.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface GetEditorContextAction extends RequestAction<EditorContextResult> {
+    /**
+     * The kind of the action.
+     */
+    kind = 'getEditorContext';
+}
+```
+
+</details>
+
+#### 2.20.2. EditorContextResult
+
+Response to a `GetEditorContextAction` containing a snapshot of the client-side editor state. The server should not assume that these values are still current when it processes the response, as the client state may have changed in the meantime.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface EditorContextResult extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'editorContextResult';
+
+    /**
+     * The editor context snapshot.
+     */
+    editorContext: EditorContext;
 }
 ```
 
