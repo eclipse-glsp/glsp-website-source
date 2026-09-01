@@ -1,0 +1,1537 @@
+<!doctype html><html lang=en-us><head><meta name=theme content="Syna"><meta name=theme-version content="v0.17.4"><meta name=theme-url content="https://syna.okkur.org"><meta name=theme-description content="Highly customizable open source theme for Hugo based static websites"><meta name=theme-author content="Okkur Labs"><meta name=theme-author-url content="https://about.okkur.org"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=google content="notranslate"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="black"><meta name=description content="Following the successful pattern provided by the language server protocol (LSP) for textual languages, GLSP provides a defined protocol for the communication between the GLSP client and the server. In this modular architecture, server and client are well encapsulated and can be developed in an independent way. This allows mixing in the ideal technologies on both sides and reusing existing clients and server.
+1. Server-Client Lifecycle The base communication between the client and server is performed using action messages whereas we assume that each client connection will start their own server instance."><meta property="og:title" content="GLSP Protocol"><meta property="og:description" content><meta property="og:type" content="article"><meta property="og:url" content="https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="GLSP Protocol &amp;middot; Eclipse Graphical Language Server Platform"><meta name=twitter:description content="Following the successful pattern provided by the language server protocol (LSP) for textual languages, GLSP provides a defined protocol for the communication between the GLSP client and the server. In this modular architecture, server and client are well encapsulated and can be developed in an independent way. This allows mixing in the ideal technologies on both sides and reusing existing clients and server.
+1. Server-Client Lifecycle The base communication between the client and server is performed using action messages whereas we assume that each client connection will start their own server instance."><meta name=twitter:url content="https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/"><meta property="og:image" content><meta name=twitter:image content><meta name=author content="Eclipse Foundation"><meta name=generator content="Hugo 0.78.1"><title>GLSP Protocol &#183; Eclipse Graphical Language Server Platform</title><style>.mx-0{margin-left:0!important;margin-right:0!important}@-ms-viewport{width: device-width; }html{box-sizing:border-box;-ms-overflow-style:scrollbar}*,*::before,*::after{box-sizing:inherit}.container{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto;max-width:540px;max-width:720px;max-width:960px;max-width:1140px}.container-fluid{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}.row{display:flex;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.no-gutters{margin-right:0;margin-left:0}.no-gutters>.col,.no-gutters>[class*=col-]{padding-right:0;padding-left:0}.col-1,.col-2,.col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-10,.col-11,.col-12,.col,.col-auto{position:relative;width:100%;min-height:1px;padding-right:15px;padding-left:15px}.col{flex-basis:0;flex-grow:1;max-width:100%}.col-auto{flex:0 0 auto;width:auto;max-width:none}.col-1{flex:0 0 8.33333%;max-width:8.33333%}.col-2{flex:0 0 16.66667%;max-width:16.66667%}.col-3{flex:0 0 25%;max-width:25%}.col-4{flex:0 0 33.33333%;max-width:33.33333%}.col-5{flex:0 0 41.66667%;max-width:41.66667%}.col-6{flex:0 0 50%;max-width:50%}.col-7{flex:0 0 58.33333%;max-width:58.33333%}.col-8{flex:0 0 66.66667%;max-width:66.66667%}.col-9{flex:0 0 75%;max-width:75%}.col-10{flex:0 0 83.33333%;max-width:83.33333%}.col-11{flex:0 0 91.66667%;max-width:91.66667%}.col-12{flex:0 0 100%;max-width:100%}.order-first{order:-1}.order-last{order:13}.order-0{order:0}.order-1{order:1}.order-2{order:2}.order-3{order:3}.order-4{order:4}.order-5{order:5}.order-6{order:6}.order-7{order:7}.order-8{order:8}.order-9{order:9}.order-10{order:10}.order-11{order:11}.order-12{order:12}.offset-1{margin-left:8.33333%}.offset-2{margin-left:16.66667%}.offset-3{margin-left:25%}.offset-4{margin-left:33.33333%}.offset-5{margin-left:41.66667%}.offset-6{margin-left:50%}.offset-7{margin-left:58.33333%}.offset-8{margin-left:66.66667%}.offset-9{margin-left:75%}.offset-10{margin-left:83.33333%}.offset-11{margin-left:91.66667%}.d-none{display:none!important}.d-inline{display:inline!important}.d-inline-block{display:inline-block!important}.d-block{display:block!important}.d-table{display:table!important}.d-table-row{display:table-row!important}.d-table-cell{display:table-cell!important}.d-flex{display:flex!important}.d-inline-flex{display:inline-flex!important}@media print{.d-print-none{display:none!important}.d-print-inline{display:inline!important}.d-print-inline-block{display:inline-block!important}.d-print-block{display:block!important}.d-print-table{display:table!important}.d-print-table-row{display:table-row!important}.d-print-table-cell{display:table-cell!important}.d-print-flex{display:flex!important}.d-print-inline-flex{display:inline-flex!important}}.flex-row{flex-direction:row!important}.flex-column{flex-direction:column!important}.flex-row-reverse{flex-direction:row-reverse!important}.flex-column-reverse{flex-direction:column-reverse!important}.flex-wrap{flex-wrap:wrap!important}.flex-nowrap{flex-wrap:nowrap!important}.flex-wrap-reverse{flex-wrap:wrap-reverse!important}.flex-fill{flex:1 1 auto!important}.flex-grow-0{flex-grow:0!important}.flex-grow-1{flex-grow:1!important}.flex-shrink-0{flex-shrink:0!important}.flex-shrink-1{flex-shrink:1!important}.justify-content-start{justify-content:flex-start!important}.justify-content-end{justify-content:flex-end!important}.justify-content-center{justify-content:center!important}.justify-content-between{justify-content:space-between!important}.justify-content-around{justify-content:space-around!important}.align-items-start{align-items:flex-start!important}.align-items-end{align-items:flex-end!important}.align-items-center{align-items:center!important}.align-items-baseline{align-items:baseline!important}.align-items-stretch{align-items:stretch!important}.align-content-start{align-content:flex-start!important}.align-content-end{align-content:flex-end!important}.align-content-center{align-content:center!important}.align-content-between{align-content:space-between!important}.align-content-around{align-content:space-around!important}.align-content-stretch{align-content:stretch!important}.align-self-auto{align-self:auto!important}.align-self-start{align-self:flex-start!important}.align-self-end{align-self:flex-end!important}.align-self-center{align-self:center!important}.align-self-baseline{align-self:baseline!important}.align-self-stretch{align-self:stretch!important}</style><link href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/style.min.053c58ec20bb9b9f4d4653aa7cc02cfab8f4dd8068bab1c7fc602d99e0e6f60c.css rel=stylesheet><link rel="shortcut icon" type=image/x-icon href=/glsp-website-source/pr-previews/pr-110/favicon.ico><link rel=icon sizes="16x16 32x32" type=image/x-icon href=/glsp-website-source/pr-previews/pr-110/favicon.ico><link rel=icon href=/glsp-website-source/pr-previews/pr-110/favicon.png><link rel=apple-touch-icon-precomposed href=/glsp-website-source/pr-previews/pr-110/favicon.png><script>window.syna={};</script><script src=/glsp-website-source/pr-previews/pr-110/scripts/syna-head.min.39bf5c0a13b9259b89a61f939da69c098cd8bf74be53a960cb951c39ad08db54.js></script></head><body class=bg-secondary><script defer src=https://static.cloudflareinsights.com/beacon.min.js data-cf-beacon='{"token": "06f5cd775d484737a074b8122aae40ef"}'></script><nav class="overlay fragment navbar navbar-expand-lg py-2 scroll-spy bg-light navbar-light" id=nav role=navigation><div class=container><a class="navbar-brand py-0" href=/glsp-website-source/pr-previews/pr-110/#><img src=/glsp-website-source/pr-previews/pr-110/images/logo.png height=35 class="d-inline-block align-top" alt=GLSP></a>
+<button class=navbar-toggler type=button data-toggle=collapse data-target=#navbarCollapse aria-controls=navbarCollapse aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span></button><div class="navbar-collapse justify-content-between collapse show" id=navbarCollapse><ul class=navbar-nav><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/>Home</a></li><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/support>Support</a></li><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/documentation>Documentation</a></li><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/examples>Examples</a></li><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/gallery>Gallery</a></li><li class=nav-item><a class=nav-link href=/glsp-website-source/pr-previews/pr-110/contact>Contact</a></li><li class=nav-item><a class=nav-link href=https://github.com/eclipse-glsp/glsp>GitHub</a></li></ul><div class="search-container position-relative"><form action=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/search class=my-0><div class="input-group my-0"><input type=text class="form-control py-1" id=search-query-nav name=s placeholder=Search...><div class=input-group-append><button class="btn btn-primary" title=Search><i class="fa fa-search"></i></button></div></div></form><div class=search-results-container><div class="col p-0"><div id=search-results-nav class="col px-0 results"></div></div></div></div></div></div></nav><div class="scroll-to-top bg-primary has-font-icon" title="Back to top"><i class="fas fa-angle-up"></i><span class=sr-only>Back to top</span></div><script id=search-empty-template-nav type=text/x-js-template>
+  <p class="p-2">Please enter a word or phrase above</p>
+</script><script id=search-no-results-template-nav type=text/x-js-template>
+  <p class="p-2">No matches found</p>
+</script><script id=search-result-template-nav type=text/x-js-template>
+  <a href="${link}" id="summary-${key}" class="result ignore-color-change">
+    <div class="p-2">
+      <h5>${title}</h5>
+      <p class="m-0 text-body">${snippet}</p>
+      ${ isset tags }<p>Tags: ${tags}</p>${ end }
+      ${ isset categories }<p>Categories: ${categories}</p>${ end }
+    </div>
+  </a>
+</script><script>(function(){var fragmentName="nav";window.syna.api.register('search','search-'+fragmentName,{searchInput:`#search-query-${fragmentName}`,resultsContainer:`#search-results-${fragmentName}`,template:`#search-result-template-${fragmentName}`,noResults:`#search-no-results-template-${fragmentName}`,empty:`#search-empty-template-${fragmentName}`,});var resultsContainer=document.querySelector(`#${fragmentName} .search-results-container`)
+document.querySelector(`#search-query-${fragmentName}`).addEventListener('input',function(e){if(e.target.value.length){resultsContainer.classList.add('show');}else{resultsContainer.classList.remove('show');}});document.addEventListener('click',function(e){if(!document.querySelector(`#${fragmentName} .search-container`).contains(e.target)){document.querySelector(`#search-query-${fragmentName}`).value='';resultsContainer.classList.remove('show');}});})();</script><section id=content class="fragment content-fragment"><div class="container-fluid bg-light overlay"><div class="container py-5 overlay"><div class=row><div class="content-sidebar col-md-3 pb-4 px-md-0 order-0"><div class="sticky-top pt-3"><div class="content-sidebar-body col-12 px-0 text-left text-body"><section class=fragment><div class="container p-0"><div class="row mx-0 text-body"><article id=list-page-overview class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-overview .collapse" data-add-collapse="#list-page-overview .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/overview/>Overview</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/overview/#how-it-works>How it works</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/overview/#customization-and-extension>Customization and Extension</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-gettingstarted class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-gettingstarted .collapse" data-add-collapse="#list-page-gettingstarted .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/gettingstarted/>Getting Started</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-integrations class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-integrations .collapse" data-add-collapse="#list-page-integrations .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/integrations/>Servers & Integrations</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/integrations/#package-architecture>Package Architecture</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/integrations/#server-frameworks>Server Frameworks</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/integrations/#source-model-integrations>Source Model Integrations</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/integrations/#platform-integrations>Platform Integrations</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-sourcemodel class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-sourcemodel .collapse" data-add-collapse="#list-page-sourcemodel .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/sourcemodel/>Source Model & State</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/sourcemodel/#source-model>Source Model</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/sourcemodel/#source-model-storage-and-model-state>Source Model Storage and Model State</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-gmodel class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-gmodel .collapse" data-add-collapse="#list-page-gmodel .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/gmodel/>Graphical Model</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/gmodel/#graphical-model-structure>Graphical Model Structure</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/gmodel/#graphical-model-factory>Graphical Model Factory</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/gmodel/#extending-the-graphical-model>Extending the Graphical Model</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-rendering class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-rendering .collapse" data-add-collapse="#list-page-rendering .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/rendering/>Rendering & Styling</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/rendering/#rendering>Rendering</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/rendering/#default-views>Default Views</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/rendering/#styling>Styling</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-clientlayouting class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-clientlayouting .collapse" data-add-collapse="#list-page-clientlayouting .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/clientlayouting/>Client-side Layouting</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/clientlayouting/#layout-container>Layout Container</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/clientlayouting/#edge-layout>Edge Layout</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-ui-extensions class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-ui-extensions .collapse" data-add-collapse="#list-page-ui-extensions .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/ui-extensions/>UI Extensions</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/ui-extensions/#register-and-activate-custom-ui-extensions>Register and activate custom UI Extensions</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/ui-extensions/#button-overlay-showcase>Button Overlay Showcase</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-actionhandler class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-actionhandler .collapse" data-add-collapse="#list-page-actionhandler .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/actionhandler/>Actions & Action Handlers</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/actionhandler/#overview>Overview</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/actionhandler/#action-specification>Action specification</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/actionhandler/#implementing-an-action-handler-glsp-server>Implementing an Action Handler (GLSP Server)</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/actionhandler/#implementing-an-action-handler-glsp-client>Implementing an Action Handler (GLSP Client)</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-modeloperations class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-modeloperations .collapse" data-add-collapse="#list-page-modeloperations .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/modeloperations/>Model Operations</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/modeloperations/#operations-are-just-special-actions>Operations are just special actions</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/modeloperations/#operation-handlers-vs-operation-action-handler>Operation handlers vs. operation action handler</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/modeloperations/#operation-handlers>Operation handlers</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/modeloperations/#operation-action-handler>Operation action handler</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-validation class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-validation .collapse" data-add-collapse="#list-page-validation .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/validation/>Model Validation</a></h5></div></div><div class=collapse></div></article><article id=list-page-protocol class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-protocol .collapse" data-add-collapse="#list-page-protocol .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0 active-page"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/>GLSP Protocol</a></h5></div></div><div class="collapse show"><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#1-server-client-lifecycle>1. Server-Client Lifecycle</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#2-graphical-language-server-protocol>2. Graphical Language Server Protocol</a><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#21-base-protocol>2.1. Base Protocol</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#22-model-structure>2.2. Model Structure</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#23-types>2.3. Types</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#24-model-data>2.4 Model Data</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#25-model-saving>2.5. Model Saving</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#26-model-layout>2.6. Model Layout</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#27-model-edit-mode>2.7. Model Edit Mode</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#28-client-side-actions>2.8. Client-Side Actions</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#29-element-hover>2.9. Element Hover</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#210-element-validation>2.10. Element Validation</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#211-element-navigation>2.11. Element Navigation</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#212-element-type-hints>2.12. Element Type Hints</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#213-element-creation-and-deletion>2.13. Element Creation and Deletion</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#214-node-modification>2.14. Node Modification</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#215-edge-modification>2.15. Edge Modification</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#216-element-text-editing>2.16. Element Text Editing</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#217-clipboard>2.17. Clipboard</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#218-undo--redo>2.18. Undo / Redo</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#219-contexts>2.19. Contexts</a></li></ul></li></ul></nav></div></div></section></div></article><article id=list-page-additionals class="col-12 px-0 mb-2"><div class="col-12 pl-0 pb-1 text-body"><div data-toggle=collapse data-target="#list-page-additionals .collapse" data-add-collapse="#list-page-additionals .article-title" class="row align-items-center justify-content-between mx-0 article-title"><h5 class="col px-0 m-0"><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/additionals/>More Articles & Videos</a></h5></div></div><div class=collapse><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/additionals/#articles>Articles</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/additionals/#videos>Videos</a></li></ul></li></ul></nav></div></div></section></div></article></div></div></section></div></div></div><article class=col-md-9><div class="title-container row mx-0"><div class="title col px-0 text-center text-body"><h2>GLSP Protocol</h2></div></div><div class="content-body col-12 content px-0 text-body"><section class=fragment><div class="container p-0"><div class=toc><nav id=TableOfContents><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#1-server-client-lifecycle>1. Server-Client Lifecycle</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#2-graphical-language-server-protocol>2. Graphical Language Server Protocol</a><ul><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#21-base-protocol>2.1. Base Protocol</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#22-model-structure>2.2. Model Structure</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#23-types>2.3. Types</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#24-model-data>2.4 Model Data</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#25-model-saving>2.5. Model Saving</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#26-model-layout>2.6. Model Layout</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#27-model-edit-mode>2.7. Model Edit Mode</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#28-client-side-actions>2.8. Client-Side Actions</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#29-element-hover>2.9. Element Hover</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#210-element-validation>2.10. Element Validation</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#211-element-navigation>2.11. Element Navigation</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#212-element-type-hints>2.12. Element Type Hints</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#213-element-creation-and-deletion>2.13. Element Creation and Deletion</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#214-node-modification>2.14. Node Modification</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#215-edge-modification>2.15. Edge Modification</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#216-element-text-editing>2.16. Element Text Editing</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#217-clipboard>2.17. Clipboard</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#218-undo--redo>2.18. Undo / Redo</a></li><li><a href=https://eclipse-glsp.github.io/glsp-website-source/pr-previews/pr-110/documentation/protocol/#219-contexts>2.19. Contexts</a></li></ul></li></ul></nav></div></div></section><p>Following the successful pattern provided by the language server protocol (LSP) for textual languages, GLSP provides a defined protocol for the communication between the GLSP client and the server. In this modular architecture, server and client are well encapsulated and can be developed in an independent way. This allows mixing in the ideal technologies on both sides and reusing existing clients and server.</p><h2 id=1-server-client-lifecycle>1. Server-Client Lifecycle</h2><p>The base communication between the client and server is performed using <a href=#211-actionmessage>action messages</a> whereas we assume that each client connection will start their own server instance. Thus each server is only responsible for a single client.</p><p>A client implementation must consider the following interface:</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>GLSPClient</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique client Id.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Current client state.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>currentState</span>: <span style=color:#66d9ef>ClientState</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Initializes the client and the server connection. During the start procedure the client is in the
+</span><span style=color:#75715e>     * `Starting` state and will transition to either `Running` or `StartFailed`. Calling this method
+</span><span style=color:#75715e>     *  if the client is already running has no effect.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @returns A promise that resolves if the startup was successful.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>start</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>void</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Send an `initialize` request to the server. The server needs to be initialized in order to accept and
+</span><span style=color:#75715e>     * process other requests and notifications. The {@link InitializeResult} ist cached and can be retrieved
+</span><span style=color:#75715e>     * via the {@link GLSPClient.initializeResult} property.
+</span><span style=color:#75715e>     * Only the first method invocation actually sends a request to the server. Subsequent invocations simply
+</span><span style=color:#75715e>     * return the cached result.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param params Initialize parameters
+</span><span style=color:#75715e>     * @returns A promise of the {@link InitializeResult}.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>initializeServer</span>(<span style=color:#a6e22e>params</span>: <span style=color:#66d9ef>InitializeParameters</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>InitializeResult</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The cached {@link {InitializeResult}. Is `undefined` if the server has not been initialized yet via
+</span><span style=color:#75715e>     * the {@link GLSPClient.initializeServer} method.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>initializeResult</span>: <span style=color:#66d9ef>InitializeResult</span> <span style=color:#f92672>|</span> <span style=color:#66d9ef>undefined</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Event that is fired once the first invocation of {@link GLSPClient.initializeServer} has been completed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>onServerInitialized</span>: <span style=color:#66d9ef>Event</span>&lt;<span style=color:#f92672>InitializeResult</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Send an `initializeClientSession` request to the server. One client application may open several session.
+</span><span style=color:#75715e>     * Each individual diagram on the client side counts as one session and has to provide
+</span><span style=color:#75715e>     * a unique clientId.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param params InitializeClientSession parameters
+</span><span style=color:#75715e>     * @returns A promise that resolves if the initialization was successful
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>initializeClientSession</span>(<span style=color:#a6e22e>params</span>: <span style=color:#66d9ef>InitializeClientSessionParameters</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>void</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Sends a `disposeClientSession` request to the server. This request has to be sent at the end of client session lifecycle
+</span><span style=color:#75715e>     * e.g. when an editor widget is closed.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param params DisposeClientSession parameters
+</span><span style=color:#75715e>     * @returns A promise that resolves if the disposal was successful
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>disposeClientSession</span>(<span style=color:#a6e22e>params</span>: <span style=color:#66d9ef>DisposeClientSessionParameters</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>void</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Send a `shutdown` notification to the server.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>shutdownServer</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>void</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Stops the client and disposes unknown resources. During the stop procedure the client is in the `Stopping` state and will
+</span><span style=color:#75715e>     * transition to either `Stopped` or `ServerError`.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @returns A promise that resolves after the server was stopped and disposed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>stop</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>void</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Send an action message to the server.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param message The message
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sendActionMessage</span>(<span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>ActionMessage</span>)<span style=color:#f92672>:</span> <span style=color:#66d9ef>void</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Sets a handler/listener for action messages received from the server.
+</span><span style=color:#75715e>     * Can be scoped to a particular client session by passing the corresponding `clientId`.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param handler The action message handler
+</span><span style=color:#75715e>     * @param clientId If passed given action message handler will only be invoked for action messages with this client id.
+</span><span style=color:#75715e>     * @returns A {@link Disposable} that can be used to unregister the handler
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>onActionMessage</span>(<span style=color:#a6e22e>handler</span>: <span style=color:#66d9ef>ActionMessageHandler</span>, <span style=color:#a6e22e>clientId?</span>: <span style=color:#66d9ef>string</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>Disposable</span>;
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>enum</span> <span style=color:#a6e22e>ClientState</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The client has been created.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Initial</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * `Start` has been called on the client and the start process is still on-going.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Starting</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The client failed to complete the start process.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>StartFailed</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The client was successfully started and is now running.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Running</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * `Stop` has been called on the client and the stop process is still on-going.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Stopping</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The client stopped and disposed the server connection. Thus, action messages can no longer be sent.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Stopped</span>,
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * An error was encountered while connecting to the server. No action messages can be sent.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>ServerError</span>
+}
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * A key-value pair structure for custom arguments.
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Args</span> {
+    [<span style=color:#a6e22e>key</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span> <span style=color:#f92672>|</span> <span style=color:#66d9ef>number</span> <span style=color:#f92672>|</span> <span style=color:#66d9ef>boolean</span>;
+}
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>ActionMessageHandler</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>ActionMessage</span>) <span style=color:#f92672>=&gt;</span> <span style=color:#66d9ef>void</span>;
+</code></pre></div></details><p>In GLSP we provide a default client implementation based on <a href=https://www.jsonrpc.org/>JSON-RPC messages</a>.</p><p><strong>Initialize Request</strong></p><p>The <code>initialize</code> request has to be the first request from the client to the server. Until the server has responded with an <code>InitializeResult</code> no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an <code>applicationId</code> and has to specify on which <code>protocolVersion</code> it is based on. In addition, custom arguments can be provided in the <code>args</code> map to allow for custom initialization behavior on the server. The request returns an <code>InitializeResult</code> that encapsulates server information and capabilities. The <code>InitializeResult</code> is used inform the client about the action kinds that the server can handle for a specific <code>diagramType</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>InitializeParameters</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier for the current client application.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>applicationId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * GLSP protocol version that this client is implementing.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>protocolVersion</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Additional custom arguments e.g. application specific parameters.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>InitializeResult</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * GLSP protocol version that the server is implementing.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>protocolVersion</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The actions (grouped by `diagramType`) that the server can handle.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>serverActions</span>: <span style=color:#66d9ef>ServerActions</span>;
+}
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * A key-value pair structure to map a `diagramType` to its server-handled action kinds.
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ServerActions</span> {
+    [<span style=color:#a6e22e>key</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span>[];
+}
+</code></pre></div></details><p><strong>InitializeClientSession Request</strong></p><p>When a new graphical representation (diagram) is created a <code>InitializeClientSession</code> request has to be sent to the server. Each individual diagram on the client side counts as one session and has to provide a unique <code>clientSessionId</code> and its <code>diagramType</code>. In addition, custom arguments can be provided in the <code>args</code> map to allow for custom initialization behavior on the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>InitializeClientSessionParameters</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier for the new client session.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clientSessionId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier of the diagram type for which the session should be configured.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>diagramType</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The set of action kinds that can be handled by the client.
+</span><span style=color:#75715e>     * Used by the server to know which dispatched actions should be forwarded to the client.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clientActionKinds</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Additional custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><p><strong>DisposeClientSession Request</strong></p><p>When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a <code>DisposeClientSession</code> request has to be sent to the server. The session is identified by its unique <code>clientSessionId</code>. In addition, custom arguments can be provided in the <code>args</code> map to allow for custom dispose behavior on the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>DisposeClientSessionParameters</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier of the client session that should be disposed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clientSessionId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Additional custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><p><strong>Shutdown Notification</strong></p><p>If the client disconnects from the server, it may send a <code>shutdown</code> notification to give the server a chance to clean up any resources dedicated to the client. The shutdown request does not have any parameters as the server is already aware of the client.</p><p><strong>Action Messages</strong></p><p>Any communication that is performed between initialization and shutdown is handled by sending action messages, either from the client to the server or from the server to the client. This is the core part of the Graphical Language Server Protocol.</p><h2 id=2-graphical-language-server-protocol>2. Graphical Language Server Protocol</h2><p>The graphical language server protocol defines how the client and the server communicate and which actions are sent between them. It heavily builds on the client-server protocol defined in <a href=https://github.com/eclipse/sprotty>Sprotty</a> but adds additional actions to enable editing and other capabilities. Additional information regarding the lifecycle of some action messages can be found in the <a href=https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol>Sprotty documentation</a>.</p><p>Please note that there are several actions that are used purely on the client side. Such actions are not part of this protocol.</p><h3 id=21-base-protocol>2.1. Base Protocol</h3><p>The base protocol describes the structure of the messages that are sent between the server and the client.</p><h4 id=211-actionmessage>2.1.1. ActionMessage</h4><p>A general message serves as an envelope carrying an action to be transmitted between the client and the server via a DiagramServer.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ActionMessage</span>&lt;<span style=color:#f92672>A</span> <span style=color:#a6e22e>extends</span> <span style=color:#a6e22e>Action </span><span style=color:#f92672>=</span> <span style=color:#a6e22e>Action</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Used to identify a specific client session.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clientId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The action to execute.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>Action</span>: <span style=color:#66d9ef>A</span>;
+}
+</code></pre></div></details><h4 id=212-action>2.1.2. Action</h4><p>An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their <code>kind</code> attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier specifying the kind of action to process.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h5 id=2121-requestaction>2.1.2.1. RequestAction</h5><p>A request action is tied to the expectation of receiving a corresponding response action. The <code>requestId</code> property is used to match the received response with the original request.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>Res</span> <span style=color:#a6e22e>extends</span> <span style=color:#a6e22e>ResponseAction</span>&gt; <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>requestId</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h5 id=2122-responseaction>2.1.2.2. ResponseAction</h5><p>A response action is sent to respond to a request action. The <code>responseId</code> must match the <code>requestId</code> of the preceding request. In case the <code>responseId</code> is empty or undefined, the action is handled as standalone, i.e. it was fired without a preceding request.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ResponseAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Id corresponding to the request this action responds to.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>responseId</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h5 id=2123-rejectaction>2.1.2.3. RejectAction</h5><p>A reject action is a response fired to indicate that a request must be rejected.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RejectAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#a6e22e>kind</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;rejectRequest&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A human-readable description of the reject reason. Typically this is an error message
+</span><span style=color:#75715e>     * that has been thrown when handling the corresponding RequestAction.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Optional additional details.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>detail?</span>: <span style=color:#66d9ef>JsonAny</span>;
+}
+</code></pre></div></details><h5 id=2124-operation>2.1.2.4. Operation</h5><p>Operations are actions that denote requests from the client to <em>modify</em> the model. Model modifications are always performed by the server. After a successful modification, the server sends the updated model back to the client using the <a href=#253-updatemodelaction><code>UpdateModelAction</code></a>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#75715e>/**
+</span><span style=color:#75715e> * Marker interface for operations.
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Operation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Discriminator property to make operations distinguishable from plain Actions.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>isOperation</span>: <span style=color:#66d9ef>true</span>;
+}
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * An operation that executes a list of operations.
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CompoundOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;compound&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * List of operations that should be executed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>operationList</span>: <span style=color:#66d9ef>Operation</span>[];
+}
+</code></pre></div></details><h3 id=22-model-structure>2.2. Model Structure</h3><p>The basic model structure in GLSP is called a <code>GModel</code>. Such a model consists of <code>GModelElements</code> conforming to an <code>GModelElementSchema</code>.</p><p>Sprotty already defines a similar, graph-like model called <code>SGraph</code> conforming to the <code>SGraphSchema</code>. This graph consists nodes, edges, compartments, labels, and ports. The <code>GModel</code>is an extension of the sprotty graph model.</p><h4 id=221-gmodelelementschema>2.2.1. GModelElementSchema</h4><p>The schema of an <code>GModelElement</code> describes its serializable form. The actual class-based model is created from its schema in a deserialization step on client and server side. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>GModelElementSchema</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier for this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Type to look up the graphical representation of this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Children of this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>children?</span>: <span style=color:#66d9ef>GModelElementSchema</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * CSS classes that should be applied on this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>cssClasses?</span>: <span style=color:#66d9ef>string</span>[];
+}
+</code></pre></div></details><h5 id=2211-gmodelrootschema>2.2.1.1. GModelRootSchema</h5><p>Serializable schema for the root element of the model tree. Usually actions refer to elements in the graphical model via an <code>elementId</code>. However, a few actions actually need to transfer the graphical model. In such cases, the graphical model needs to be represented as a serializable <code>GModelRootSchema</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>GModelRootSchema</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GModelElementSchema</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Bounds of this element in the canvas.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>canvasBounds?</span>: <span style=color:#66d9ef>Bounds</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Version of this root element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>revision?</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h4 id=222-gmodelelement>2.2.2. GModelElement</h4><p>All elements of the diagram model inherit from base class <code>GModelElement</code>. Each model element must have a unique ID and a type that is used to look up its view. Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.</p><p>Each model element has a set of features. A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a <code>resizeFeature</code>. The set of supported features is determined by the <code>features</code> property.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GModelElement</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique identifier for this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Type to look up the graphical representation of this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * CSS classes that should be applied on this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>cssClasses?</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A set of features supported by this element, e.g.,
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>features?</span>: <span style=color:#66d9ef>FeatureSet</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * This element&#39;s root element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>root</span>: <span style=color:#66d9ef>GModelRoot</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Access to the model&#39;s index for faster element lookup.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>index</span>: <span style=color:#66d9ef>GModelIndex</span>&lt;<span style=color:#f92672>GModelElement</span>&gt;;
+}
+</code></pre></div></details><h5 id=2221-gparentelement>2.2.2.1. GParentElement</h5><p>A parent element may contain child elements, thus the diagram model forms a tree.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GParentElement</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GModelElement</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Children of this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>children</span>: <span style=color:#66d9ef>ReadonlyArray</span>&lt;<span style=color:#f92672>GChildElement</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Adds a child element to this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>add</span>(<span style=color:#a6e22e>child</span>: <span style=color:#66d9ef>GChildElement</span>, <span style=color:#a6e22e>index?</span>: <span style=color:#66d9ef>number</span>);
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Removes a child element from this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>remove</span>(<span style=color:#a6e22e>child</span>: <span style=color:#66d9ef>GChildElement</span>);
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Removes all child elements from this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>removeAll</span>(<span style=color:#a6e22e>filter</span><span style=color:#f92672>?:</span> (<span style=color:#a6e22e>e</span>: <span style=color:#66d9ef>GChildElement</span>) <span style=color:#f92672>=&gt;</span> <span style=color:#66d9ef>boolean</span>);
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Moves a child element to a new index.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>move</span>(<span style=color:#a6e22e>child</span>: <span style=color:#66d9ef>GChildElement</span>, <span style=color:#a6e22e>newIndex</span>: <span style=color:#66d9ef>number</span>);
+}
+</code></pre></div></details><h5 id=2222-gchildelement>2.2.2.2. GChildElement</h5><p>A child element is contained in a parent element. All elements except the model root are child elements. In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GChildElement</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GParentElement</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Parent of this element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>parent</span>: <span style=color:#66d9ef>GParentElement</span>;
+}
+</code></pre></div></details><h5 id=2223-gmodelroot>2.2.2.3. GModelRoot</h5><p>Base class for the root element of the diagram model tree.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GModelRoot</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GParentElement</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Access to the index which is built up for faster element lookup.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>index</span>: <span style=color:#66d9ef>GModelIndex</span>&lt;<span style=color:#f92672>GModelElement</span>&gt;;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Bounds of this element in the canvas.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>canvasBounds?</span>: <span style=color:#66d9ef>Bounds</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Version of this root element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>revision?</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h3 id=23-types>2.3. Types</h3><h4 id=231-args>2.3.1. Args</h4><p>Arguments are a key-value map with the key being a string and the value being either a string, a number, or a boolean value.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Args</span> <span style=color:#f92672>=</span> { [<span style=color:#a6e22e>key</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span> <span style=color:#f92672>|</span> <span style=color:#66d9ef>number</span> <span style=color:#f92672>|</span> <span style=color:#66d9ef>boolean</span> };
+</code></pre></div></details><h4 id=232-point>2.3.2. Point</h4><p>A <code>Point</code> is composed of the (x,y) coordinates of an object.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Point</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The abscissa of the point.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>x</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ordinate of the point.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>y</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h4 id=233-dimension>2.3.3. Dimension</h4><p>The <code>Dimension</code> of an object is composed of its width and height.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Dimension</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The width of an element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>width</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * the height of an element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>height</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h4 id=234-bounds>2.3.4. Bounds</h4><p>The bounds are the position (x, y) and dimension (width, height) of an object. As such the <code>Bounds</code> type extends both <code>Point</code> and <code>Dimension</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Bounds</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Point</span>, <span style=color:#a6e22e>Dimension</span> {}
+</code></pre></div></details><h4 id=235-elementandbounds>2.3.5. ElementAndBounds</h4><p>The <code>ElementAndBounds</code> type is used to associate new bounds with a model element, which is referenced via its id.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ElementAndBounds</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new size of the element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newSize</span>: <span style=color:#66d9ef>Dimension</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new position of the element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newPosition?</span>: <span style=color:#66d9ef>Point</span>;
+}
+</code></pre></div></details><h4 id=236-elementandalignment>2.3.6. ElementAndAlignment</h4><p>The <code>ElementAndAlignment</code> type is used to associate a new alignment with a model element, which is referenced via its id.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ElementAndAlignment</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of an element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new alignment of the element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newAlignment</span>: <span style=color:#66d9ef>Point</span>;
+}
+</code></pre></div></details><h4 id=237-elementandroutingpoints>2.3.7. ElementAndRoutingPoints</h4><p>The <code>ElementAndRoutingPoints</code> type is used to associate an edge with specific routing points.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ElementAndRoutingPoints</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of an element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new list of routing points.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoutingPoints?</span>: <span style=color:#66d9ef>Point</span>[];
+}
+</code></pre></div></details><h4 id=238-editorcontext>2.3.8. EditorContext</h4><p>The <code>EditorContext</code> may be used to represent the current state of the editor for particular actions. It encompasses the last recorded mouse position, the list of selected elements, and may contain custom arguments to encode additional state information.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>EditorContext</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The list of selected element identifiers.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>selectedElementIds</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The last recorded mouse position.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>lastMousePosition?</span>: <span style=color:#66d9ef>Point</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=239-labeledaction>2.3.9. LabeledAction</h4><p>Labeled actions are used to denote a group of actions in a user-interface context, e.g., to define an entry in the command palette or in the context menu.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>LabeledAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Group label.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>label</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Actions in the group.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>actions</span>: <span style=color:#66d9ef>Action</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Optional group icon.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>icon?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=24-model-data>2.4 Model Data</h3><h4 id=241-requestmodelaction>2.4.1. RequestModelAction</h4><p>Sent from the client to the server in order to request a graphical model. Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication. The response is a <code>SetModelAction</code> or an <code>UpdateModelAction</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetModelAction</span>&gt; {
+  <span style=color:#75715e>/**
+</span><span style=color:#75715e>   * The kind of the action.
+</span><span style=color:#75715e>   */</span>
+  <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;requestModel&#34;</span>;
+
+  <span style=color:#75715e>/**
+</span><span style=color:#75715e>   * Additional options used to compute the graphical model.
+</span><span style=color:#75715e>   */</span>
+  <span style=color:#a6e22e>options</span><span style=color:#f92672>?:</span> { [<span style=color:#a6e22e>key</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span> });
+}
+</code></pre></div></details><h4 id=242-setmodelaction>2.4.2. SetModelAction</h4><p>Sent from the server to the client in order to set the model. If a model is already present, it is replaced.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setModel&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new graphical model elements.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoot</span>: <span style=color:#66d9ef>GModelRootSchema</span>;
+}
+</code></pre></div></details><h4 id=243-updatemodelaction>2.4.3. UpdateModelAction</h4><p>Sent from the server to the client in order to update the model. If no model is present yet, this behaves the same as a <code>SetModelAction</code>. The transition from the old model to the new one can be animated.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>UpdateModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;updateModel&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new root element of the graphical model.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoot?</span>: <span style=color:#66d9ef>GModelRootSchema</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Boolean flag to indicate wether updated/changed elements should be animated in the diagram.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>animate?</span>: <span style=color:#66d9ef>boolean</span>;
+}
+</code></pre></div></details><h4 id=244-sourcemodelchangedaction>2.4.4. SourceModelChangedAction</h4><p>Sent from the server to the client in order to indicate that the source model has changed. The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a <a href=#251-requestmodelaction>RequestModelAction</a>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SourceModelChangedAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;sourceModelChanged&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A human readable name of the source model (e.g. the file name).
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sourceModelName</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=25-model-saving>2.5. Model Saving</h3><h4 id=251-savemodelaction>2.5.1. SaveModelAction</h4><p>Sent from the client to the server in order to persist the current model state back to the source model.
+A new <code>fileUri</code> can be defined to save the model to a new destination different from its original source model.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SaveModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;saveModel&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     *  The optional destination file uri.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>fileUri?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=252-setdirtystateaction>2.5.2. SetDirtyStateAction</h4><p>The server sends a <code>SetDirtyStateAction</code> to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model. A client may ignore such an action or use it to indicate to the user the dirty state.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetDirtyStateAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setDirtyState&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * True if the current model state is dirty
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>isDirty</span>: <span style=color:#66d9ef>boolean</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A string indicating the reason for the dirty state change e.g &#39;operation&#39;, &#39;undo&#39; ...
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>reason?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=253-requestexportsvgaction>2.5.3. RequestExportSvgAction</h4><p>A <code>RequestExportSvgAction</code> is sent by the client (or the server) to initiate the SVG export of the current diagram.
+The handler of this action is expected to retrieve the diagram SVG and should send an <code>ExportSvgAction</code> as response.
+Typically the <code>ExportSvgAction</code> is handled directly on client side.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ExportSvgAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;exportSvg&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The diagram GModel as serializable SVG.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>svg</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Id corresponding to the request this action responds to.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>responseId</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=254-exportsvgaction>2.5.4. ExportSvgAction</h4><p>The client sends an <code>ExportSvgAction</code> to indicate that the diagram, which represents the current model state, should be exported in SVG format.
+The action only provides the diagram SVG as plain string.
+The expected result of executing an <code>ExportSvgAction</code> is a new file in SVG-format on the underlying filesystem.
+However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
+So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ExportSvgAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;exportSvg&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The diagram GModel as serializable SVG.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>svg</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Id corresponding to the request this action responds to.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>responseId</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div><h3 id=26-model-layout>2.6. Model Layout</h3><p>In GLSP the server usually controls the model&rsquo;s layout by applying bounds to all elements and sending an updated model to the client (<a href=#252-setmodelaction>SetModelAction</a>, <a href=#253-updatemodelaction>UpdateModelAction</a>). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.</p><p>On the client-side GLSP calculates the layout on two levels: The <code>Micro Layout</code> is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The <code>Macro Layout</code> is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a <code>RequestBoundsAction</code> to the client who will respond with a <code>ComputedBoundsAction</code> containing all elements and their bounds.</p><h4 id=261-requestboundsaction>2.6.1. RequestBoundsAction</h4><p>Sent from the server to the client to request bounds for the given model. The model is rendered invisibly so the bounds can derived from the DOM. The response is a <code>ComputedBoundsAction</code>. This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestBoundsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestBounds&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The model elements to consider to compute the new bounds.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoot</span>: <span style=color:#66d9ef>GModelRootSchema</span>;
+}
+</code></pre></div></details><h4 id=262-computedboundsaction>2.6.2. ComputedBoundsAction</h4><p>Sent from the client to the server to transmit the result of bounds computation as a response to a <code>RequestBoundsAction</code>. If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action. Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ComputedBoundsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;computedBounds&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new bounds of the model elements.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>bounds</span>: <span style=color:#66d9ef>ElementAndBounds</span>[];
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * The revision number.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>revision?</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new alignment of the model elements.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>alignments?</span>: <span style=color:#66d9ef>ElementAndAlignment</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The route of the model elements.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>routes?</span>: <span style=color:#66d9ef>ElementAndRoutingPoints</span>[];
+}
+</code></pre></div></details><h4 id=263-triggerlayoutaction>2.6.3. TriggerLayoutAction</h4><p>Triggers a request for layout on the client. The handler of this request can collect client-side model information, such as viewport data, before sending a <code>LayoutOperation</code> to the server.</p><details open><summary code></summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TriggerLayoutAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#a6e22e>kind</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;triggerLayout&#39;</span>;
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments that may be interpreted by the client.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=264-layoutoperation>2.6.4. LayoutOperation</h4><p>Request a layout of the diagram or selected elements from the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>LayoutOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;layout&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifiers of the elements that should be layouted, will default to the root element if not defined.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementIds?</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current bounds of the canvas at time of layout.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>canvasBounds?</span>: <span style=color:#66d9ef>Bounds</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current viewport information at time of layout.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>viewport?</span>: <span style=color:#66d9ef>Viewport</span>;
+}
+</code></pre></div></details><h3 id=27-model-edit-mode>2.7. Model Edit Mode</h3><p>GLSP supports setting the model into different edit modes. We pre-define two such modes: <code>readonly</code> and <code>editable</code>. However these modes can be customized as need be.</p><h4 id=271-seteditmodeaction>2.7.1. SetEditModeAction</h4><p>Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode. A client may also listen to this action to prevent certain user interactions preemptively.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetEditModeAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setEditMode&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new edit mode of the diagram.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editMode</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=28-client-side-actions>2.8. Client-Side Actions</h3><p>There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.</p><h4 id=281-view-port>2.8.1. View Port</h4><p>View port actions manipulate the viewport on the client-side and may be sent from the server to highlight changes or improve general usability.</p><h5 id=2811-centeraction>2.8.1.1. CenterAction</h5><p>Centers the viewport on the elements with the given identifiers. It changes the scroll setting of the viewport accordingly and resets the zoom to its default. This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CenterAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;center&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the elements on which the viewport should be centered.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementIds</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Indicate if the modification of the viewport should be realized with or without support of animations.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>animate</span>: <span style=color:#66d9ef>boolean</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Indicates whether the zoom level should be kept.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>retainZoom</span>: <span style=color:#66d9ef>boolean</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>;
+}
+</code></pre></div></details><h5 id=2812-fittoscreenaction>2.8.1.2. FitToScreenAction</h5><p>Triggers to fit all or a list of elements into the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>FitToScreenAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;fit&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the elements to fit on screen.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementIds</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The padding that should be visible on the viewport.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>padding?</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The max zoom level authorized.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>maxZoom?</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Indicate if the action should be performed with animation support or not.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>animate</span>: <span style=color:#66d9ef>boolean</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>;
+}
+</code></pre></div></details><h4 id=282-client-notification>2.8.2. Client Notification</h4><p>To notify the client about user-facing events or long running operations, the server can send a server status notification, a server message notification or progress notifications.</p><p>Status and message notifications are used to inform the user about one-time events.
+Status notifications are typically shown directly on the diagram as an overlay for a certain time.
+Status messages, on the other hand, are persistent notifications and are typically shown in a dedicated notification area until the user discards them.</p><p>Progress notifications only appear while the long running operation is running and indicate the progress of this operation with messages and optionally a progress bar.</p><h5 id=2821-statusaction>2.8.2.1. StatusAction</h5><p>This action is typically sent by the server (or the client) to signal a state change.
+If a timeout is given the respective status should disappear after the timeout is reached.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>StatusAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;status&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The severity of the status.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>severity</span>: <span style=color:#66d9ef>SeverityLeel</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The message describing the status.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Timeout after which a displayed status disappears.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>timeout?</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h5 id=2822-messageaction>2.8.2.2. MessageAction</h5><p>This action is typically sent by the server (or the client) to notify the user about something of interest.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>MessageAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;message&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The severity of the message.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>severity</span>: <span style=color:#66d9ef>SeverityLevel</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The message text.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Further details on the message.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>details</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h5 id=2823-severitylevel>2.8.2.3. SeverityLevel</h5><p>The severity of a status or message.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#75715e>/**
+</span><span style=color:#75715e> * The possible server status severity levels.
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>SeverityLevel</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;NONE&#39;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#39;INFO&#39;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#39;WARNING&#39;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#39;ERROR&#39;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#39;FATAL&#39;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#39;OK&#39;</span>;
+</code></pre></div></details><h5 id=2824-startprogressaction>2.8.2.4. StartProgressAction</h5><p>This action is sent by the server to the client to request presenting the progress of a long running process in the UI.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>StartProgressAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;startProgress&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * An ID that can be used in subsequent `updateProgress` and `endProgress` events to make them refer to the same progress reporting.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>progressId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Short title of the progress reporting. Shown in the UI to describe the long running process.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Optional additional progress message. Shown in the UI to describe the long running process.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message?</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Progress percentage to display (value range: 0 to 100). If omitted no percentage is shown.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>percentage?</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h5 id=2825-updateprogressaction>2.8.2.5. UpdateProgressAction</h5><p>This action is sent by the server to the client to presenting an update of the progress of a long running process in the UI.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>UpdateProgressAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;updateProgress&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the progress reporting to update.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>progressId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The message to show in the progress reporting.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message?</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The percentage (value range: 0 to 100) to show in the progress reporting.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>percentage?</span>: <span style=color:#66d9ef>number</span>;
+}
+</code></pre></div></details><h5 id=2826-endprogressaction>2.8.2.6. EndProgressAction</h5><p>This action is sent by the server to the client to end the reporting of a progress.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>EndProgressAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;endProgress&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the progress reporting to update.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>progressId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The message to show in the progress reporting.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>message?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=283-element-selection>2.8.3. Element Selection</h4><h5 id=2831-selectaction>2.8.3.1. SelectAction</h5><p>Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the <code>selected</code> state accordingly, so the elements can be rendered differently. The server can send such an action to the client in order to change the selection remotely.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SelectAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;elementSelected&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the elements to mark as selected.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>selectedElementsIDs</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the elements to mark as not selected.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>deselectedElementsIDs</span>: <span style=color:#66d9ef>string</span>[];
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Whether all currently selected elements should be deselected.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>deselectAll?</span>: <span style=color:#66d9ef>boolean</span>;
+}
+</code></pre></div></details><h5 id=2832-selectallaction>2.8.3.2. SelectAllAction</h5><p>Used for selecting or deselecting all elements.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SelectAllAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;allSelected&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * If `select` is true, all elements are selected, otherwise they are deselected.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>select</span>: <span style=color:#66d9ef>boolean</span>;
+}
+</code></pre></div></details><h3 id=29-element-hover>2.9. Element Hover</h3><h4 id=291-requestpopupmodelaction>2.9.1. RequestPopupModelAction</h4><p>Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element. This action is sent from the client to the server. The response is a <code>SetPopupModelAction</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestPopupModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestPopupModel&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of the elements for which a popup is requested.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The bounds.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>bounds</span>: <span style=color:#66d9ef>Bounds</span>;
+}
+</code></pre></div></details><h4 id=292-setpopupmodelaction>2.9.2. SetPopupModelAction</h4><p>Sent from the server to the client to display a popup in response to a <code>RequestPopupModelAction</code>. This action can also be used to remove any existing popup by choosing <code>EMPTY_ROOT</code> as root element.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetPopupModelAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setPopupModel&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The model elements composing the popup to display.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoot</span>: <span style=color:#66d9ef>GModelRootSchema</span>;
+}
+</code></pre></div></details><h3 id=210-element-validation>2.10. Element Validation</h3><p>Validation in GLSP is performed by using validation markers. A marker represents the validation result for a single model element:</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Marker</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Short label describing this marker message, e.g., short validation message
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>label</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Full description of this marker, e.g., full validation message
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>description</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Id of the model element this marker refers to
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Marker kind, e.g., info, warning, error or custom kind
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>kind</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2101-requestmarkersaction>2.10.1. RequestMarkersAction</h4><p>Action to retrieve markers for the specified model elements. Sent from the client to the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestMarkersAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestMarkers&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The elements for which markers are requested, may be just the root element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementsIDs</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The reason for this request, e.g. a `batch` validation or a `live` validation.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>reason?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2102-setmarkersaction>2.10.2. SetMarkersAction</h4><p>Response to the <code>RequestMarkersAction</code> containing all validation markers. Sent from the server to the client.
+This action always sends the entire list of markers.
+Thus, clients can replace all markers for a specific <code>reason</code> with the new ones that have been sent with the same <code>reason</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetMarkersAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setMarkers&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The list of markers to be set in the diagram editor.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>markers</span>: <span style=color:#66d9ef>Marker</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The reason for this response, e.g. a `batch` validation or a `live` validation.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>reason?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2103-deletemarkersaction>2.10.3. DeleteMarkersAction</h4><p>To remove markers for elements a client or server may send a <code>DeleteMarkersAction</code> with all markers that should be removed.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>DeleteMarkersAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;deleteMarkers&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The list of markers that should be deleted.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>markers</span>: <span style=color:#66d9ef>Marker</span>[];
+}
+</code></pre></div></details><h3 id=211-element-navigation>2.11. Element Navigation</h3><p>GLSP makes no assumption about the type of navigation a user may want to perform. Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc. The type of navigation is identified by the <code>targetTypeId</code>.</p><p>A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets. A <code>NavigationTarget</code> identifies the object we want to navigate to via its uri and may further provide a label to display for the client. Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>NavigationTarget</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * URI to identify the object we want to navigate to.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>uri</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Optional label to display to the user.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>label?</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Domain-specific arguments that may be interpreted directly or resolved further.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=2111-requestnavigationtargetsaction>2.11.1. RequestNavigationTargetsAction</h4><p>Action that is usually sent from the client to the server to request navigation targets for a specific navigation type such as <code>documentation</code> or <code>implementation</code> in the given editor context.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestNavigationTargetsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetNavigationTargetsAction</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestNavigationTargets&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Identifier of the type of navigation targets we want to retrieve, e.g., &#39;documentation&#39;, &#39;implementation&#39;, etc.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetTypeId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current editor context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editorContext</span>: <span style=color:#66d9ef>EditorContext</span>;
+}
+</code></pre></div></details><h4 id=2112-setnavigationtargetsaction>2.11.2. SetNavigationTargetsAction</h4><p>Response action from the server following a <code>RequestNavigationTargetsAction</code>. It contains all available navigation targets for the queried target type in the provided editor context. The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetNavigationTargetsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setNavigationTargets&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A list of navigation targets.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targets</span>: <span style=color:#66d9ef>NavigationTarget</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments that may be interpreted by the client.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=2113-navigatetotargetaction>2.11.3. NavigateToTargetAction</h4><p>Action that triggers the navigation to a particular navigation target. This may be used by the client internally or may be sent from the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>NavigateToTargetAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;navigateToTarget&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The target to which we navigate.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>target</span>: <span style=color:#66d9ef>NavigationTarget</span>;
+}
+</code></pre></div></details><h4 id=2114-resolvenavigationtargetaction>2.11.4. ResolveNavigationTargetAction</h4><p>If a client cannot navigate to a target directly, a <code>ResolveNavigationTargetAction</code> may be sent to the server to resolve the navigation target to one or more model elements. This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ResolveNavigationTargetAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetResolvedNavigationTargetAction</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;resolveNavigationTarget&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The navigation target to resolve.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>navigationTarget</span>: <span style=color:#66d9ef>NavigationTarget</span>;
+}
+</code></pre></div></details><h4 id=2114-setresolvednavigationtargetaction>2.11.4. SetResolvedNavigationTargetAction</h4><p>An action sent from the server in response to a <code>ResolveNavigationTargetAction</code>. The response contains the resolved element ids for the given target and may contain additional information in the <code>args</code> property.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetResolvedNavigationTargetAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setResolvedNavigationTarget&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The element ids of the resolved navigation target.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementIds</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments that may be interpreted by the client.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=2115-navigatetoexternaltargetaction>2.11.5. NavigateToExternalTargetAction</h4><p>If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a <code>NavigateToExternalTargetAction</code> may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>NavigateToExternalTargetAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;navigateToExternalTarget&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The target to which we navigate.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>target</span>: <span style=color:#66d9ef>NavigationTarget</span>;
+}
+</code></pre></div></details><h3 id=212-element-type-hints>2.12. Element Type Hints</h3><p>Type hints are used to define what modifications are supported on the different element types. Conceptually type hints are similar to <code>features</code> of a model elements but define the functionality on a type level. The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.</p><p>In GLSP we distinguish between <code>ShapeTypeHints</code> and <code>EdgeTypeHints</code>. These hints specify whether an element can be resized, relocated and/or deleted. Optionally, they specify a list of element types that can be contained/connected by this element.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TypeHint</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier of an element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>elementTypeId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Specifies whether the element can be relocated.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>repositionable</span>: <span style=color:#66d9ef>boolean</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Specifies whether the element can be deleted
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>deletable</span>: <span style=color:#66d9ef>boolean</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ShapeTypeHint</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TypeHint</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Specifies whether the element can be resized.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>resizable</span>: <span style=color:#66d9ef>boolean</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Specifies whether the element can be moved to another parent
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>reparentable</span>: <span style=color:#66d9ef>boolean</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The types of elements that can be contained by this element (if any)
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>containableElementTypeIds?</span>: <span style=color:#66d9ef>string</span>[];
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>EdgeTypeHint</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TypeHint</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Specifies whether the routing points of the edge can be changed
+</span><span style=color:#75715e>     * i.e. edited by the user.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>routable</span>: <span style=color:#66d9ef>boolean</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Allowed source element types for this edge type
+</span><span style=color:#75715e>     * If not defined unknown element can be used as source element for this edge.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>sourceElementTypeIds?</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Allowed targe element types for this edge type
+</span><span style=color:#75715e>     * If not defined unknown element can be used as target element for this edge.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>targetElementTypeIds?</span>: <span style=color:#66d9ef>string</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Indicates whether this type hint is dynamic or not. Dynamic edge type hints
+</span><span style=color:#75715e>     * require an additional runtime check before creating an edge, when checking
+</span><span style=color:#75715e>     * source and target element types is not sufficient.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>dynamic?</span>: <span style=color:#66d9ef>boolean</span>;
+}
+</code></pre></div></details><h4 id=2121-requesttypehintsaction>2.12.1. RequestTypeHintsAction</h4><p>Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type. The <code>RequestTypeHintsAction</code> is optional, but should usually be among the first messages sent from the client to the server after receiving the model via <code>RequestModelAction</code>. The response is a <code>SetTypeHintsAction</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestTypeHintsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetTypeHintsAction</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestTypeHints&#39;</span>;
+}
+</code></pre></div></details><h4 id=2122-settypehintsaction>2.12.2. SetTypeHintsAction</h4><p>Sent from the server to the client in order to provide hints certain modifications are allowed for a specific element type.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetTypeHintsAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setTypeHints&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The hints for shape types.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>shapeHints</span>: <span style=color:#66d9ef>ShapeTypeHint</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The hints for edge types.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>edgeHints</span>: <span style=color:#66d9ef>EdgeTypeHint</span>[];
+}
+</code></pre></div></details><h4 id=2123-requestcheckedgeaction>2.12.3. RequestCheckEdgeAction</h4><p>Sent from the client to the server to check wether the provided edge context information is valid i.e. creation of an edge with the given edge type and source/target element is allowed by the server.
+Typically this action is dispatched by edge creation tools in the creation phase of an edge that&rsquo;s associated with a dynamic <code>EdgeTypeHint</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestCheckEdgeAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>CheckEdgeResultAction</span>&gt; {
+    <span style=color:#a6e22e>kind</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;requestCheckEdge&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The element type of the edge being created.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>edgeType</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the edge source element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sourceElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the edge target element to check.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetElementId?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2124-checkedgeresultaction>2.12.4. CheckEdgeResultAction</h4><p>Sent from the server to the client as a response for a {@link RequestCheckEdgeAction}.
+It provides a boolean indicating whether the edge context information provided by the corresponding request action is valid i.e. creation of an edge with the given edge type and source/target element is allowed.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CheckEdgeResultAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#a6e22e>kind</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;checkEdgeTargetResult&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * true if the selected element is a valid target for this edge,
+</span><span style=color:#75715e>     * false otherwise.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>isValid</span>: <span style=color:#66d9ef>boolean</span>;
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The element type of the edge that has been checked.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>edgeType</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the source element of the edge that has been checked.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sourceElementId</span>: <span style=color:#66d9ef>string</span>;
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The ID of the target element of the edge that has been checked.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetElementId?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=213-element-creation-and-deletion>2.13. Element Creation and Deletion</h3><h4 id=2131-createnodeoperation>2.13.1. CreateNodeOperation</h4><details open><summary>Code</summary><p>In order to create a node in the model the client can send a <code>CreateNodeOperation</code> with the necessary information to create that node.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CreateNodeOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CreateOperation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;createNode&#39;</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * The location at which the operation shall be executed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>location?</span>: <span style=color:#66d9ef>Point</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * The container in which the operation shall be executed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>containerId?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2132-createedgeoperation>2.13.2. CreateEdgeOperation</h4><p>In order to create an edge in the model the client can send a <code>CreateEdgeOperation</code> with the necessary information to create that edge.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CreateEdgeOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CreateOperation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;createEdge&#39;</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * The source element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sourceElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * The target element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetElementId</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2133-deleteelementoperation>2.13.3. DeleteElementOperation</h4><p>The client sends a <code>DeleteElementOperation</code> to the server to request the deletion of an element from the model.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>DeleteElementOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;deleteElement&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The elements to be deleted.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementIds</span>: <span style=color:#66d9ef>string</span>[];
+}
+</code></pre></div></details><h3 id=214-node-modification>2.14. Node Modification</h3><h4 id=2141-changeboundsoperation>2.14.1. ChangeBoundsOperation</h4><p>Triggers the position or size change of elements. This action concerns only the element&rsquo;s graphical size and position. Whether an element can be resized or repositioned may be specified by the server with a <a href=#213-element-type-hints><code>TypeHint</code></a> to allow for immediate user feedback before resizing or repositioning.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ChangeBoundsOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;changeBounds&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The new bounds of the respective elements.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newBounds</span>: <span style=color:#66d9ef>ElementAndBounds</span>[];
+}
+</code></pre></div></details><h4 id=2142-changecontaineroperation>2.14.2. ChangeContainerOperation</h4><p>The client sends a <code>ChangeContainerOperation</code> to the server to request the execution of a <code>changeContainer</code> operation.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ChangeContainerOperation</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;changeContainer&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The element to be changed.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The element container of the changeContainer operation.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetContainerId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The graphical location.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>location?</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=215-edge-modification>2.15. Edge Modification</h3><h4 id=2151-reconnectedgeoperation>2.15.1. ReconnectEdgeOperation</h4><p>If the source and/or target element of an edge should be adapted, the client can send a <code>ReconnectEdgeOperation</code> to the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ReconnectEdgeOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;reconnectEdge&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The edge element that should be reconnected.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>edgeElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The (new) source element of the edge.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>sourceElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The (new) target element of the edge.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>targetElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * Additional arguments for custom behavior.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=2152-changeroutingpointsoperation>2.15.2. ChangeRoutingPointsOperation</h4><p>An edge may have zero or more routing points that &ldquo;re-direct&rdquo; the edge between the source and the target element. In order to set these routing points the client may send a <code>ChangeRoutingPointsOperation</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ChangeRoutingPointsOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;changeRoutingPoints&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The routing points of the edge (may be empty).
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>newRoutingPoints</span>: <span style=color:#66d9ef>ElementAndRoutingPoints</span>[];
+}
+</code></pre></div></details><h3 id=216-element-text-editing>2.16. Element Text Editing</h3><p>A common use case in diagrams is to query the user for textual input to perform a certain action, e.g., when editing the text on a label.</p><p>To support the validation of user input in the context of such an action before actually applying that user input, GLSP defines two actions: <code>RequestEditValidationAction</code> and <code>SetEditValidationResultAction</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ValidationStatus</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The severity of the validation returned by the server.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>severity</span>: <span style=color:#66d9ef>ValidationStatus.Severity</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The validation status message which may be rendered in the view.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>message?</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * A potential error that encodes more details.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>error?</span>: <span style=color:#66d9ef>ResponseError</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ResponseError</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Code identifying the error kind.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>code</span>: <span style=color:#66d9ef>number</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Error message.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Additional custom data, e.g., a serialized stacktrace.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>Object</span>;
+}
+
+<span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ValidationStatus</span> {
+    <span style=color:#66d9ef>enum</span> <span style=color:#a6e22e>Severity</span> {
+        <span style=color:#a6e22e>FATAL</span>,
+        <span style=color:#a6e22e>ERROR</span>,
+        <span style=color:#a6e22e>WARNING</span>,
+        <span style=color:#a6e22e>INFO</span>,
+        <span style=color:#a6e22e>OK</span>,
+        <span style=color:#a6e22e>NONE</span>
+    }
+}
+</code></pre></div></details><h4 id=2161-requesteditvalidationaction>2.16.1. RequestEditValidationAction</h4><p>Requests the validation of the given text in the context of the provided model element. Typically sent from the client to the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestEditValidationAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetEditValidationResultAction</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestEditValidation&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Context in which the text is validated, e.g., &#39;label-edit&#39;.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>contextId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Model element that is being edited.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>modelElementId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Text that should be considered for the model element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>text</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h4 id=2162-seteditvalidationresultaction>2.16.2. SetEditValidationResultAction</h4><p>Response to a <code>RequestEditValidationAction</code> containing the validation result for applying a text on a certain model element.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetEditValidationResultAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setEditValidationResult&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Validation status.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>ValidationStatus</span>;
+
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>     * Additional arguments for custom behavior.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h4 id=2163-applylabeleditoperation>2.16.3. ApplyLabelEditOperation</h4><p>A very common use case in domain models is the support of labels that display textual information to the user. For instance, the <code>GGraph</code> model has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an <code>ApplyLabelEditOperation</code> to the server.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>ApplyLabelEditOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;applyLabelEdit&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Identifier of the label model element.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>labelId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Text that should be applied on the label.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>text</span>: <span style=color:#66d9ef>string</span>;
+}
+</code></pre></div></details><h3 id=217-clipboard>2.17. Clipboard</h3><p>In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server. By default, GLSP use <code>application/json</code> as exchange format.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>ClipboardData</span> <span style=color:#f92672>=</span> { [<span style=color:#a6e22e>format</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span> };
+</code></pre></div></details><h4 id=2171-requestclipboarddataaction>2.17.1. RequestClipboardDataAction</h4><p>Requests the clipboard data for the current editor context, i.e., the selected elements, in a clipboard-compatible format.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestClipboardDataAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetClipboardDataAction</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestClipboardData&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current editor context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editorContext</span>: <span style=color:#66d9ef>EditorContext</span>;
+}
+</code></pre></div></details><h4 id=2172-setclipboarddataaction>2.17.2. SetClipboardDataAction</h4><p>Server response to a <code>RequestClipboardDataAction</code> containing the selected elements as clipboard-compatible format.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetClipboardDataAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setClipboardData&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The selected elements from the editor context as clipboard data.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clipboardData</span>: <span style=color:#66d9ef>ClipboardData</span>;
+}
+</code></pre></div></details><h4 id=2173-cutoperation>2.17.3. CutOperation</h4><p>Requests a cut operation from the server, i.e., deleting the selected elements from the model. Before submitting a <code>CutOperation</code> a client should ensure that the cut elements are put into the clipboard.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CutOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;cut&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current editor context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editorContext</span>: <span style=color:#66d9ef>EditorContext</span>;
+}
+</code></pre></div></details><h4 id=2174-pasteoperation>2.17.4. PasteOperation</h4><p>Requests a paste operation from the server by providing the current clipboard data. Typically this means that elements should be created based on the data in the clipboard.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>PasteOperation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Operation</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;paste&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current editor context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editorContext</span>: <span style=color:#66d9ef>EditorContext</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The clipboard data that should be pasted to the editor&#39;s last recorded mouse position (see `editorContext`).
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>clipboardData</span>: <span style=color:#66d9ef>ClipboardData</span>;
+}
+</code></pre></div></details><h3 id=218-undo--redo>2.18. Undo / Redo</h3><p>A server usually keeps a command stack of all commands executed on the model. To navigate the command stack the following actions can be used.</p><h4 id=2181-undoaction>2.18.1. UndoAction</h4><p>Trigger an undo of the latest executed command.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>UndoAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;glspUndo&#39;</span>;
+}
+</code></pre></div></details><h4 id=2182-redoaction>2.18.2. RedoAction</h4><p>Trigger a redo of the latest undone command.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RedoAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;glspRedo&#39;</span>;
+}
+</code></pre></div></details><h3 id=219-contexts>2.19. Contexts</h3><p>A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:</p><ul><li>The Context Menu with the context id <code>context-menu</code></li><li>The Command Palette with the context id <code>command-palette</code></li><li>The Tool Palette with the context id <code>tool-palette</code></li></ul><h4 id=2191-requestcontextactions>2.19.1. RequestContextActions</h4><details open><summary>Code</summary><p>The RequestContextActions is sent from the client to the server to request the available actions for the context with id <code>contextId</code>.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>RequestContextActions</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>RequestAction</span>&lt;<span style=color:#f92672>SetContextActions</span>&gt; {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;requestContextActions&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The identifier for the context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>contextId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The current editor context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>editorContext</span>: <span style=color:#66d9ef>EditorContext</span>;
+}
+</code></pre></div></details><h4 id=2192-setcontextactions>2.19.2. SetContextActions</h4><p>The <code>SetContextActions</code> is the response to a <code>RequestContextActions</code> containing all actions for the queried context.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SetContextActions</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ResponseAction</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;setContextActions&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The actions available in the queried context.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>actions</span>: <span style=color:#66d9ef>LabeledAction</span>[];
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args</span>: <span style=color:#66d9ef>?Args</span>;
+}
+</code></pre></div></details><h4 id=2193-context-menu>2.19.3. Context Menu</h4><p>The context menu is an overlay that is triggered by a right click from the user. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a <code>RequestContextActions</code> action with context id <code>context-menu</code> and handle the returned actions from the <code>SetContextActions</code> response accordingly, e.g., rendering them in a context menu.</p><h4 id=2194-command-palette>2.19.4. Command Palette</h4><p>The command palette is an &ldquo;auto-complete&rdquo; widget that is triggered when the user hits <code>Ctrl+Space</code>. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a <code>RequestContextActions</code> action with context id <code>command-palette</code> and handle the returned actions from the <code>SetContextActions</code> response accordingly, i.e., rendering them in a auto-complete widget.</p><h4 id=2195-tool-palette>2.19.5. Tool Palette</h4><p>The tool palette is a widget on the graph&rsquo;s canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions.</p><p>A tool is a uniquely identified functionality that can be either enabled or disabled. Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Tool</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Unique tool id.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>readonly</span> <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Notifies the tool to become active.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>enable</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>void</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Notifies the tool to become inactive.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>disable</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>void</span>;
+}
+</code></pre></div></details><p>By default, the tool palette in GLSP includes the following tools in the palette:</p><ul><li>Default Tool (Selection Tool)</li><li>Mouse Delete Tool</li><li>Validation Tool</li></ul><p>The supported actions of the tool palette come from the server. If server actions are to be used, the client needs to send a <code>RequestContextActions</code> action with context id <code>tool-palette</code> and handle the returned actions from the <code>SetContextActions</code> response accordingly, e.g., rendering them in the tool palette. A user may click on any of the entries in the tool palette to trigger the corresponding action.</p><p>For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the <code>Node Creation Tool</code> or the <code>Edge Creation Tool</code> respectively. This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge. After all information is available, the actual creation operation is triggered.</p><h5 id=21951-triggernodecreationaction>2.19.5.1. TriggerNodeCreationAction</h5><p>Triggers the enablement of the tool that is responsible for creating nodes and initializes it with the creation of nodes of the given <code>elementTypeId</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TriggerNodeCreationAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;triggerNodeCreation&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The type of node that should be created by the node creation tool.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementTypeId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details><h5 id=21952-triggeredgecreationaction>2.19.5.2. TriggerEdgeCreationAction</h5><p>Triggers the enablement of the tool that is responsible for creating edges and initializes it with the creation of edges of the given <code>elementTypeId</code>.</p><details open><summary>Code</summary><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TriggerEdgeCreationAction</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Action</span> {
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The kind of the action.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>kind</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;triggerEdgeCreation&#39;</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * The type of edge that should be created by the edge creation tool.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>elementTypeId</span>: <span style=color:#66d9ef>string</span>;
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Custom arguments.
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>args?</span>: <span style=color:#66d9ef>Args</span>;
+}
+</code></pre></div></details></div></article></div></div></div></section><section id=footer class=fragment><div class="container-fluid bg-light"><div class="container py-5"><div class=row><div class="col-md m-2 text-body"><h4></h4><a href=#><img src=/glsp-website-source/pr-previews/pr-110/images/logo.png class="img-fluid w-50" alt=GLSP></a><div class="row justify-content-left ml-0"><span class="fa-stack fa-2x mt-3 mr-1" title=twitter><a href=https://twitter.com/eclipseglsp class=ignore-color-change><i class="fas fa-circle fa-stack-2x"></i><i class="fab fa-twitter fa-stack-1x fa-fw text-light"></i><span class=sr-only>twitter</span></a></span>
+<span class="fa-stack fa-2x mt-3 mr-1" title=github><a href=https://github.com/eclipse-glsp/glsp class=ignore-color-change><i class="fas fa-circle fa-stack-2x"></i><i class="fab fa-github fa-stack-1x fa-fw text-light"></i><span class=sr-only>github</span></a></span>
+<span class="fa-stack fa-2x mt-3 mr-1" title=github-discussions><a href=https://github.com/eclipse-glsp/glsp/discussions class=ignore-color-change><i class="fas fa-circle fa-stack-2x"></i><i class="far fa-comments fa-stack-1x fa-fw text-light"></i><span class=sr-only>github-discussions</span></a></span></div></div><div class="col-md m-2 text-body"><h4>Related Projects</h4><ul class="nav flex-column"><li class=nav-item><a class="nav-link p-0 display-5" href=https://sprotty.org>Eclipse Sprotty</a></li><li class=nav-item><a class="nav-link p-0 display-5" href=https://www.eclipse.dev/emfcloud>Eclipse EMF.cloud</a></li><li class=nav-item><a class="nav-link p-0 display-5" href=https://eclipsesource.com/technology/eclipse-theia>Eclipse Theia IDE</a></li><li class=nav-item><a class="nav-link p-0 display-5" href=https://eclipse.dev/che>Eclipse Che</a></li></ul></div><div class="col-md m-2 text-body"><div><h4 id=eclipse-glsp>Eclipse GLSP</h4><p>The Eclipse Graphical Language Server Platform is a project hosted at the <a href=https://www.eclipse.org>Eclipse Foundation</a>, led by <a href=https://projects.eclipse.org/projects/ecd.glsp/who>Philip Langer & Tobias Ortmayr</a>, organized within the <a href=https://projects.eclipse.org/projects/ecd>Eclipse Cloud Development</a> project.</p><p>Gefördert durch: <img src=/glsp/images/BMBF_Logo.svg alt="BMBF Logo"></p></div></div></div></div></div></section><footer class="overlay fragment container-fluid bg-secondary" id=copyright><div class=container><div class="row py-3"><div class=col-md><div class="row mx-0 my-2 justify-content-center text-center text-lg-none text-black-50"><div class="row mx-0 mr-lg-auto justify-content-center"><div class="col-auto px-1 copyright-legal">© Copyright&nbsp;2026</div><div class="col-auto px-0 copyright-by">by Eclipse Foundation</div></div></div></div><div class=col-md><div class="row mx-0 my-2 justify-content-center"><ul class="nav ml-lg-auto"><li class=nav-item><a class="nav-link py-0" href=https://projects.eclipse.org/projects/ecd.glsp>About</a></li><li class=nav-item><a class="nav-link py-0" href=https://www.eclipse.org/legal/privacy.php>Privacy Policy</a></li><li class=nav-item><a class="nav-link py-0" href=https://www.eclipse.org/legal/termsofuse.php>Terms of Use</a></li><li class=nav-item><a class="nav-link py-0" href=https://www.eclipse.org/legal/copyright.php>Copyright</a></li><li class=nav-item><a class="nav-link py-0" href=https://www.eclipse.org/legal/>Legal</a></li></ul></div></div></div></div></footer><div id=react></div><script async defer src=/glsp-website-source/pr-previews/pr-110/scripts/syna-main.min.065c23d84ca56793a8ee2be9d091a50028dc3505b5e4962af6444d641ed77ff5.js></script><script async defer src=/glsp-website-source/pr-previews/pr-110/scripts/syna-search.min.be96fcdb5b1bfc9ff80f633ea20d203a74487d142ebbe9095a9478b2479d4203.js></script><script async defer src=/glsp-website-source/pr-previews/pr-110/scripts/syna-content.min.3f176160ef27cbeeb1c26d718677d4e66e40b70421d8745f6d667dcad23a6850.js></script><script async defer src=/glsp-website-source/pr-previews/pr-110/scripts/syna-collapse.min.e53f62e26af14c1839865c3eb2f19520509399d957f5520e410b1f11ffee93c1.js></script></body></html>
