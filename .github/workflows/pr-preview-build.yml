@@ -3,6 +3,12 @@ name: PR Preview Build
 on:
   pull_request:
     branches: [master]
+    # A change that cannot affect the built website gets no preview.
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.vscode/**'
+      - '.devcontainer/**'
 
 permissions:
   contents: read
@@ -11,12 +17,19 @@ concurrency:
   group: pr-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+env:
+  # Hugo builds absolute links, so the base URL has to be the final location of the preview in the
+  # `eclipse-glsp/glsp-previews` repository. It is kept in sync with `PREVIEW_URL` of the deploy
+  # workflow.
+  PREVIEW_URL: https://eclipse-glsp.github.io/glsp-previews/glsp-website-source/pr-previews
+
 jobs:
   build:
     name: Build Preview
+    timeout-minutes: 30
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
       - name: Setup Hugo
@@ -24,25 +37,10 @@ jobs:
         with:
           hugo-version: '0.78.1'
           extended: true
-      - name: Compute preview base URL
-        id: base
-        run: |
-          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          REPO="${{ github.event.repository.name }}"
-          echo "url=https://${OWNER}.github.io/${REPO}/pr-previews/pr-${{ github.event.number }}/" >> "$GITHUB_OUTPUT"
       - name: Build website
-        run: hugo --gc --minify --buildFuture -b "${{ steps.base.outputs.url }}"
-      - name: Save PR number
-        run: |
-          mkdir -p ./pr-metadata
-          echo "${{ github.event.number }}" > ./pr-metadata/pr-number
+        run: hugo --gc --minify --buildFuture -b "${{ env.PREVIEW_URL }}/pr-${{ github.event.number }}/"
       - name: Upload preview artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: preview-site
           path: ./public
-      - name: Upload PR metadata
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: pr-metadata
-          path: ./pr-metadata
