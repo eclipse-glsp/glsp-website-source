@@ -1,70 +1,144 @@
 name: PR Preview Deploy
 
-# NOTE: Do NOT add any steps that run scripts from the repository (e.g., npm install,
-# npm run, or any other commands that execute repository code). Doing so would allow
-# malicious PR authors to execute arbitrary code with access to repository secrets.
+# SECURITY: This workflow runs in a trusted context and holds the deployment token.
+# It is safe because:
+# 1. The build (pr-preview-build.yml) runs the untrusted pull request code without secrets
+# 2. This workflow only consumes the resulting artifact and never runs code from the pull request
+# 3. `GH_DEPLOY_TOKEN` is scoped to the separate `eclipse-glsp/glsp-previews` repository, so it
+#    cannot write to `glsp-website-source`, and the `GITHUB_TOKEN` has no write access to
+#    repository contents
+#
+# NOTE: Do not add steps that run scripts from the checked out repository. Doing so would let a
+# pull request author execute arbitrary code with access to the deployment token.
 
 on:
   workflow_run:
     workflows: ['PR Preview Build']
-    types: [completed]
+    types: [requested, completed]
 
 permissions:
   actions: read
-  contents: write
+  contents: read
   pull-requests: write
 
 concurrency:
   group: pr-preview-deploy
   cancel-in-progress: false
 
+env:
+  LIVE_URL: https://www.eclipse.dev/glsp/
+  PREVIEW_URL: https://eclipse-glsp.github.io/glsp-previews/glsp-website-source/pr-previews
+  DEPLOY_REPOSITORY: eclipse-glsp/glsp-previews
+  DEPLOY_BRANCH: previews
+  PREVIEW_DIR: glsp-website-source/pr-previews
+
 jobs:
   deploy:
     name: Deploy Preview
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request'
+    if: github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-22.04
+    env:
+      STARTED: ${{ github.event.action == 'requested' }}
+      SUCCEEDED: ${{ github.event.action == 'completed' && github.event.workflow_run.conclusion == 'success' }}
+      # A cancelled build is almost always a superseded one, whose replacement rewrites the comment
+      # right away, so it is not reported as a failure.
+      FAILED: ${{ github.event.action == 'completed' && github.event.workflow_run.conclusion != 'success' && github.event.workflow_run.conclusion != 'cancelled' }}
     steps:
-      - name: Download PR metadata
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: pr-metadata
-          path: ./pr-metadata
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
-      # The pr-number artifact comes from the untrusted (fork-controlled) build
-      # job. Reading a number is low-risk, but we still sanity-check it's digits
-      # only so it can't inject output or traverse paths when used below.
-      - name: Read PR number
+      - name: Resolve PR
         id: pr
-        run: |
-          number="$(cat ./pr-metadata/pr-number)"
-          [[ "$number" =~ ^[0-9]+$ ]] || { echo "::error::Refusing non-numeric PR number from build artifact"; exit 1; }
-          echo "number=$number" >> "$GITHUB_OUTPUT"
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            core.setOutput('short-sha', run.head_sha.slice(0, 7));
+
+            // Only set for same-repo pull requests; for forks the array comes back empty and the
+            // pull request has to be looked up by its head branch.
+            const fromPayload = run.pull_requests?.[0]?.number;
+            if (fromPayload) {
+              core.setOutput('number', fromPayload);
+              return;
+            }
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`
+            });
+            if (pulls.length === 0) {
+              throw new Error(`No open pull request for ${run.head_repository.full_name}@${run.head_branch}`);
+            }
+            core.setOutput('number', pulls[0].number);
+
+      # Posted as soon as the build starts so that the pull request shows the deployment is
+      # underway. The same sticky comment is rewritten by the steps below.
+      - name: Announce pending deployment
+        if: env.STARTED == 'true'
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: pr-preview
+          number: ${{ steps.pr.outputs.number }}
+          message: |
+            **Website preview** for commit ${{ steps.pr.outputs.short-sha }}
+
+            :hourglass_flowing_sand: Building. The preview link appears here once the deployment finishes.
+
+            Current website for comparison: [${{ env.LIVE_URL }}](${{ env.LIVE_URL }})
+
+      - name: Report failed build
+        if: env.FAILED == 'true'
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: pr-preview
+          number: ${{ steps.pr.outputs.number }}
+          message: |
+            **Website preview** for commit ${{ steps.pr.outputs.short-sha }}
+
+            :x: The preview build did not succeed (`${{ github.event.workflow_run.conclusion }}`). See the [build log](${{ github.event.workflow_run.html_url }}).
+
+            Current website for comparison: [${{ env.LIVE_URL }}](${{ env.LIVE_URL }})
+
+      # Only needed because the deploy action expects to run inside a git repository. The checked
+      # out content is never used. `persist-credentials: false` keeps the `GITHUB_TOKEN` auth header
+      # from overriding the deployment token when pushing to the preview repository.
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: env.SUCCEEDED == 'true'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - name: Download preview site
+        if: env.SUCCEEDED == 'true'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: preview-site
           path: ./preview-site
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
+      # Stale files are deleted inside `target-folder` only, so the previews of this and of the
+      # other GLSP repositories are left alone. `force: false` matters because the branch is
+      # shared: it rebases onto a concurrent deployment instead of overwriting it.
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
-        id: preview
+        if: env.SUCCEEDED == 'true'
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
-          source-dir: ./preview-site
-          preview-branch: gh-pages
-          umbrella-dir: pr-previews
-          pr-number: ${{ steps.pr.outputs.number }}
-          action: deploy
-          comment: false
+          token: ${{ secrets.GH_DEPLOY_TOKEN }}
+          repository-name: ${{ env.DEPLOY_REPOSITORY }}
+          branch: ${{ env.DEPLOY_BRANCH }}
+          folder: ./preview-site
+          target-folder: ${{ env.PREVIEW_DIR }}/pr-${{ steps.pr.outputs.number }}
+          commit-message: Deploy preview for pull request ${{ steps.pr.outputs.number }}
+          force: false
+          git-config-name: github-actions[bot]
+          git-config-email: github-actions[bot]@users.noreply.github.com
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        if: env.SUCCEEDED == 'true'
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           header: pr-preview
           number: ${{ steps.pr.outputs.number }}
           message: |
-            🚀 **Website preview deployed to** ${{ steps.preview.outputs.deployment-url }}index.html
+            **Website preview** for commit ${{ steps.pr.outputs.short-sha }}
+
+            :rocket: [Open the preview](${{ env.PREVIEW_URL }}/pr-${{ steps.pr.outputs.number }}/index.html)
+
+            Current website for comparison: [${{ env.LIVE_URL }}](${{ env.LIVE_URL }})

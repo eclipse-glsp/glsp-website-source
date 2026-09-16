@@ -48,3 +48,11 @@ To avoid the need to install hugo on development machines, a VS Code dev contain
  ## Best practices
 
   Check the example site provided with Syna in `themes/syna/exampleSite`
+
+## Deployment
+
+Pushing to `master` builds the website and pushes the result to [`eclipse-glsp/glsp-website`](https://github.com/eclipse-glsp/glsp-website), which is served at [eclipse.dev/glsp](https://www.eclipse.dev/glsp).
+
+Pull requests are built and deployed to the separate [`glsp-previews`](https://github.com/eclipse-glsp/glsp-previews) repository, under `glsp-website-source/pr-previews/pr-<number>/`, and are served at `https://eclipse-glsp.github.io/glsp-previews/glsp-website-source/pr-previews/pr-<number>/`. A pull request gets a preview unless it only changes `README.md`, `LICENSE`, `.vscode/` or `.devcontainer/`. A comment on the pull request tracks the deployment and links the preview next to the live website. Closing the pull request removes the preview.
+
+The build and the deployment are split into two workflows: [`pr-preview-build.yml`](.github/workflows/pr-preview-build.yml) runs the pull request code without any secret, and [`pr-preview-deploy.yml`](.github/workflows/pr-preview-deploy.yml) only consumes the resulting artifact. The deployment uses the `GH_DEPLOY_TOKEN` secret, a token scoped to `glsp-previews` alone, so it is never reachable from code contributed in a pull request and cannot write to this repository.

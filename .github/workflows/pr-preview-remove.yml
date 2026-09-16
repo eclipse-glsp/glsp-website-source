@@ -1,43 +1,70 @@
 name: PR Preview Remove
 
-# SECURITY: This workflow uses pull_request_target which has access to secrets.
+# SECURITY: This workflow uses `pull_request_target`, which has access to secrets.
 # It is safe because:
-# 1. It only triggers on PR close (not open/sync)
-# 2. It only checks out the base branch (not PR code)
-# 3. It never executes any PR-controlled scripts
+# 1. It only triggers on pull request close, not on open or synchronize
+# 2. It only checks out the base branch, never the pull request code
+# 3. It never executes any script from the repository
+# 4. `GH_DEPLOY_TOKEN` is scoped to the separate `eclipse-glsp/glsp-previews` repository, so it
+#    cannot write to `glsp-website-source`, and the `GITHUB_TOKEN` has no write access to
+#    repository contents
 #
-# NOTE: Do NOT add any steps that run scripts from the repository (e.g., npm install,
-# npm run, or any other commands that execute repository code). Doing so would allow
-# malicious PR authors to execute arbitrary code with access to repository secrets.
+# NOTE: Do not add steps that run scripts from the checked out repository. Doing so would let a
+# pull request author execute arbitrary code with access to the deployment token.
 
 on:
   pull_request_target:
     types: [closed]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 concurrency:
   group: pr-preview-deploy
   cancel-in-progress: false
 
+env:
+  DEPLOY_REPOSITORY: eclipse-glsp/glsp-previews
+  DEPLOY_BRANCH: previews
+  PREVIEW_DIR: glsp-website-source/pr-previews
+
 jobs:
   remove:
     name: Remove Preview
     runs-on: ubuntu-22.04
     steps:
+      # Only needed because the deploy action expects to run inside a git repository. The checked
+      # out content is never used. `persist-credentials: false` keeps the `GITHUB_TOKEN` auth header
+      # from overriding the deployment token when pushing to the preview repository.
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Remove preview
-        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          preview-branch: gh-pages
-          umbrella-dir: pr-previews
-          action: remove
+          persist-credentials: false
+      - name: Create an empty directory
+        run: mkdir -p empty-preview
+      # Deploying an empty directory over the preview deletes every file it contains. Git tracks
+      # no empty directories, so the preview disappears from the branch. `force: false` matters
+      # because the branch is shared: it rebases onto a concurrent deployment instead of
+      # overwriting it.
+      - name: Remove preview
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
+        with:
+          token: ${{ secrets.GH_DEPLOY_TOKEN }}
+          repository-name: ${{ env.DEPLOY_REPOSITORY }}
+          branch: ${{ env.DEPLOY_BRANCH }}
+          folder: empty-preview
+          target-folder: ${{ env.PREVIEW_DIR }}/pr-${{ github.event.pull_request.number }}
+          commit-message: Remove preview for pull request ${{ github.event.pull_request.number }}
+          force: false
+          git-config-name: github-actions[bot]
+          git-config-email: github-actions[bot]@users.noreply.github.com
+      # `only_update` keeps pull requests that never had a preview, and therefore no comment,
+      # free of a stray one.
       - name: Update PR comment
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           header: pr-preview
           number: ${{ github.event.pull_request.number }}
-          message: '**🌐 Website preview:** Removed (PR closed).'
+          only_update: true
+          message: '**Website preview** removed, the pull request is closed.'
