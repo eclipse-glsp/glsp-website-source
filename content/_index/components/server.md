@@ -10,5 +10,5 @@ weight = 30
 <p style="margin-left: 5px; margin-right: 5px; text-align: justify">
 Enabled by the flexible protocol-based architecture, a domain-specific GLSP server can be implemented in any preferred technology.
 Therefore, you can easily integrate a GLSP server into an existing environment and even reuse existing domain-specific business logic.
-GLSP provides a framework for the implementation of GLSP servers using Java or Node, as well as an optional integration with EMF.
+GLSP provides a framework for the implementation of GLSP servers using <a href="https://github.com/eclipse-glsp/glsp-server">Java</a> or <a href="https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server">Node</a>, as well as an optional integration with EMF.
 </p>

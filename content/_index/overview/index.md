@@ -15,4 +15,5 @@ The Graphical Language Server Platform (GLSP) is an extensible open-source frame
 Alongside an extensible client framework and a server framework, GLSP provides a language server protocol (LSP) for diagrams.
 With that, GLSP enables the development of modern, web-based diagram editors, whereas the heavy lifting, such as loading, interpreting, and editing according to the rules of the modeling language, is encapsulated in the server.
 GLSP provides integration layers, to use GLSP editors seamlessly in web pages, Eclipse Theia, VS Code and even Eclipse desktop.
+The client framework, the Node-based server framework, the shared protocol and the common development tooling are developed together in the <a href="https://github.com/eclipse-glsp/glsp-core">glsp-core</a> repository.
 </p>

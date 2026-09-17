@@ -13,7 +13,7 @@ A GLSP server can optionally act as an MCP server, so that AI clients such as an
 
 In practice this lets an assistant answer questions about a diagram, suggest improvements, create or adjust elements from a natural-language request, or check the model for problems, all while the diagram stays open in the GLSP editor.
 
-<small>*Experimental: MCP support is under active development and its configuration may still change. It is currently available for the [Node GLSP server](https://github.com/eclipse-glsp/glsp-server-node) only.*</small>
+<small>*Experimental: MCP support is under active development and its configuration may still change. It is currently available for the [Node GLSP server](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server/server) only.*</small>
 
 ### What it provides
 
@@ -53,7 +53,7 @@ diagramLoader.load<McpInitializeParameters>({
 ```
 
 An empty `mcpServer: {}` enables MCP with all defaults.
-Its options, such as the port, route, name, data-exposure mode, and agent persona, are documented in the [adopter guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/README.md).
+Its options, such as the port, route, name, data-exposure mode, and agent persona, are documented in the [adopter guide](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/server-mcp/README.md).
 
 ### Architecture
 
@@ -85,7 +85,7 @@ The built-in write tools dispatch standard GLSP [operations]({{< relref "modelOp
 Adopters therefore rarely need custom tools for editing, but they can add their own tools, resources, and prompts for language-specific actions.
 A tool always returns a human-readable text result and may additionally return a structured payload, so different MCP clients can consume whichever form they support.
 
-The workflow example demonstrates these provider overrides, and the [extension guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/ARCHITECTURE.md) covers adding custom tools, resources, and prompts.
+The workflow example demonstrates these provider overrides, and the [extension guide](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/server-mcp/ARCHITECTURE.md) covers adding custom tools, resources, and prompts.
 
 ### Tool platform integration
 
@@ -105,6 +105,6 @@ The server is not hardened for hostile multi-tenant or public exposure.
 
 ### Further reading
 
-* [server-mcp adopter guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/README.md): the integration quickstart.
-* [server-mcp architecture and extension guide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server-mcp/ARCHITECTURE.md): architecture, security model, configuration options, and the extension cookbook.
+* [server-mcp adopter guide](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/server-mcp/README.md): the integration quickstart.
+* [server-mcp architecture and extension guide](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/server-mcp/ARCHITECTURE.md): architecture, security model, configuration options, and the extension cookbook.
 * [MCP feature request (issue #1546)](https://github.com/eclipse-glsp/glsp/issues/1546): background and rationale.

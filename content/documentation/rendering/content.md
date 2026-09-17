@@ -90,7 +90,7 @@ This check is optional but it’s highly recommended to implement it in your cus
 ### Default Views
 
 The following sections give an overview of available default views in Sprotty and GLSP and how to configure them.
-All of them are default model elements, which is already configured in the [`baseViewModule`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/base-view-module.ts),
+All of them are default model elements, which is already configured in the [`baseViewModule`](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/views/base-view-module.ts),
 but for the sake of completeness we list the configuration of the elements in the collapsible example code blocks.
 
 #### Default Sprotty Views
@@ -766,9 +766,9 @@ configureModelElement(
 
 #### Default GLSP Views
 
-The following views are provided by the [GLSP client](https://github.com/eclipse-glsp/glsp-client) framework.
+The following views are provided by the [GLSP client](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/client/client) framework.
 
-##### [GEdgeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/gedge-view.tsx)
+##### [GEdgeView](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/views/gedge-view.tsx)
 
 A `GEdgeView` renders a line element which is routed by the `EdgeRouterRegistry`.
 The view also triggers the rendering of additional elements (such as mouse handles) and edge children (such as edge labels or routing points).
@@ -816,7 +816,7 @@ configureModelElement(context, DefaultTypes.EDGE, GEdge, GEdgeView);
 
 </br>
 
-##### [GIssueMarkerView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/issue-marker-view.tsx)
+##### [GIssueMarkerView](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/views/issue-marker-view.tsx)
 
 A `GIssueMarkerView` renders an issue marker on top of shapes. This is used to show validation results on elements (see Model Validation).
 These issue markers are elements in the shape of an information, warning or error icon based on the severity of the issue.
@@ -882,7 +882,7 @@ configureModelElement(
 
 </br>
 
-##### [RoundedCornerNodeView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/rounded-corner-view.tsx)
+##### [RoundedCornerNodeView](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/views/rounded-corner-view.tsx)
 
 A `RoundedCornerNodeView` creates a rectangular shape based shape's size and computes and renders the corners in a rounded way, based on the corner radius argument. By default, the rounded corner radius defaults to `0`.
 
@@ -933,7 +933,7 @@ configureModelElement(context, DefaultTypes.NODE, GNode, RoundedCornerNodeView);
 
 </br>
 
-##### [StructureCompartmentView](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/views/compartments.tsx)
+##### [StructureCompartmentView](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/views/compartments.tsx)
 
 The `StructureCompartmentView` allows to contain children if using the `freeform` Layout. For more details please see the section about [freeform]({{< relref  "clientLayouting" >}}) Layout.
 

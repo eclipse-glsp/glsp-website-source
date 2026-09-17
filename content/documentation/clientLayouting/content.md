@@ -92,7 +92,7 @@ and [`GConstants`](https://github.com/eclipse-glsp/glsp-server/blob/master/plugi
 
 <details><summary>Usage Node GLSP Server</summary>
 
-To use the Layout options on the GLSP Node Server, the support via utility classes for option keys and values is currently very limited, e.g. only the [EdgeSide](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/graph/src/gedge-layoutable.ts) type is available.
+To use the Layout options on the GLSP Node Server, the support via utility classes for option keys and values is currently very limited, e.g. only the [EdgeSide](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/graph/src/gedge-layoutable.ts) type is available.
 Therefore please use the dedicated string values in the meantime, e.g. `"hAlign"` `"center"` and so on.
 
 </details>
@@ -107,7 +107,7 @@ There are three built-in layout types that can be used: `hbox`, `vbox` and `free
 
 ##### `hbox` Layout
 
-The [`HBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/hbox-layout.ts) layouts children of a container in a horizontal (left to right) direction.
+The [`HBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/features/bounds/hbox-layout.ts) layouts children of a container in a horizontal (left to right) direction.
 
 This layouter provides additional layout options via `HBoxLayoutOptionsExt`:
 
@@ -168,7 +168,7 @@ GCompartment.builder()
 </br>
 
 On the client side, we need to configure (besides the default elements `GCompartment` and `GLabel`) a custom `Icon` element and a `IconView` like this: `configureModelElement(context, 'icon', Icon, IconView)`.
-The [`Icon` element definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/model.ts) and the [`IconView` definition](https://github.com/eclipse-glsp/glsp-client/blob/master/examples/workflow-glsp/src/workflow-views.tsx) are taken from the workflow example.
+The [`Icon` element definition](https://github.com/eclipse-glsp/glsp-core/blob/main/examples/workflow-glsp/src/model.ts) and the [`IconView` definition](https://github.com/eclipse-glsp/glsp-core/blob/main/examples/workflow-glsp/src/workflow-views.tsx) are taken from the workflow example.
 
 The resulting element with the obvious horizontal gap between the child elements is shown in the following image:
 
@@ -183,7 +183,7 @@ The resulting element with the obvious horizontal gap between the child elements
 
 ##### `vbox` Layout</br>
 
-The [`VBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/vbox-layout.ts) layouts children of a container in a vertical (top to bottom) direction.
+The [`VBoxLayouterExt`](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/features/bounds/vbox-layout.ts) layouts children of a container in a vertical (top to bottom) direction.
 
 This layouter provides additional layout options via `VBoxLayoutOptionsExt`:
 
@@ -257,7 +257,7 @@ The resulting element positions its children vertically from top to bottom and a
 
 ##### `freeform` Layout</br>
 
-The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/client/src/features/bounds/freeform-layout.ts) positions the children of a container according to their explicit, parent-relative `x/y` coordinates inside the parent container.
+The [`FreeFormLayouter`](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/features/bounds/freeform-layout.ts) positions the children of a container according to their explicit, parent-relative `x/y` coordinates inside the parent container.
 This layouter uses the default [Layout Options](#layout-options) and provides suitable default values (e.g. `resizeContainer: true`).
 
 Again here, the children of the container are positioned according to their explicit positions inside the container and as concluding step, the final bounds of the container are computed based on the required bounds of its children.
