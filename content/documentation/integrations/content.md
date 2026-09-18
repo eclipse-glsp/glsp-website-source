@@ -76,7 +76,7 @@ More information on the integration components is given in the section on [platf
 
 Depending on your choice of tool platform integration and server framework, a different selection of packages needs to be used.
 The project templates linked in the [getting started guide]({{< relref  "gettingStarted" >}}) provide the initial setup of the package architecture for the respective combination of components.
-However, all of them will have a diagram-specific client package that depends on [@glsp/client](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/client) and a diagram-specific server package that either depends on the [node-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server-node/tree/main/packages/server) or the [Java-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server).
+However, all of them will have a diagram-specific client package that depends on [@glsp/client](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/client/client) and a diagram-specific server package that either depends on the [node-based GLSP server framework](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server/server) or the [Java-based GLSP server framework](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server).
 
 Irrespectively of the used tool platform integration, server framework or source model integration, your custom `glsp-client` is always the same and can be reused for all scenarios.
 Your server implementation is also independent of the respective platform integration and reusable for multiple platforms.
@@ -93,9 +93,9 @@ As an example, the following figure shows the package architecture for a Theia-b
 The package `your-glsp-client` represents your custom client package and `your-glsp-server` depicts your custom GLSP server package.
 They contain the diagram-specific implementations for your diagram editor and modeling language.
 
-Please note how the `your-glsp-client` builds upon the [@glsp/client](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/client) and the package `your-theia-integration` just integrates this as an editor based on [@glsp/theia-integration](https://github.com/eclipse-glsp/glsp-theia-integration/tree/master/packages/theia-integration) into the Theia tool platform.
+Please note how the `your-glsp-client` builds upon the [@glsp/client](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/client/client) and the package `your-theia-integration` just integrates this as an editor based on [@glsp/theia-integration](https://github.com/eclipse-glsp/glsp-theia-integration/tree/master/packages/theia-integration) into the Theia tool platform.
 Your GLSP client and your Theia integration have an indirect dependency to [Eclipse Sprotty](https://github.com/eclipse/sprotty) and its [Theia glue code](https://github.com/eclipse/sprotty-theia).
-Both the client and the server share a common package [@glsp/protocol](https://github.com/eclipse-glsp/glsp-client/tree/master/packages/protocol) that defines the action types.
+Both the client and the server share a common package [@glsp/protocol](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/common/protocol) that defines the action types.
 
 ### Server Frameworks
 
@@ -103,7 +103,7 @@ GLSP servers can be written in any language, as they run in a separate process a
 To make it easier to develop GLSP servers, however, GLSP provides two server frameworks:
 
 * [GLSP server framework for Java](https://github.com/eclipse-glsp/glsp-server)
-* [GLSP server framework for Node](https://github.com/eclipse-glsp/glsp-server-node)
+* [GLSP server framework for Node](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server/server)
 
 Even though they are built with different runtimes and languages, they are structurally very similar.
 Both use dependency injection (DI) for hooking up your diagram-specific providers, services, and handlers or for replacing default implementation with customized implementations.
@@ -142,7 +142,7 @@ However, there are recurring popular choices, for which GLSP provides base modul
 * [Integration for EMF models](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF models with a separate notation model](https://github.com/eclipse-glsp/glsp-server/tree/master/plugins/org.eclipse.glsp.server.emf)
 * [Integration for EMF.cloud model server](https://github.com/eclipse-emfcloud/modelserver-glsp-integration)
-* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/gmodel/GModelDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-server-node/blob/main/packages/server/src/common/gmodel/gmodel-diagram-module.ts)
+* Abstract base diagram module for storing and modifying GModels as JSON files directly: [Java](https://github.com/eclipse-glsp/glsp-server/blob/master/plugins/org.eclipse.glsp.server/src/org/eclipse/glsp/server/gmodel/GModelDiagramModule.java) or [node](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/server/server/src/common/gmodel/gmodel-diagram-module.ts)
 
 ### Platform Integrations
 

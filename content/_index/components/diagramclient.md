@@ -4,7 +4,7 @@ weight = 10
 
 [asset]
   icon = "fab fa-html5"
-  url = "https://github.com/eclipse-glsp/glsp-client"
+  url = "https://github.com/eclipse-glsp/glsp-core/tree/main/packages/client"
 +++
 
 <p style="margin-left: 5px; margin-right: 5px; text-align: justify">

@@ -52,7 +52,7 @@ The GLSP server uses EMF in order to reuse its model management and editing capa
 Therefore, the graphical model is described as an Ecore model and the corresponding Java classes are automatically generated from this model.
 Using [GSON](https://github.com/google/gson), the GModel is then serialized and deserialized to JSON before it is sent via JSON-RPC to the client.
 
-The [node-based GLSP server](https://github.com/eclipse-glsp/glsp-server-node) provides a graph model library, which defines the graph model types, such as `GNode`, `GEdge`, etc. alongside a builder API to make creating instances more convenient.
+The [node-based GLSP server](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server/server) provides a [graph model library](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server/graph), which defines the graph model types, such as `GNode`, `GEdge`, etc. alongside a builder API to make creating instances more convenient.
 However, as the node-based GLSP server and the GLSP client are both based on ES6, this graph library is based on graph model definitions that are used on the client.
 
 ### Graphical Model Factory

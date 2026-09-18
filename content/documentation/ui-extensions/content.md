@@ -12,7 +12,7 @@ A UI Extension is a concept provided by the underlying framework Sprotty, which 
 
 It is often used to add UI controls to the diagram. It is also frequently used in the core GLSP functionality:
 
-- the GLSP [tool palette](https://github.com/eclipse-glsp/glsp-client/blob/master/packages/protocol/src/action-protocol/tool-palette.ts)
+- the GLSP [tool palette](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/features/tool-palette/tool-palette.ts)
 - the Sprotty [command palette](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/command-palette/command-palette.ts)
 - the Sprotty [EditLabelUI](https://github.com/eclipse/sprotty/blob/master/packages/sprotty/src/features/edit/edit-label-ui.ts)
 
@@ -34,7 +34,7 @@ UI extensions can be enabled practically with any event that can dispatch an act
 
 For example:
 
-- The GLSP `ToolPalette` is opened via a [`IDiagramStartup` hook](https://github.com/eclipse-glsp/glsp-client/blob/12ca7983757966419ca1c15cdc333cefdf56558f/packages/client/src/features/tool-palette/tool-palette.ts#L398) right before the initial model is requested
+- The GLSP `ToolPalette` is opened via a [`IDiagramStartup` hook](https://github.com/eclipse-glsp/glsp-core/blob/main/packages/client/client/src/features/tool-palette/tool-palette.ts) directly after the initial model request has been dispatched
 - The `CommandPalette` is opened via the keyboard shortcut <kbd>Ctrl</kbd>+<kbd>Space</kbd>.
 - The `EditLabelUI` is opened via a double click on an editable Label (e.g. a Category or Task node in the Workflow example).
 - The `TaskEditor` in the Workflow example is opened via a context menu entry (`Direct Edit Task`) for the Task node.
@@ -46,7 +46,7 @@ The following GIF shows the different triggers of the the mentioned extensions:
 ### Button Overlay Showcase
 
 The following section gives an overview of the necessary bits to create a very simple UI Extension that provides two buttons to center a diagram or fit it to the screen.
-This showcase is implemented on top of the Workflow example in the `glsp-client` and `glsp-theia-integration`.
+This showcase is implemented on top of the Workflow example in [`glsp-core`](https://github.com/eclipse-glsp/glsp-core/tree/main/examples/workflow-glsp) and `glsp-theia-integration`.
 
 At first, the UI extension needs to be defined, in this case we want the provided base HTML element (`containerElement`) to contain our buttons.
 Those buttons should show an icon as well as a descriptive text label and should trigger the respective GLSP Action on click of either one of them.
